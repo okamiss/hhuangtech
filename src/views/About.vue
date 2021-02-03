@@ -22,7 +22,7 @@ export default {
     // this.getFilmList();
     console.log(process.env.NODE_ENV);
     this.test();
-    this.$cookies.config('1d') 
+    this.$cookies.config("1d");
     this.$cookies.set("jeesite.session.id", "726267242ce14b9fa64f6a4c5b48eec3");
     this.$cookies.set(
       "rememberMe",
@@ -60,3 +60,4 @@ export default {
   },
 };
 </script>
+

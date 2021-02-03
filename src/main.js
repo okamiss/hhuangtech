@@ -28,3 +28,5 @@ Vue.prototype.$get = get;
 import cookies from 'vue-cookies'
 Vue.prototype.$cookies = cookies; 
 //配置cookies生命周期，单位不区分大小写
+
+require('@/assets/css/index.css');

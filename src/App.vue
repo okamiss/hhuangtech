@@ -18,20 +18,7 @@
   text-align: center;
   color: #2c3e50;
 }
-body,
-html {
-  width: 100%;
-  height: 100%;
-}
 
-.container-left {
-  width: 300px;
-  height: 100%;
-}
-.container-right {
-  flex: 1;
-  height: 100%;
-}
 </style>
 <script>
 import Nav from "./views/Navlist";

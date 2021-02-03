@@ -18,21 +18,19 @@
   text-align: center;
   color: #2c3e50;
 }
-body,html{width:100%; height:100%}
-#app {
-  display: flex;
+body,
+html {
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
 }
+
 .container-left {
   width: 300px;
   height: 100%;
 }
-.container-right{
- flex: 1;
- height: 100%;
+.container-right {
+  flex: 1;
+  height: 100%;
 }
 </style>
 <script>

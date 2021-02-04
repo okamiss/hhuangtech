@@ -1,9 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body,
 html {
   width: 100%;
   height: 100%;
-  margin: 0;
-  padding: 0;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #333;
+  background: #f8f9fc;
 }
 
 #app {
@@ -12,14 +20,47 @@ html {
   height: 100%;
   top: 0;
   left: 0;
-  
+
 }
 
 .container-left {
-    width: 300px;
-    height: 100%;
-  }
-  .container-right {
-    flex: 1;
-    height: 100%;
-  }
+  width: 300px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.hh-logo {
+  width: 100%;
+  height: 80px;
+  border-bottom: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.hh-nav {
+  flex: 1;
+  width: 100%;
+}
+
+.container-right {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.hh-usinfo {
+  width: 100%;
+  height: 80px;
+  border-bottom: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.hh-cont {
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}

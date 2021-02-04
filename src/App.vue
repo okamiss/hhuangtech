@@ -1,30 +1,25 @@
 <template>
   <div id="app">
     <div class="container-left">
-      <Nav />
+      <NavList />
     </div>
 
     <div class="container-right">
-      <router-view />
+      <TopUser />
+      <div class="hh-cont">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-</style>
 <script>
-import Nav from "./views/Navlist";
+import NavList from "./views/Common/NavList";
+import TopUser from "./views/Common/TopUser";
 export default {
   components: {
-    Nav,
+    NavList,
+    TopUser,
   },
   methods: {
     handleOpen(key, keyPath) {

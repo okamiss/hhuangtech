@@ -70,14 +70,14 @@ export default {
 
     // 获取一级菜单
     getTreeList() {
-      this.$get("/plm/node/children?parentCode=0")
-        .then((res) => {
-          console.log(res);
-          this.treeList = res;
-        })
-        .catch(() => {
-          console.log("erer");
-        });
+      // this.$get("/plm/node/children?parentCode=0")
+      //   .then((res) => {
+      //     console.log(res);
+      //     this.treeList = res;
+      //   })
+      //   .catch(() => {
+      //     console.log("erer");
+      //   });
     },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);

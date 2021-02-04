@@ -17,13 +17,6 @@ new Vue({
 }).$mount('#app')
 
 
- 
-import axios from 'axios'
-import { post, get } from './utils/http'
-//定义全局变量
-Vue.prototype.$post = post;
-Vue.prototype.$get = get;
-
 
 import cookies from 'vue-cookies'
 Vue.prototype.$cookies = cookies; 

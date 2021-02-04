@@ -1,6 +1,14 @@
-export default {
-    function demoEnter(e){
-        let etr = e.currentTarget.childNodes[0]
-        console.log(etr)
-    }
-}
+// function getList(){
+//     this.$get("/rs/col/type/list")
+//     .then((response) => {
+//       console.log(response);
+//     })
+//     .catch(() => {
+//       console.log("erer");
+//     });
+// }
+// export  {
+//     getList
+// }
+
+export const GetList = params => this.$get('/rs/col/type/list',params)

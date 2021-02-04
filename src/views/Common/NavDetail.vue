@@ -7,7 +7,9 @@
       <el-button size="medium" type="danger" round @click="deleChild"
         >删除节点</el-button
       >
-      <el-button size="medium" type="primary" round>扩展字段</el-button>
+      <el-button size="medium" type="primary" round @click="addField = true">
+        扩展字段</el-button
+      >
     </div>
     <div class="card-box" ref="firTogg">
       <el-form ref="form" :model="form" label-width="100px">
@@ -108,10 +110,40 @@
         <el-button type="primary" @click="addChild = false">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="扩展字段"
+      :visible.sync="addField"
+      width="40%"
+      :before-close="addFieldClose"
+      center
+    >
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="字段名称">
+          <el-input v-model="addFieldParams.data"></el-input>
+        </el-form-item>
+        <el-form-item label="字段类型">
+          <el-select v-model="addFieldParams.data" placeholder="请选择字段类型">
+            <el-option label="类型1" value="1"></el-option>
+            <el-option label="类型2" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="文本高度">
+          <el-input v-model="addFieldParams.data"></el-input>
+        </el-form-item>
+        <el-form-item label="文本宽度">
+          <el-input v-model="addFieldParams.data"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addField = false">取 消</el-button>
+        <el-button type="primary" @click="addField = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { GetList } from "../../../api/index.js";
 export default {
   data() {
     return {
@@ -132,7 +164,16 @@ export default {
       addChildParams: {
         data: "",
       },
+      addField: true,
+      addFieldParams: {
+        data: "",
+      },
     };
+  },
+  created() {
+    // GetList.then((res) => {
+    //   console.log(res);
+    // });
   },
   methods: {
     //   删除节点
@@ -156,8 +197,13 @@ export default {
           });
         });
     },
+    // 关闭节点弹窗
     addChildClose() {
       this.addChild = false;
+    },
+    // 关闭字段弹窗
+    addFieldClose() {
+      this.addField = false;
     },
     // 提交保存节点
     onSubmit() {

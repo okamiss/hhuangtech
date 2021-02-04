@@ -17,7 +17,7 @@ new Vue({
 }).$mount('#app')
 
 
-
+ 
 import axios from 'axios'
 import { post, get } from './utils/http'
 //定义全局变量

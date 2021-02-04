@@ -164,7 +164,7 @@
 </template>
 
 <script>
-// import { GetList } from "../../../api/index.js";
+import { GetList } from "../../../api/index.js";
 export default {
   data() {
     return {
@@ -192,12 +192,17 @@ export default {
     };
   },
   created() {
-    // GetList.then((res) => {
-    //   console.log(res);
-    // });
+    setTimeout(() => {
+      this.test();
+    }, 1000);
   },
   mounted() {},
   methods: {
+    test() {
+      GetList().then((res) => {
+        console.log(res);
+      });
+    },
     //   删除节点
     deleChild() {
       this.$confirm("确定要删除这个节点吗, 是否继续?", "提示", {

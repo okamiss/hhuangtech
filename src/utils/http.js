@@ -21,6 +21,7 @@ axios.interceptors.request.use(
             'Content-Type': 'application/x-www-form-urlencoded',
             // "token": '96c45b879727d00b194dd97826c2ddb9',
         }
+        config.url = config.url + '&__sid=cdfe45288c7e4756bb1d11acdf4c0d6d'
         // if(token){
         //   config.params = {'token':token}
         // }

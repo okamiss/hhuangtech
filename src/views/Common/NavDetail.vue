@@ -1,25 +1,25 @@
 <template>
   <div>
     <div class="card-box">
-      <el-button size="medium" type="primary" round @click="addChild = true"
+      <el-button size="small" type="primary" round @click="addChild = true"
         >增加子节点</el-button
       >
-      <el-button size="medium" type="danger" round @click="deleChild"
+      <el-button size="small" type="danger" round @click="deleChild"
         >删除节点</el-button
       >
-      <el-button size="medium" type="primary" round @click="addField = true">
+      <el-button size="small" type="primary" round @click="addField = true">
         扩展字段</el-button
       >
     </div>
     <div class="card-box" ref="firTogg">
       <el-form ref="form" :model="form" label-width="100px">
         <el-row>
-          <el-col :span="10">
+          <el-col :span="9">
             <el-form-item label="内部名称">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="9" :offset="2">
             <el-form-item label="显示名称">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
@@ -40,7 +40,7 @@
               @click="firTogg"
             ></el-button>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="9">
             <el-form-item label="可实例化">
               <el-switch
                 active-color="#13ce66"
@@ -48,7 +48,7 @@
               ></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="9" :offset="2">
             <el-form-item label="可有子类型">
               <el-switch
                 active-color="#13ce66"
@@ -56,12 +56,12 @@
               ></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="9">
             <el-form-item label="说明">
               <el-input type="textarea" v-model="form.date1"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="9" :offset="2">
             <el-form-item label="图标">
               <el-input v-model="form.date3">
                 <el-button slot="append">选择</el-button>
@@ -79,7 +79,9 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">保存</el-button>
+          <el-button size="small" type="primary" @click="onSubmit"
+            >保存</el-button
+          >
           <!-- <el-button>取消</el-button> -->
         </el-form-item>
       </el-form>
@@ -193,22 +195,9 @@ export default {
     // GetList.then((res) => {
     //   console.log(res);
     // });
-    setTimeout(() => {
-      this.test();
-    }, 1000);
   },
   mounted() {},
   methods: {
-    test() {
-      this.$get("/plm/rs/col/type/list")
-        .then((response) => {
-          console.log(response);
-        })
-        .catch(() => {
-          console.log("erer");
-        });
-    },
-
     //   删除节点
     deleChild() {
       this.$confirm("确定要删除这个节点吗, 是否继续?", "提示", {
@@ -259,10 +248,10 @@ export default {
 </script>
 
 <style lang="less" coped>
-.edit-form {
-  margin-top: 20px;
-  .el-form {
-    width: 600px;
+.el-input {
+  height: 32px;
+  input {
+    height: 100%;
   }
 }
 </style>

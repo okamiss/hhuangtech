@@ -2,7 +2,9 @@ import axios from 'axios';
 import { Message } from 'element-ui';
 
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL = 'http://192.168.31.205:8980/hhuangtech/plm';
+// axios.defaults.baseURL = '';
+// axios.defaults.baseURL = 'https://www.test.unionprocloud.com';
+axios.defaults.baseURL = 'http://192.168.31.205:8980/hhuangtech';
 
 
 //http request 拦截器
@@ -12,14 +14,12 @@ axios.interceptors.request.use(
         // const token = getCookie('名称');注意使用的时候需要引入cookie方法，推荐js-cookie
         // config.headers['content-type'] = 'application/json; charset=UTF-8'
 
-        // config.data = JSON.stringify(config.data);
-        config.data = {a:''};
+        config.data = JSON.stringify(config.data);
+        // config.data = {a:''};
         config.headers = {
-          
             ...config.headers,
             'Content-Type': 'application/x-www-form-urlencoded',
-            // "token": 'a5sd1fa45dsf4f56',
-            // 'cookie':'123123132',
+            // "token": '96c45b879727d00b194dd97826c2ddb9',
         }
         // if(token){
         //   config.params = {'token':token}

@@ -64,7 +64,7 @@
           <el-col :span="10">
             <el-form-item label="图标">
               <el-input v-model="form.date3">
-                <el-button slot="append">上传</el-button>
+                <el-button slot="append">选择</el-button>
               </el-input>
             </el-form-item>
           </el-col>
@@ -93,6 +93,25 @@
         </el-col>
       </el-row>
     </div>
+    <div class="card-box">
+      <el-row>
+        <el-col :span="10">1</el-col>
+        <el-col :span="10">1</el-col>
+        <el-col :span="2" :offset="2">
+          <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="card-box">
+      <el-row>
+        <el-col :span="10">1</el-col>
+        <el-col :span="10">1</el-col>
+        <el-col :span="2" :offset="2">
+          <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
+        </el-col>
+      </el-row>
+    </div>
+
     <el-dialog
       title="增加子节点"
       :visible.sync="addChild"
@@ -143,7 +162,7 @@
 </template>
 
 <script>
-import { GetList } from "../../../api/index.js";
+// import { GetList } from "../../../api/index.js";
 export default {
   data() {
     return {
@@ -164,7 +183,7 @@ export default {
       addChildParams: {
         data: "",
       },
-      addField: true,
+      addField: false,
       addFieldParams: {
         data: "",
       },
@@ -174,8 +193,22 @@ export default {
     // GetList.then((res) => {
     //   console.log(res);
     // });
+    setTimeout(() => {
+      this.test();
+    }, 1000);
   },
+  mounted() {},
   methods: {
+    test() {
+      this.$get("/plm/rs/col/type/list")
+        .then((response) => {
+          console.log(response);
+        })
+        .catch(() => {
+          console.log("erer");
+        });
+    },
+
     //   删除节点
     deleChild() {
       this.$confirm("确定要删除这个节点吗, 是否继续?", "提示", {

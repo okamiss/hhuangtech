@@ -25,12 +25,8 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item class="clearfix">
-            评论
-            <el-badge class="mark" :value="22" />
-          </el-dropdown-item>
-          <el-dropdown-item class="clearfix">
-            回复
-            <el-badge class="mark" :value="33" />
+            退出
+            <!-- <el-badge class="mark" :value="22" /> -->
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

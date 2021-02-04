@@ -7,7 +7,6 @@
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
-        background-color="transparent"
       >
         <el-submenu index="1">
           <template slot="title">

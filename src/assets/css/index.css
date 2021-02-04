@@ -30,6 +30,7 @@ html {
   flex-direction: column;
   border-right: 1px solid #ccc;
   box-sizing: border-box;
+
 }
 
 .hh-logo {
@@ -42,6 +43,7 @@ html {
 .hh-nav {
   flex: 1;
   width: 100%;
+  background: #fff;
 }
 
 .container-right {
@@ -63,4 +65,12 @@ html {
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+}
+
+.card-box {
+  background: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  margin-bottom: 20px;
 }

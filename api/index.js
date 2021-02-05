@@ -9,6 +9,7 @@ export const  GetDomDetail  = params => get('/plm/node/get',params)  //获取节
 export const  CreateDom  = params => get('/plm/node/create',params)  //创建子节点
 export const  DeleteDom  = params => get('/plm/node/remove',params)  //删除子节点
 export const  EidtDom  = params => post('/plm/node/modify',params)  //编辑子节点
+export const  GetCode  = params => get('/plm/node/get',params)  //获取字段
 
 
 

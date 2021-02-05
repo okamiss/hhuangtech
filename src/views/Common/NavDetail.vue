@@ -87,13 +87,66 @@
       </el-form>
     </div>
     <div class="card-box">
-      <el-row>
-        <el-col :span="10">1</el-col>
-        <el-col :span="10">1</el-col>
-        <el-col :span="2" :offset="2">
-          <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
-        </el-col>
-      </el-row>
+      <el-table :data="tableData" border style="100%" type="expand">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="id">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="defaultDisplay">
+                <span>{{ props.row.defaultDisplay }}</span>
+              </el-form-item>
+              <el-form-item label="isNewRecord">
+                <span>{{ props.row.isNewRecord }}</span>
+              </el-form-item>
+              <el-form-item label="isRoot">
+                <span>{{ props.row.isRoot }}</span>
+              </el-form-item>
+              <el-form-item label="isTreeLeaf">
+                <span>{{ props.row.isTreeLeaf }}</span>
+              </el-form-item>
+              <el-form-item label="nodeCode">
+                <span>{{ props.row.nodeCode }}</span>
+              </el-form-item>
+              <el-form-item label="parentCode">
+                <span>{{ props.row.parentCode }}</span>
+              </el-form-item>
+              <el-form-item label="parentCodes">
+                <span>{{ props.row.parentCodes }}</span>
+              </el-form-item>
+              <el-form-item label="result">
+                <span>{{ props.row.result }}</span>
+              </el-form-item>
+              <el-form-item label="rootTableCode">
+                <span>{{ props.row.rootTableCode }}</span>
+              </el-form-item>
+              <el-form-item label="treeLeaf">
+                <span>{{ props.row.treeLeaf }}</span>
+              </el-form-item>
+              <el-form-item label="treeLevel">
+                <span>{{ props.row.treeLevel }}</span>
+              </el-form-item>
+              <el-form-item label="treeNames">
+                <span>{{ props.row.treeNames }}</span>
+              </el-form-item>
+              <el-form-item label="treeSort">
+                <span>{{ props.row.treeSort }}</span>
+              </el-form-item>
+              <el-form-item label="treeSorts">
+                <span>{{ props.row.treeSorts }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="id" label="id" width="150"> </el-table-column>
+        <el-table-column prop="defaultDisplay" label="defaultDisplay"  width="150">
+        </el-table-column>
+        <el-table-column prop="parentCode" label="parentCode"  width="150">
+        </el-table-column>
+        <el-table-column prop="nodeCode" label="nodeCode"> </el-table-column  width="150" >
+      </el-table>
     </div>
     <div class="card-box">
       <el-row>
@@ -170,6 +223,7 @@ import {
   CreateDom,
   DeleteDom,
   EidtDom,
+  GetCode,
 } from "../../../api/index.js";
 export default {
   data() {
@@ -197,6 +251,7 @@ export default {
         data: "",
       },
       domInfo: null,
+      tableData: [],
     };
   },
   created() {},
@@ -205,9 +260,18 @@ export default {
       // console.log(data);
       this.domInfo = data;
       this.getDomInfo();
+      this.getCodeData();
     });
   },
   methods: {
+    // 获取字段
+    getCodeData() {
+      GetCode({ nodeCode: this.domInfo.nodeCode }).then((res) => {
+        console.log(res);
+        this.tableData.push(res);
+      });
+    },
+
     // 增加子节点
     addChildPar() {
       // console.log(this.domInfo.nodeCode);
@@ -310,5 +374,26 @@ export default {
   input {
     height: 100%;
   }
+}
+
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 150px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
+.card-box {
+  position: relative;
+}
+
+.el-table {
+  position: absolute;
 }
 </style>

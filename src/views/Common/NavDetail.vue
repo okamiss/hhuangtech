@@ -141,11 +141,16 @@
         </el-table-column>
 
         <el-table-column prop="id" label="id" width="150"> </el-table-column>
-        <el-table-column prop="defaultDisplay" label="defaultDisplay"  width="150">
+        <el-table-column
+          prop="defaultDisplay"
+          label="defaultDisplay"
+          width="150"
+        >
         </el-table-column>
-        <el-table-column prop="parentCode" label="parentCode"  width="150">
+        <el-table-column prop="parentCode" label="parentCode" width="150">
         </el-table-column>
-        <el-table-column prop="nodeCode" label="nodeCode"> </el-table-column  width="150" >
+        <el-table-column prop="nodeCode" label="nodeCode" width="150">
+        </el-table-column>
       </el-table>
     </div>
     <div class="card-box">

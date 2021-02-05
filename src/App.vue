@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <div class="container-left">
-      <NavList />
-    </div>
-
+    <NavList />
     <div class="container-right">
       <TopUser />
       <div class="hh-cont">

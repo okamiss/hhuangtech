@@ -16,12 +16,12 @@
         <el-row>
           <el-col :span="9">
             <el-form-item label="内部名称">
-              <el-input v-model="form.name"></el-input>
+              <el-input v-model="form.treeNames" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="9" :offset="2">
             <el-form-item label="显示名称">
-              <el-input v-model="form.name"></el-input>
+              <el-input v-model="form.defaultDisplay"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="2" :offset="2">
@@ -44,7 +44,7 @@
             <el-form-item label="可实例化">
               <el-switch
                 active-color="#13ce66"
-                v-model="form.delivery"
+                v-model="form.data1"
               ></el-switch>
             </el-form-item>
           </el-col>
@@ -52,7 +52,7 @@
             <el-form-item label="可有子类型">
               <el-switch
                 active-color="#13ce66"
-                v-model="form.delivery"
+                v-model="form.isRoot"
               ></el-switch>
             </el-form-item>
           </el-col>
@@ -121,14 +121,14 @@
       :before-close="addChildClose"
       center
     >
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="addChildParams" label-width="80px">
         <el-form-item label="名称">
-          <el-input v-model="addChildParams.data"></el-input>
+          <el-input v-model="addChildParams.defaultDisplay"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addChild = false">取 消</el-button>
-        <el-button type="primary" @click="addChild = false">确 定</el-button>
+        <el-button type="primary" @click="addChildPar">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -164,7 +164,13 @@
 </template>
 
 <script>
-import { GetList } from "../../../api/index.js";
+import Bus from "./Bus.js";
+import {
+  GetDomDetail,
+  CreateDom,
+  DeleteDom,
+  EidtDom,
+} from "../../../api/index.js";
 export default {
   data() {
     return {
@@ -183,26 +189,58 @@ export default {
       showTour: true,
       addChild: false,
       addChildParams: {
-        data: "",
+        defaultDisplay: "",
+        parentCode: null,
       },
       addField: false,
       addFieldParams: {
         data: "",
       },
+      domInfo: null,
     };
   },
-  created() {
-    setTimeout(() => {
-      this.test();
-    }, 1000);
+  created() {},
+  mounted() {
+    Bus.$on("nodeCode", (data) => {
+      // console.log(data);
+      this.domInfo = data;
+      this.getDomInfo();
+    });
   },
-  mounted() {},
   methods: {
-    test() {
-      GetList().then((res) => {
+    // 增加子节点
+    addChildPar() {
+      // console.log(this.domInfo.nodeCode);
+      this.addChildParams.parentCode = this.domInfo.nodeCode;
+      // console.log(this.addChildParams);
+
+      if (!this.addChildParams.defaultDisplay) {
+        this.$message({ message: "请填写名称", type: "warning" });
+      }
+      CreateDom(this.addChildParams).then((res) => {
         console.log(res);
+        if (res) {
+          this.$message("创建成功！");
+          this.addChild = false;
+          this.addChildParams = {
+            defaultDisplay: "",
+            parentCode: null,
+          };
+          Bus.$emit("create", true);
+        } else {
+          this.$message.error("创建失败！");
+        }
       });
     },
+    // 获取节点信息
+
+    getDomInfo() {
+      GetDomDetail({ nodeCode: this.domInfo.nodeCode }).then((res) => {
+        // console.log(res);
+        this.form = res;
+      });
+    },
+
     //   删除节点
     deleChild() {
       this.$confirm("确定要删除这个节点吗, 是否继续?", "提示", {
@@ -212,6 +250,7 @@ export default {
         center: true,
       })
         .then(() => {
+          DeleteDom({ childCode: this.domInfo.nodeCode }).then((res) => {});
           this.$message({
             type: "success",
             message: "删除成功!",
@@ -234,7 +273,16 @@ export default {
     },
     // 提交保存节点
     onSubmit() {
-      console.log("submit!");
+      // console.log("submit!");
+      // console.log(this.form);
+      EidtDom(this.form).then((res) => {
+        if (res) {
+          this.$message("更新成功！");
+          this.getDomInfo();
+        } else {
+          this.$message.error("更新失败！");
+        }
+      });
     },
     // 第一个card
     firTogg() {

@@ -2,88 +2,57 @@
   <div class="container-left">
     <div class="hh-logo"></div>
     <div class="hh-nav">
-      <el-menu
-        default-active="1"
-        class="el-menu-vertical-demo"
-        @open="handleOpen"
-        @close="handleClose"
-      >
-        <!-- <el-submenu index="1">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>导航一</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-          </el-menu-item-group>
-          <el-submenu index="1-4">
-            <template slot="title">选项4</template>
-            <el-menu-item index="1-4-1">选项1</el-menu-item>
-          </el-submenu>
-        </el-submenu> -->
-        <el-menu-item
-          v-for="(item, index) in treeList"
-          :key="index"
-          @click="getMenuCode(item)"
-        >
-          <i class="el-icon-menu"></i>
-          <span slot="title">{{ item.treeNames }}</span>
-          <!-- <el-menu-item-group>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-          </el-menu-item-group> -->
-        </el-menu-item>
-        <!-- <el-menu-item index="3" disabled>
-          <i class="el-icon-document"></i>
-          <span slot="title">导航三</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">导航四</span>
-        </el-menu-item> -->
+      <el-menu default-active="1" class="menu-Bar" @open="handleOpen">
+        <ChildMenu :dataList="this.treeList"></ChildMenu>
       </el-menu>
     </div>
   </div>
 </template>
 
 <script>
+import Bus from "./Bus.js";
+import { GetMenuList } from "../../../api/index.js";
+import ChildMenu from "./ChildMenu";
 export default {
+  components: {
+    ChildMenu,
+  },
   data() {
     return {
       treeList: [],
+      list: [{ nodeCode: 0 }],
     };
   },
   created() {
-    setTimeout(() => {
-      this.getTreeList();
-    }, 1000);
+    this.getTreeList(this.list);
+  },
+  mounted() {
+    Bus.$on("create", (data) => {
+      console.log(data);
+      if (data) {
+        // this.created();
+      }
+    });
   },
   methods: {
-    getMenuCode(item) {
-      console.log(item.nodeCode);
-    },
-
-    // 获取二级菜单
-
-    getThrList(id) {},
-
-    // 获取一级菜单
-    getTreeList() {
-      // this.$get("/plm/node/children?parentCode=0")
-      //   .then((res) => {
-      //     console.log(res);
-      //     this.treeList = res;
-      //   })
-      //   .catch(() => {
-      //     console.log("erer");
-      //   });
-    },
+    // 获取tree id
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+
+    // 获取菜单列表
+    getTreeList(node) {
+      node.forEach((item) => {
+        GetMenuList({ parentCode: item.nodeCode || 0 }).then((res) => {
+          if (res.length) {
+            item.child = item.child || [];
+            item.child = [...item.child, ...res];
+            this.getTreeList(res);
+          }
+        });
+      });
+      this.treeList = this.list[0].child;
+      this.$forceUpdate();
     },
   },
 };

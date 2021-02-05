@@ -277,8 +277,12 @@ export default {
       // console.log(this.form);
       EidtDom(this.form).then((res) => {
         if (res) {
-          this.$message("更新成功！");
+          this.$message({
+            type: "success",
+            message: "更新成功!",
+          });
           this.getDomInfo();
+          Bus.$emit("create", true);
         } else {
           this.$message.error("更新失败！");
         }

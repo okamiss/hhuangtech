@@ -2,7 +2,7 @@
   <div class="container-left">
     <div class="hh-logo"></div>
     <div class="hh-nav">
-      <el-menu default-active="1" class="menu-Bar" @open="handleOpen">
+      <el-menu class="menu-Bar" @open="handleOpen">
         <ChildMenu :dataList="this.treeList"></ChildMenu>
       </el-menu>
     </div>
@@ -30,7 +30,7 @@ export default {
     Bus.$on("create", (data) => {
       console.log(data);
       if (data) {
-        // this.created();
+        this.getTreeList([{ nodeCode: 0 }]);
       }
     });
   },
@@ -52,7 +52,6 @@ export default {
         });
       });
       this.treeList = this.list[0].child;
-      this.$forceUpdate();
     },
   },
 };

@@ -28,9 +28,10 @@ export default {
   },
   mounted() {
     Bus.$on("create", (data) => {
-      console.log(data);
       if (data) {
-        this.getTreeList([{ nodeCode: 0 }]);
+        this.treeList = [];
+        this.list = [{ nodeCode: 0 }];
+        this.getTreeList(this.list);
       }
     });
   },
@@ -40,7 +41,7 @@ export default {
       // console.log(key, keyPath);
     },
 
-    // 获取菜单列表
+    // 获取菜单列
     getTreeList(node) {
       node.forEach((item) => {
         GetMenuList({ parentCode: item.nodeCode || 0 }).then((res) => {

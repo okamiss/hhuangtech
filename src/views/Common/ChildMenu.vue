@@ -4,8 +4,8 @@
       <el-submenu :index="list.id" v-if="list.child">
         <template slot="title">
           <div @click="getItem(list)">
-            <i class="el-icon-menu" v-if="list.child"></i>
-            <span>{{ list.treeNames }}</span>
+            <i class="el-icon-menu"></i>
+            <span>{{ list.defaultDisplay }}</span>
           </div>
         </template>
         <label>
@@ -13,7 +13,8 @@
         </label>
       </el-submenu>
       <el-menu-item v-else :index="list.id" @click="getItem(list)">
-        <span slot="title">{{ list.treeNames }}</span>
+        <i class="el-icon-full-screen"></i>
+        <span slot="title">{{ list.defaultDisplay }}</span>
       </el-menu-item>
     </label>
   </div>
@@ -43,16 +44,14 @@ export default {
   },
   watch: {
     dataList(a, b) {
-      console.log(a, b);
       this.getItem(a[0]);
       setTimeout(() => {
         this.$forceUpdate();
-      }, 500);
+      }, 1000);
     },
   },
   methods: {
     getItem(list) {
-      console.log(list.nodeCode);
       this.$forceUpdate();
       Bus.$emit("nodeCode", list);
     },

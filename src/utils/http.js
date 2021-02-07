@@ -1,32 +1,31 @@
 import axios from 'axios';
 import { Message } from 'element-ui';
 import  qs from 'qs'
-
+import cookies from 'vue-cookies'
 
 axios.defaults.timeout = 5000;
-// axios.defaults.baseURL = '';
-// axios.defaults.baseURL = 'https://www.test.unionprocloud.com';
+
 axios.defaults.baseURL = 'http://192.168.31.205:8980/hhuangtech';
 
 //http request 拦截器
 axios.interceptors.request.use(
     config => {
         // console.log(config)
-        // const token = getCookie('名称');注意使用的时候需要引入cookie方法，推荐js-cookie
+        // const token = getCookie('名称');
 
         config.data = JSON.stringify(config.data);
         config.headers = {
             ...config.headers,
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json;charset=UTF-8',
         }
         let hasLogin = config.url.indexOf('__login')
         if(hasLogin == '-1'){
-            config.url = config.url + '?__sid=55e04b5b78504c818ebe67f0c6873997'
+            config.url = config.url + '?__sid=e153a8c08e854d60a172e5f513540aac'
         }
         return config;
     },
     error => {
-        return Promise.reject(err);
+        return Promise.reject(error);
     }
 );
 
@@ -34,7 +33,8 @@ axios.interceptors.request.use(
 //http response 拦截器
 axios.interceptors.response.use(
     response => {
-        if (response.data.result = "login") {
+        // console.log(response)
+        if (response) {
             // router.push({
             //     path: "/",
             //     querry: { redirect: router.currentRoute.fullPath } //从哪个页面跳转
@@ -79,7 +79,7 @@ export function get(url, params = {}) {
 
 export function post(url, data = {}) {
     return new Promise((resolve, reject) => {
-        axios.post(url, qs.stringify(data))
+        axios.post(url, data)
             .then(response => {
                 resolve(response.data);
             }, err => {

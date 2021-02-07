@@ -16,7 +16,7 @@
         <el-row>
           <el-col :span="9">
             <el-form-item label="内部名称">
-              <el-input v-model="form.treeNames" disabled></el-input>
+              <el-input v-model="form.interiorName" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="9" :offset="2">
@@ -97,59 +97,50 @@
               <el-form-item label="defaultDisplay">
                 <span>{{ props.row.defaultDisplay }}</span>
               </el-form-item>
+              <el-form-item label="extcolCode">
+                <span>{{ props.row.extcolCode }}</span>
+              </el-form-item>
               <el-form-item label="isNewRecord">
                 <span>{{ props.row.isNewRecord }}</span>
-              </el-form-item>
-              <el-form-item label="isRoot">
-                <span>{{ props.row.isRoot }}</span>
-              </el-form-item>
-              <el-form-item label="isTreeLeaf">
-                <span>{{ props.row.isTreeLeaf }}</span>
               </el-form-item>
               <el-form-item label="nodeCode">
                 <span>{{ props.row.nodeCode }}</span>
               </el-form-item>
-              <el-form-item label="parentCode">
-                <span>{{ props.row.parentCode }}</span>
+              <el-form-item label="rootCode">
+                <span>{{ props.row.rootCode }}</span>
               </el-form-item>
-              <el-form-item label="parentCodes">
-                <span>{{ props.row.parentCodes }}</span>
+              <el-form-item label="shardingCode">
+                <span>{{ props.row.shardingCode }}</span>
               </el-form-item>
-              <el-form-item label="result">
-                <span>{{ props.row.result }}</span>
+              <el-form-item label="shardingColCode">
+                <span>{{ props.row.shardingColCode }}</span>
               </el-form-item>
-              <el-form-item label="rootTableCode">
-                <span>{{ props.row.rootTableCode }}</span>
-              </el-form-item>
-              <el-form-item label="treeLeaf">
-                <span>{{ props.row.treeLeaf }}</span>
-              </el-form-item>
-              <el-form-item label="treeLevel">
-                <span>{{ props.row.treeLevel }}</span>
-              </el-form-item>
-              <el-form-item label="treeNames">
-                <span>{{ props.row.treeNames }}</span>
-              </el-form-item>
-              <el-form-item label="treeSort">
-                <span>{{ props.row.treeSort }}</span>
-              </el-form-item>
-              <el-form-item label="treeSorts">
-                <span>{{ props.row.treeSorts }}</span>
+              <el-form-item label="status">
+                <span>{{ props.row.status }}</span>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
 
-        <el-table-column prop="id" label="id" width="150"> </el-table-column>
-        <el-table-column
-          prop="defaultDisplay"
-          label="defaultDisplay"
-          width="150"
-        >
+        <el-table-column prop="interiorName" label="内部名称" width="150">
         </el-table-column>
-        <el-table-column prop="parentCode" label="parentCode" width="150">
+        <el-table-column prop="defaultDisplay" label="外部名称" width="200">
         </el-table-column>
-        <el-table-column prop="nodeCode" label="nodeCode" width="150">
+        <el-table-column prop="colType" label="类型" width="150">
+        </el-table-column>
+
+        <el-table-column label="操作" width="150">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+              >删除</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -173,14 +164,17 @@
     </div>
 
     <el-dialog
-      title="增加子节点"
+      title="增加子类型"
       :visible.sync="addChild"
       width="40%"
       :before-close="addChildClose"
-      center
     >
+      <div class="treeNames">{{ domInfo.treeNames }}</div>
       <el-form ref="form" :model="addChildParams" label-width="80px">
-        <el-form-item label="名称">
+        <el-form-item label="内部名称">
+          <el-input v-model="addChildParams.interiorName"></el-input>
+        </el-form-item>
+        <el-form-item label="显示名称">
           <el-input v-model="addChildParams.defaultDisplay"></el-input>
         </el-form-item>
       </el-form>
@@ -192,30 +186,142 @@
     <el-dialog
       title="扩展字段"
       :visible.sync="addField"
-      width="40%"
+      width="80%"
       :before-close="addFieldClose"
       center
     >
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="字段名称">
-          <el-input v-model="addFieldParams.data"></el-input>
-        </el-form-item>
-        <el-form-item label="字段类型">
-          <el-select v-model="addFieldParams.data" placeholder="请选择字段类型">
-            <el-option label="类型1" value="1"></el-option>
-            <el-option label="类型2" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="文本高度">
-          <el-input v-model="addFieldParams.data"></el-input>
-        </el-form-item>
-        <el-form-item label="文本宽度">
-          <el-input v-model="addFieldParams.data"></el-input>
-        </el-form-item>
+      <el-form ref="form" :model="addFieldParams" label-width="150px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="内部名称">
+              <el-input v-model="addFieldParams.interiorName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="列类型">
+              <el-select
+                v-model="addFieldParams.colType"
+                placeholder="请选列类型"
+              >
+                <el-option
+                  v-for="item in typeList"
+                  :key="item.javaType"
+                  :label="item.remarks"
+                  :value="item.javaType"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="可在创建时编辑">
+              <el-input v-model="addFieldParams.createEditable"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="数据源">
+              <el-input v-model="addFieldParams.datasource"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="外部显示">
+              <el-input v-model="addFieldParams.defaultDisplay"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="说明">
+              <el-input v-model="addFieldParams.description"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="extcolCode">
+              <el-input v-model="addFieldParams.extcolCode"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="公式">
+              <el-input v-model="addFieldParams.formula"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="国际化代码">
+              <el-input v-model="addFieldParams.i18nCode"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="国际化显示">
+              <el-input v-model="addFieldParams.i18nDisplay"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <!-- <el-form-item label="nodeCode">
+              <el-input v-model="domInfo.nodeCode"></el-input>
+            </el-form-item> -->
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="关联对象">
+              <el-input v-model="addFieldParams.relatedObject"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <!-- <el-form-item label="rootCode">
+              <el-input v-model="addFieldParams.rootCode"></el-input>
+            </el-form-item> -->
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="序列代码">
+              <el-input v-model="addFieldParams.seqCode"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="分片代码">
+              <el-input v-model="addFieldParams.shardingCode"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="shardingColCode">
+              <el-input v-model="addFieldParams.shardingColCode"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="文本高度">
+              <el-input v-model="addFieldParams.textHeight"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="文本宽度">
+              <el-input v-model="addFieldParams.textWidth"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="updateEditable">
+              <el-input v-model="addFieldParams.updateEditable"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12"></el-col>
+        </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addField = false">取 消</el-button>
-        <el-button type="primary" @click="addField = false">确 定</el-button>
+        <el-button type="primary" @click="subAddCode">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -229,6 +335,8 @@ import {
   DeleteDom,
   EidtDom,
   GetCode,
+  GetListType,
+  AddField,
 } from "../../../api/index.js";
 export default {
   data() {
@@ -248,32 +356,91 @@ export default {
       showTour: true,
       addChild: false,
       addChildParams: {
-        defaultDisplay: "",
+        defaultDisplay: null,
+        interiorName: null,
         parentCode: null,
       },
       addField: false,
       addFieldParams: {
-        data: "",
+        // alias: "1",
+        // createEditable: "1",
+        // datasource: "1",
+        // defaultDisplay: "1",
+        // description: "1",
+        // extcolCode: "1",
+        // formula: "1",
+        // i18nCode: "1",
+        // i18nDisplay: "1",
+        // relatedObject: "1",
+        // seqCode: "1",
+        // shardingCode: "1",
+        // shardingColCode: "1",
+        // textHeight: "1",
+        // textWidth: "1",
+        // updateEditable: "1",
       },
-      domInfo: null,
+      domInfo: {
+        treeNames: null,
+      },
       tableData: [],
+      typeList: [],
     };
   },
-  created() {},
+  created() {
+    this.GetListType();
+  },
   mounted() {
     Bus.$on("nodeCode", (data) => {
       // console.log(data);
+      this.tableData = [];
       this.domInfo = data;
+      console.log(this.domInfo);
       this.getDomInfo();
       this.getCodeData();
     });
   },
   methods: {
+    // 增加字段
+    subAddCode() {
+      this.addFieldParams.nodeCode = this.domInfo.nodeCode;
+      this.addFieldParams.rootCode = this.domInfo.rootTableCode;
+
+      // console.log(this.domInfo);
+      // console.log(this.addFieldParams);
+
+      AddField(this.addFieldParams).then((res) => {
+        if (res) {
+          this.$message({
+            message: "添加成功！",
+            type: "success",
+          });
+          this.addField = false;
+          this.addFieldParams = {};
+          Bus.$emit("create", true);
+        } else {
+          this.$message.error("添加失败！");
+        }
+      });
+    },
+    // 编辑字段
+    handleEdit(row) {
+      console.log(row);
+    },
+    // 删除字段
+    handleDelete(row) {
+      console.log(row);
+    },
+    // 获取字段类型
+    GetListType() {
+      GetListType().then((res) => {
+        // console.log(res);
+        this.typeList = res;
+      });
+    },
     // 获取字段
     getCodeData() {
-      GetCode({ nodeCode: this.domInfo.nodeCode }).then((res) => {
-        console.log(res);
-        this.tableData.push(res);
+      GetCode({ rootCode: this.domInfo.rootTableCode }).then((res) => {
+        this.tableData = res;
       });
     },
 
@@ -302,7 +469,6 @@ export default {
       });
     },
     // 获取节点信息
-
     getDomInfo() {
       GetDomDetail({ nodeCode: this.domInfo.nodeCode }).then((res) => {
         // console.log(res);
@@ -324,6 +490,7 @@ export default {
             type: "success",
             message: "删除成功!",
           });
+          Bus.$emit("create", true);
         })
         .catch(() => {
           this.$message({
@@ -400,5 +567,14 @@ export default {
 
 .el-table {
   position: absolute;
+}
+.treeNames {
+  width: 100%;
+  // background: #ccc;
+  line-height: 30px;
+  text-indent: 12px;
+  color: blue;
+  font-weight: bold;
+  font-size: 17px;
 }
 </style>

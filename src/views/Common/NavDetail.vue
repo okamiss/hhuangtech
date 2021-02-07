@@ -8,7 +8,7 @@
         >删除节点</el-button
       >
       <el-button size="small" type="primary" round @click="addField = true">
-        扩展字段</el-button
+        增加字段</el-button
       >
     </div>
     <div class="card-box" ref="firTogg">
@@ -87,7 +87,7 @@
       </el-form>
     </div>
     <div class="card-box">
-      <el-table :data="tableData" border style="100%" type="expand">
+      <el-table :data="tableData" border style="width: 100%" type="expand">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
@@ -127,20 +127,6 @@
         <el-table-column prop="defaultDisplay" label="外部名称" width="200">
         </el-table-column>
         <el-table-column prop="colType" label="类型" width="150">
-        </el-table-column>
-
-        <el-table-column label="操作" width="150">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
-              >编辑</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.row)"
-              >删除</el-button
-            >
-          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -184,7 +170,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="扩展字段"
+      title="增加字段"
       :visible.sync="addField"
       width="80%"
       :before-close="addFieldClose"
@@ -264,21 +250,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <!-- <el-form-item label="nodeCode">
-              <el-input v-model="domInfo.nodeCode"></el-input>
-            </el-form-item> -->
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="关联对象">
               <el-input v-model="addFieldParams.relatedObject"></el-input>
             </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <!-- <el-form-item label="rootCode">
-              <el-input v-model="addFieldParams.rootCode"></el-input>
-            </el-form-item> -->
           </el-col>
           <el-col :span="12">
             <el-form-item label="序列代码">
@@ -286,6 +260,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
           <el-col :span="12">
             <el-form-item label="分片代码">
@@ -422,14 +397,7 @@ export default {
         }
       });
     },
-    // 编辑字段
-    handleEdit(row) {
-      console.log(row);
-    },
-    // 删除字段
-    handleDelete(row) {
-      console.log(row);
-    },
+
     // 获取字段类型
     GetListType() {
       GetListType().then((res) => {

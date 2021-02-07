@@ -20,7 +20,7 @@ axios.interceptors.request.use(
         }
         let hasLogin = config.url.indexOf('__login')
         if(hasLogin == '-1'){
-            config.url = config.url + '?__sid=e153a8c08e854d60a172e5f513540aac'
+            config.url = config.url + '?__sid=74f628dba78e4e9990719dc117b3bb8e'
         }
         return config;
     },

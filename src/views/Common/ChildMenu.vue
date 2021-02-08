@@ -3,25 +3,38 @@
     <label v-for="list in dataList" :key="list.id">
       <el-submenu :index="list.id" v-if="list.child">
         <template slot="title">
-          <div @click="getItem(list)">
-            <i class="el-icon-menu"></i>
-            <span>{{ list.defaultDisplay }}</span>
+          <div @click="getItem(list)" class="itembox">
+            <router-link :to="{ path: setPath }">
+              <i class="el-icon-menu"></i>
+              <span>
+                {{ list.defaultDisplay }}
+              </span>
+            </router-link>
+            <!-- <span>{{ list.defaultDisplay }}</span> -->
           </div>
         </template>
         <label>
-          <child-menu :dataList="list.child"></child-menu>
+          <child-menu
+            :dataList="list.child"
+            :setPath="setPath"
+            @getItemVal="getItem"
+          ></child-menu>
         </label>
       </el-submenu>
       <el-menu-item v-else :index="list.id" @click="getItem(list)">
         <i class="el-icon-full-screen"></i>
-        <span slot="title">{{ list.defaultDisplay }}</span>
+        <span slot="title">
+          <router-link :to="{ path: setPath }">{{
+            list.defaultDisplay
+          }}</router-link>
+        </span>
       </el-menu-item>
     </label>
   </div>
 </template>
 
 <script>
-import Bus from "./Bus.js";
+import Bus from "../Bus/index.js";
 export default {
   name: "childMenu",
   //   props: ["dataList"],
@@ -30,13 +43,14 @@ export default {
       type: Array,
       default: null,
     },
+    setPath: {
+      type: String,
+      default: null,
+    },
   },
-  created() {
-    // console.log(this.dataList);
-  },
+  created() {},
   mounted() {
     // Bus.$on("create", (data) => {
-    //   console.log(data);
     //   if (data) {
     //     this.getItem(data);
     //   }
@@ -44,7 +58,6 @@ export default {
   },
   watch: {
     dataList(a, b) {
-      this.getItem(a[0]);
       setTimeout(() => {
         this.$forceUpdate();
       }, 1000);
@@ -52,9 +65,18 @@ export default {
   },
   methods: {
     getItem(list) {
-      this.$forceUpdate();
-      Bus.$emit("nodeCode", list);
+      // list.path = this.setPath;
+      this.$emit("getItemVal", list);
+      // Bus.$emit("nodeCode", list);
     },
   },
 };
 </script>
+
+<style lang="less" scoped>
+.itembox a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+</style>

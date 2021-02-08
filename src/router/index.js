@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import NavDetail from '../views/Common/NavDetail'
+import NavDetail from '../views/Detail/NavDetail'
+import DictDetail from '../views/Detail/DictDetail'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes = [
     path: '/NavDetail',
     name: 'NavDetail',
     component: NavDetail
+  },
+  {
+    path: '/DictDetail',
+    name: 'DictDetail',
+    component: DictDetail
   },
   { path: '*', redirect: '/NavDetail' } 
 ]

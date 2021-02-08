@@ -1,27 +1,38 @@
 import axios from 'axios';
-import { Message } from 'element-ui';
-import  qs from 'qs'
+import {
+    Message
+} from 'element-ui';
+import qs from 'qs'
 import cookies from 'vue-cookies'
 
 axios.defaults.timeout = 5000;
 
 axios.defaults.baseURL = 'http://192.168.31.205:8980/hhuangtech';
 
+let sid = cookies.get('sid')
+
+
 //http request 拦截器
 axios.interceptors.request.use(
     config => {
-        // console.log(config)
-        // const token = getCookie('名称');
+        let setData = []
+        for (let i in config.data) {
+            setData.push(i)
+        }
+
+        if (setData.length === 1) {
+            config.url = config.url + '?__sid=' + sid + '&' + qs.stringify(config.data)
+        } else {
+            config.url = config.url + '?__sid=' + sid
+        }
+
 
         config.data = JSON.stringify(config.data);
         config.headers = {
             ...config.headers,
             'Content-Type': 'application/json;charset=UTF-8',
         }
-        let hasLogin = config.url.indexOf('__login')
-        if(hasLogin == '-1'){
-            config.url = config.url + '?__sid=74f628dba78e4e9990719dc117b3bb8e'
-        }
+
         return config;
     },
     error => {
@@ -58,8 +69,8 @@ axios.interceptors.response.use(
 export function get(url, params = {}) {
     return new Promise((resolve, reject) => {
         axios.get(url, {
-            params: params
-        })
+                params: params
+            })
             .then(response => {
                 resolve(response.data);
             })
@@ -87,4 +98,3 @@ export function post(url, data = {}) {
             })
     })
 }
-

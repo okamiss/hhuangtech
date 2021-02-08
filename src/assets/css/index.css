@@ -3,6 +3,7 @@
   padding: 0;
 }
 
+
 body,
 html {
   width: 100%;
@@ -12,6 +13,11 @@ html {
   -moz-osx-font-smoothing: grayscale;
   color: #333;
   background: #f8f9fc;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
 }
 
 #app {

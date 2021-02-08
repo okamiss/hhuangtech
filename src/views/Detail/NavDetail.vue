@@ -87,6 +87,23 @@
       </el-form>
     </div>
     <div class="card-box">
+      <div class="select">
+        <span>筛选</span>
+        <el-button size="small" round>只看启用</el-button>
+        <el-button size="small" round>只看停用</el-button>
+        <el-input
+          placeholder="请输入内容"
+          v-model="input3"
+          class="input-with-select"
+        >
+          <el-select v-model="select" slot="prepend" placeholder="请选择">
+            <el-option label="内部名称" value="1"></el-option>
+            <el-option label="外部名称" value="2"></el-option>
+            <el-option label="类型" value="3"></el-option>
+          </el-select>
+          <el-button slot="append" icon="el-icon-search"></el-button>
+        </el-input>
+      </div>
       <el-table :data="tableData" border style="width: 100%" type="expand">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -122,11 +139,41 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="interiorName" label="内部名称" width="150">
+        <el-table-column prop="interiorName" label="内部名称" width="200">
         </el-table-column>
         <el-table-column prop="defaultDisplay" label="外部名称" width="200">
         </el-table-column>
         <el-table-column prop="colType" label="类型" width="150">
+        </el-table-column>
+        <el-table-column label="操作" width="250">
+          <template slot-scope="scope">
+            <el-button
+              size="small"
+              type="info"
+              round
+              @click="fieldRecover(scope.row)"
+            >
+              删除</el-button
+            >
+            <el-button
+              size="small"
+              type="primary"
+              round
+              @click="fieldReuse(scope.row)"
+              v-if="scope.row.status === '2'"
+            >
+              启用</el-button
+            >
+            <el-button
+              size="small"
+              type="danger"
+              round
+              @click="fieldStop(scope.row)"
+              v-if="scope.row.status === '0'"
+            >
+              停用</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -226,9 +273,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="extcolCode">
+            <!-- <el-form-item label="extcolCode">
               <el-input v-model="addFieldParams.extcolCode"></el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
           <el-col :span="12">
             <el-form-item label="公式">
@@ -303,7 +350,7 @@
 </template>
 
 <script>
-import Bus from "./Bus.js";
+import Bus from "../Bus";
 import {
   GetDomDetail,
   CreateDom,
@@ -312,6 +359,9 @@ import {
   GetCode,
   GetListType,
   AddField,
+  ApiFieldRecover,
+  ApiFieldReuse,
+  ApiFieldStop,
 } from "../../../api/index.js";
 export default {
   data() {
@@ -359,6 +409,8 @@ export default {
       },
       tableData: [],
       typeList: [],
+      input3: "",
+      select: "",
     };
   },
   created() {
@@ -369,12 +421,58 @@ export default {
       // console.log(data);
       this.tableData = [];
       this.domInfo = data;
-      console.log(this.domInfo);
+      // console.log(this.domInfo);
       this.getDomInfo();
       this.getCodeData();
     });
+    // Bus.$on("testData", (data) => {
+    //   // debugger;
+    //   console.log(data);
+    // });
   },
   methods: {
+    // 删除
+    fieldRecover(item) {
+      ApiFieldRecover({ extcolCode: item.extcolCode }).then((res) => {
+        if (res) {
+          this.$message({
+            message: "操作成功！",
+            type: "success",
+          });
+          this.getCodeData();
+        } else {
+          this.$message.error("操作失败！");
+        }
+      });
+    },
+    // 启用
+    fieldReuse(item) {
+      ApiFieldReuse({ extcolCode: item.extcolCode }).then((res) => {
+        if (res) {
+          this.$message({
+            message: "操作成功！",
+            type: "success",
+          });
+          this.getCodeData();
+        } else {
+          this.$message.error("操作失败！");
+        }
+      });
+    },
+    // 停用
+    fieldStop(item) {
+      ApiFieldStop({ extcolCode: item.extcolCode }).then((res) => {
+        if (res) {
+          this.$message({
+            message: "操作成功！",
+            type: "success",
+          });
+          this.getCodeData();
+        } else {
+          this.$message.error("操作失败！");
+        }
+      });
+    },
     // 增加字段
     subAddCode() {
       this.addFieldParams.nodeCode = this.domInfo.nodeCode;
@@ -424,7 +522,10 @@ export default {
       CreateDom(this.addChildParams).then((res) => {
         console.log(res);
         if (res) {
-          this.$message("创建成功！");
+          this.$message({
+            type: "success",
+            message: "创建成功!",
+          });
           this.addChild = false;
           this.addChildParams = {
             defaultDisplay: "",
@@ -453,12 +554,18 @@ export default {
         center: true,
       })
         .then(() => {
-          DeleteDom({ childCode: this.domInfo.nodeCode }).then((res) => {});
-          this.$message({
-            type: "success",
-            message: "删除成功!",
+          DeleteDom({ childCode: this.domInfo.nodeCode }).then((res) => {
+            if (res) {
+              this.$message({
+                type: "success",
+                message: "删除成功!",
+              });
+              Bus.$emit("create", true);
+            } else {
+              this.$message.error("删除失败!");
+            }
           });
-          Bus.$emit("create", true);
+   
         })
         .catch(() => {
           this.$message({
@@ -544,5 +651,23 @@ export default {
   color: blue;
   font-weight: bold;
   font-size: 17px;
+}
+.select {
+  display: flex;
+  // justify-content: start;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: 20px;
+  span {
+    display: block;
+    margin-right: 10px;
+  }
+  .el-input-group {
+    width: 400px;
+    margin-left: 10px;
+    .el-select {
+      width: 110px;
+    }
+  }
 }
 </style>

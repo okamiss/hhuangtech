@@ -89,8 +89,8 @@
     <div class="card-box">
       <div class="select">
         <span>筛选</span>
-        <el-button size="small" round>只看启用</el-button>
-        <el-button size="small" round>只看停用</el-button>
+        <el-button size="small" round @click="lookReuse">只看启用</el-button>
+        <el-button size="small" round @click="lookStop">只看停用</el-button>
         <el-input
           placeholder="请输入内容"
           v-model="input3"
@@ -145,16 +145,16 @@
         </el-table-column>
         <el-table-column prop="colType" label="类型" width="150">
         </el-table-column>
-        <el-table-column label="操作" width="250">
+        <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button
+            <!-- <el-button
               size="small"
               type="info"
               round
               @click="fieldRecover(scope.row)"
             >
               删除</el-button
-            >
+            > -->
             <el-button
               size="small"
               type="primary"
@@ -411,6 +411,7 @@ export default {
       typeList: [],
       input3: "",
       select: "",
+      status: null,
     };
   },
   created() {
@@ -418,19 +419,29 @@ export default {
   },
   mounted() {
     Bus.$on("nodeCode", (data) => {
-      // console.log(data);
+      console.log(data);
       this.tableData = [];
       this.domInfo = data;
       // console.log(this.domInfo);
       this.getDomInfo();
-      this.getCodeData();
     });
     // Bus.$on("testData", (data) => {
     //   // debugger;
     //   console.log(data);
     // });
   },
+  filters: {},
   methods: {
+    // 只看启用
+    lookReuse() {
+      this.status = "0";
+      // this.getCodeData();
+    },
+    // 只看停用
+    lookStop() {
+      this.status = "2";
+      // this.getCodeData();
+    },
     // 删除
     fieldRecover(item) {
       ApiFieldRecover({ extcolCode: item.extcolCode }).then((res) => {
@@ -447,7 +458,10 @@ export default {
     },
     // 启用
     fieldReuse(item) {
-      ApiFieldReuse({ extcolCode: item.extcolCode }).then((res) => {
+      ApiFieldReuse({
+        nodeCode: this.form.nodeCode,
+        extcolCode: item.extcolCode,
+      }).then((res) => {
         if (res) {
           this.$message({
             message: "操作成功！",
@@ -461,7 +475,10 @@ export default {
     },
     // 停用
     fieldStop(item) {
-      ApiFieldStop({ extcolCode: item.extcolCode }).then((res) => {
+      ApiFieldStop({
+        nodeCode: this.form.nodeCode,
+        extcolCode: item.extcolCode,
+      }).then((res) => {
         if (res) {
           this.$message({
             message: "操作成功！",
@@ -475,8 +492,8 @@ export default {
     },
     // 增加字段
     subAddCode() {
-      this.addFieldParams.nodeCode = this.domInfo.nodeCode;
-      this.addFieldParams.rootCode = this.domInfo.rootTableCode;
+      this.addFieldParams.nodeCode = this.form.parentCodes.split(",")[1];
+      this.addFieldParams.rootCode = this.form.rootTableCode;
 
       // console.log(this.domInfo);
       // console.log(this.addFieldParams);
@@ -489,7 +506,7 @@ export default {
           });
           this.addField = false;
           this.addFieldParams = {};
-          Bus.$emit("create", true);
+          this.getCodeData();
         } else {
           this.$message.error("添加失败！");
         }
@@ -505,7 +522,10 @@ export default {
     },
     // 获取字段
     getCodeData() {
-      GetCode({ rootCode: this.domInfo.rootTableCode }).then((res) => {
+      GetCode({
+        nodeCode: this.form.nodeCode,
+        status: this.status,
+      }).then((res) => {
         this.tableData = res;
       });
     },
@@ -513,14 +533,18 @@ export default {
     // 增加子节点
     addChildPar() {
       // console.log(this.domInfo.nodeCode);
-      this.addChildParams.parentCode = this.domInfo.nodeCode;
+      this.addChildParams.parentCode = this.form.nodeCode;
+      // this.addChildParams.nodeCode = this.form.nodeCode;
       // console.log(this.addChildParams);
 
-      if (!this.addChildParams.defaultDisplay) {
+      if (
+        !this.addChildParams.defaultDisplay ||
+        !this.addChildParams.interiorName
+      ) {
         this.$message({ message: "请填写名称", type: "warning" });
+        return;
       }
       CreateDom(this.addChildParams).then((res) => {
-        console.log(res);
         if (res) {
           this.$message({
             type: "success",
@@ -531,7 +555,7 @@ export default {
             defaultDisplay: "",
             parentCode: null,
           };
-          Bus.$emit("create", true);
+          Bus.$emit("upNav", this.domInfo.id);
         } else {
           this.$message.error("创建失败！");
         }
@@ -540,8 +564,9 @@ export default {
     // 获取节点信息
     getDomInfo() {
       GetDomDetail({ nodeCode: this.domInfo.nodeCode }).then((res) => {
-        // console.log(res);
+        console.log(res);
         this.form = res;
+        this.getCodeData();
       });
     },
 
@@ -554,18 +579,17 @@ export default {
         center: true,
       })
         .then(() => {
-          DeleteDom({ childCode: this.domInfo.nodeCode }).then((res) => {
+          DeleteDom({ childCode: this.form.nodeCode }).then((res) => {
             if (res) {
               this.$message({
                 type: "success",
                 message: "删除成功!",
               });
-              Bus.$emit("create", true);
+              Bus.$emit("upNav", this.form.nodeCode);
             } else {
               this.$message.error("删除失败!");
             }
           });
-   
         })
         .catch(() => {
           this.$message({
@@ -593,7 +617,7 @@ export default {
             message: "更新成功!",
           });
           this.getDomInfo();
-          Bus.$emit("create", true);
+          Bus.$emit("upNav", this.domInfo.id);
         } else {
           this.$message.error("更新失败！");
         }

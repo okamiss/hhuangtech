@@ -3,8 +3,8 @@
     <label v-for="list in dataList" :key="list.id">
       <el-submenu :index="list.id" v-if="list.child">
         <template slot="title">
-          <div @click="getItem(list)" class="itembox">
-            <router-link :to="{ path: setPath }">
+          <div @click="getItem(list)">
+            <router-link :to="{ path: setPath }" class="itembox">
               <i class="el-icon-menu"></i>
               <span>
                 {{ list.defaultDisplay }}
@@ -22,12 +22,11 @@
         </label>
       </el-submenu>
       <el-menu-item v-else :index="list.id" @click="getItem(list)">
-        <i class="el-icon-full-screen"></i>
-        <span slot="title">
-          <router-link :to="{ path: setPath }">{{
-            list.defaultDisplay
-          }}</router-link>
-        </span>
+        <router-link :to="{ path: setPath }" class="itembox">
+          <i class="el-icon-full-screen"></i>
+          <!-- <span slot="title"> {{ list.defaultDisplay }} </span> -->
+          {{ list.defaultDisplay }}
+        </router-link>
       </el-menu-item>
     </label>
   </div>
@@ -74,7 +73,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.itembox a {
+.itembox {
   display: block;
   width: 100%;
   height: 100%;

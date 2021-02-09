@@ -12,25 +12,80 @@
         type="primary"
         round
         @click="addChildTermModel = true"
-        >创建字典项目</el-button
+        >创建字典项</el-button
       >
     </div>
     <div class="card-box" ref="firTogg">
-      <el-form ref="form" :model="form" label-width="100px">
-        <el-row>
-          <el-col :span="9">
-            <el-form-item label="内部名称">
-              <el-input v-model="form.interiorName" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="9" :offset="2">
-            <el-form-item label="显示名称">
-              <el-input v-model="form.defaultDisplay"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="2" :offset="2"></el-col>
-        </el-row>
-      </el-form>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="id">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="isNewRecord">
+                <span>{{ props.row.isNewRecord }}</span>
+              </el-form-item>
+              <el-form-item label="updateDate">
+                <span>{{ props.row.updateDate }}</span>
+              </el-form-item>
+              <el-form-item label="createDate">
+                <span>{{ props.row.createDate }}</span>
+              </el-form-item>
+              <el-form-item label="createBy">
+                <span>{{ props.row.createBy }}</span>
+              </el-form-item>
+              <el-form-item label="updateBy">
+                <span>{{ props.row.updateBy }}</span>
+              </el-form-item>
+              <el-form-item label="status">
+                <span>{{ props.row.status }}</span>
+              </el-form-item>
+              <el-form-item label="dictItemCode">
+                <span>{{ props.row.dictItemCode }}</span>
+              </el-form-item>
+              <el-form-item label="dictVal">
+                <span>{{ props.row.dictVal }}</span>
+              </el-form-item>
+              <el-form-item label="defaultDisplay">
+                <span>{{ props.row.defaultDisplay }}</span>
+              </el-form-item>
+              <el-form-item label="interiorName">
+                <span>{{ props.row.interiorName }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="interiorName"
+          label="内部名称"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="defaultDisplay"
+          label="显示名称"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="dictVal"
+          label="字典值"
+          width="180"
+        ></el-table-column>
+
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.row)"
+              >创建字典项关联</el-button
+            >
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)"
+              >删除字典项关联</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
     <el-dialog
       title="增加字典"
@@ -38,7 +93,7 @@
       width="40%"
       :before-close="addChildClose"
     >
-      <div class="treeNames">{{ addDictInfo.treeNames }}</div>
+      <div class="treeNames">{{ domInfo.treeNames }}</div>
       <el-form ref="form" :model="addDictInfo" label-width="80px">
         <el-form-item label="内部名称">
           <el-input v-model="addDictInfo.interiorName"></el-input>
@@ -53,12 +108,12 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="增加字典项目"
+      title="增加字典项"
       :visible.sync="addChildTermModel"
       width="40%"
       :before-close="addTermParamsClose"
     >
-      <div class="treeNames">{{ addDictInfo.treeNames }}</div>
+      <div class="treeNames">{{ domInfo.treeNames }}</div>
       <el-form ref="form" :model="addTermParams" label-width="80px">
         <el-form-item label="内部名称">
           <el-input v-model="addTermParams.interiorName"></el-input>
@@ -66,13 +121,38 @@
         <el-form-item label="显示名称">
           <el-input v-model="addTermParams.defaultDisplay"></el-input>
         </el-form-item>
-        <el-form-item label="显示名称">
+        <el-form-item label="字典值">
           <el-input v-model="addTermParams.dictVal"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addChild = false">取 消</el-button>
-        <el-button type="primary" @click="addChildPar">确 定</el-button>
+        <el-button @click="addChildTermModel = false">取 消</el-button>
+        <el-button type="primary" @click="CreateDictTermPar">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="关联字典项"
+      :visible.sync="relModel"
+      width="40%"
+      :before-close="relModelClose"
+    >
+      <el-row>
+        <el-col :span="6">选择关联父级</el-col>
+        <el-col :span="18">
+          <el-select v-model="relParValue" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.dictCode"
+              :label="item.interiorName"
+              :value="item.dictCode"
+            >
+            </el-option>
+          </el-select>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="relModel = false">取 消</el-button>
+        <el-button type="primary" @click="relModelPar">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -85,6 +165,8 @@ import {
   DeleteDict,
   GetDictQuery,
   CreateDictTerm,
+  GetDictList,
+  CreateDictTermRel,
 } from "../../../api/index.js";
 export default {
   data() {
@@ -92,35 +174,97 @@ export default {
       form: {},
       addChild: false,
       addDictInfo: { interiorName: null, defaultDisplay: null },
-      addChildTermModel: true,
+      addChildTermModel: false,
       addTermParams: {
         defaultDisplay: "",
         dictVal: "",
         interiorName: "",
       },
+      domInfo: {
+        treeNames: null,
+      },
+      tableData: [],
+      relModel: false,
+      relParValue: null,
+      options: [],
+      dictItemCode: null,
     };
   },
   mounted() {
     Bus.$on("dictInfo", (data) => {
-      console.log(data);
-      this.form = data;
+      // console.log(data);
+      this.domInfo = data;
       this.GetDictQueryPar();
     });
   },
   methods: {
+    // 关联字典项
+    relModelPar() {
+      console.log(this.domInfo.dictCode);
+      console.log(this.dictItemCode);
+      console.log(this.relParValue);
+      CreateDictTermRel({
+        dictCode: this.domInfo.dictCode,
+        dictItemCode: this.dictItemCode,
+        parentDictCode: this.relParValue,
+      })
+        .then((res) => {
+          if (res) {
+            this.$message({
+              type: "success",
+              message: "关联成功!",
+            });
+          } else {
+            this.$message.error("关联失败!");
+          }
+        })
+        .catch((err) => {
+          this.$message.error("服务器错误!");
+        });
+    },
+    //  关闭关联弹窗
+    relModelClose() {
+      this.relModel = false;
+    },
+    // 创建字典项关联
+    handleEdit(row) {
+      this.relModel = true;
+      this.dictItemCode = row.dictItemCode;
+
+      GetDictList({ parentCode: this.domInfo.parentCode }).then((res) => {
+        console.log(res);
+        this.options = res;
+      });
+    },
+    // 删除字典项关联
+    handleDelete(index, row) {
+      console.log(index, row);
+    },
+
     // 创建字典项
     CreateDictTermPar() {
-      CreateDictTerm().then((res) => {
-        console.log(res);
+      this.addTermParams.dictCode = this.domInfo.dictCode;
+      CreateDictTerm(this.addTermParams).then((res) => {
+        if (res) {
+          this.$message({
+            type: "success",
+            message: "创建成功!",
+          });
+          this.addChildTermModel = false;
+          this.GetDictQueryPar();
+        } else {
+          this.$message.error("创建失败!");
+        }
       });
     },
 
     // 查询字典项
     GetDictQueryPar() {
       GetDictQuery({
-        dictCode: this.form.dictCode,
+        dictCode: this.domInfo.dictCode,
       }).then((res) => {
         console.log(res);
+        this.tableData = res;
       });
     },
 
@@ -133,13 +277,13 @@ export default {
         center: true,
       })
         .then(() => {
-          DeleteDict({ dictCode: this.form.dictCode }).then((res) => {
+          DeleteDict({ dictCode: this.domInfo.dictCode }).then((res) => {
             if (res) {
               this.$message({
                 type: "success",
                 message: "删除成功!",
               });
-              Bus.$emit("create", true);
+              Bus.$emit("upDict", this.domInfo.parentCode);
             } else {
               this.$message.error("删除失败!");
             }
@@ -154,19 +298,16 @@ export default {
     },
     // 增加子字典
     addChildPar() {
-      let params = {
-        interiorName: this.addDictInfo.interiorName,
-        defaultDisplay: this.addDictInfo.defaultDisplay,
-        parentCode: this.form.dictCode,
-      };
-      CreateDict(params).then((res) => {
+      this.addDictInfo.parentCode = this.domInfo.dictCode;
+
+      CreateDict(this.addDictInfo).then((res) => {
         if (res) {
           this.$message({
             message: "添加成功！",
             type: "success",
           });
           this.addChild = false;
-          Bus.$emit("create", true);
+          Bus.$emit("upDict", this.domInfo.id);
         } else {
           this.$message.error("添加失败！");
         }

@@ -3,7 +3,11 @@
     <div class="hh-logo"></div>
     <div class="hh-nav">
       <div class="menu-tit">菜单</div>
-      <el-menu class="menu-Bar" @open="handleOpen">
+      <el-menu
+        class="menu-Bar"
+        @open="handleOpen"
+        :default-active="navActiveId"
+      >
         <ChildMenu
           :dataList="this.treeList"
           :setPath="this.Navpath"
@@ -11,7 +15,7 @@
         ></ChildMenu>
       </el-menu>
       <div class="menu-tit">字典</div>
-      <el-menu class="menu-Bar">
+      <el-menu class="menu-Bar" :default-active="dictActiveId">
         <ChildMenu
           :dataList="this.treeDict"
           :setPath="this.Dictpath"
@@ -39,6 +43,8 @@ export default {
       test: {},
       Navpath: "/NavDetail",
       Dictpath: "/DictDetail",
+      navActiveId: "1",
+      dictActiveId: "1",
     };
   },
   created() {
@@ -46,15 +52,21 @@ export default {
     this.GetDictListData(this.dict);
   },
   mounted() {
-    Bus.$on("create", (data) => {
+    Bus.$on("upNav", (data) => {
       if (data) {
         this.treeList = [];
         this.list = [{ nodeCode: 0 }];
         this.getTreeList(this.list);
+        this.navActiveId = data;
+      }
+    });
 
+    Bus.$on("upDict", (data) => {
+      if (data) {
         this.treeDict = [];
         this.dict = [{ nodeCode: 0 }];
         this.GetDictListData(this.dict);
+        this.dictActiveId = data;
       }
     });
   },

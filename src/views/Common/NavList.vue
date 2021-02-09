@@ -1,12 +1,28 @@
 <template>
   <div class="container-left">
-    <div class="hh-logo"></div>
+    <div class="hh-logo">
+      <router-link :to="{ path: '/' }">首页</router-link>
+    </div>
     <div class="hh-nav">
-      <div class="menu-tit">菜单</div>
+      <div class="menu-tit">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </div>
       <el-menu
         class="menu-Bar"
         @open="handleOpen"
         :default-active="navActiveId"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+        v-if="value === 1"
       >
         <ChildMenu
           :dataList="this.treeList"
@@ -14,8 +30,15 @@
           @getItemVal="getMenuItem"
         ></ChildMenu>
       </el-menu>
-      <div class="menu-tit">字典</div>
-      <el-menu class="menu-Bar" :default-active="dictActiveId">
+
+      <el-menu
+        v-else
+        class="menu-Bar"
+        :default-active="dictActiveId"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+      >
         <ChildMenu
           :dataList="this.treeDict"
           :setPath="this.Dictpath"
@@ -45,6 +68,17 @@ export default {
       Dictpath: "/DictDetail",
       navActiveId: "1",
       dictActiveId: "1",
+      value: 1,
+      options: [
+        {
+          value: 1,
+          label: "属性配置",
+        },
+        {
+          value: 2,
+          label: "字典页",
+        },
+      ],
     };
   },
   created() {
@@ -120,8 +154,13 @@ export default {
 </script>
 <style lang="less">
 .menu-tit {
-  text-align: center;
-  line-height: 30px;
-  color: blue;
+  // text-align: center;
+  // line-height: 30px;
+  // color: #fff;
+  // background: #409eff;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

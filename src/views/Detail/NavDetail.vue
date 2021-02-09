@@ -419,15 +419,12 @@ export default {
   },
   mounted() {
     Bus.$on("nodeCode", (data) => {
-      console.log(data);
       this.tableData = [];
       this.domInfo = data;
-      // console.log(this.domInfo);
       this.getDomInfo();
     });
     // Bus.$on("testData", (data) => {
-    //   // debugger;
-    //   console.log(data);
+
     // });
   },
   filters: {},
@@ -495,9 +492,6 @@ export default {
       this.addFieldParams.nodeCode = this.form.parentCodes.split(",")[1];
       this.addFieldParams.rootCode = this.form.rootTableCode;
 
-      // console.log(this.domInfo);
-      // console.log(this.addFieldParams);
-
       AddField(this.addFieldParams).then((res) => {
         if (res) {
           this.$message({
@@ -516,7 +510,6 @@ export default {
     // 获取字段类型
     GetListType() {
       GetListType().then((res) => {
-        // console.log(res);
         this.typeList = res;
       });
     },
@@ -532,10 +525,7 @@ export default {
 
     // 增加子节点
     addChildPar() {
-      // console.log(this.domInfo.nodeCode);
       this.addChildParams.parentCode = this.form.nodeCode;
-      // this.addChildParams.nodeCode = this.form.nodeCode;
-      // console.log(this.addChildParams);
 
       if (
         !this.addChildParams.defaultDisplay ||
@@ -564,7 +554,6 @@ export default {
     // 获取节点信息
     getDomInfo() {
       GetDomDetail({ nodeCode: this.domInfo.nodeCode }).then((res) => {
-        console.log(res);
         this.form = res;
         this.getCodeData();
       });
@@ -608,8 +597,6 @@ export default {
     },
     // 提交保存节点
     onSubmit() {
-      // console.log("submit!");
-      // console.log(this.form);
       EidtDom(this.form).then((res) => {
         if (res) {
           this.$message({
@@ -626,7 +613,6 @@ export default {
     // 第一个card
     firTogg() {
       this.showOne = !this.showOne;
-      //   console.log(this.showOne);
       //   var heightStyle = this.$refs.firTogg.offsetHeight;
       if (!this.showOne) {
         this.$refs.firTogg.style.height = "80px";

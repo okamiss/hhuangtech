@@ -5,17 +5,21 @@ import {
 import qs from 'qs'
 import cookies from 'vue-cookies'
 
+
+// 直接获取登录sid
+axios.get('http://192.168.31.205:8980/hhuangtech/plm/login?__login=true&__ajax=json&username=c3lzdGVt&password=aEhUZWNoMTIz.')
+  .then(res => {
+    cookies.set('sid',res.data.sessionid)
+  })
+
 axios.defaults.timeout = 5000;
-
 axios.defaults.baseURL = 'http://192.168.31.205:8980/hhuangtech';
-
-let sid = cookies.get('sid')
-
 
 //http request 拦截器
 axios.interceptors.request.use(
     config => {
         let setData = []
+        let sid = cookies.get('sid')
         for (let i in config.data) {
             setData.push(i)
         }
@@ -44,7 +48,6 @@ axios.interceptors.request.use(
 //http response 拦截器
 axios.interceptors.response.use(
     response => {
-        // console.log(response)
         if (response) {
             // router.push({
             //     path: "/",

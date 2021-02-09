@@ -192,7 +192,6 @@ export default {
   },
   mounted() {
     Bus.$on("dictInfo", (data) => {
-      // console.log(data);
       this.domInfo = data;
       this.GetDictQueryPar();
     });
@@ -200,9 +199,6 @@ export default {
   methods: {
     // 关联字典项
     relModelPar() {
-      console.log(this.domInfo.dictCode);
-      console.log(this.dictItemCode);
-      console.log(this.relParValue);
       CreateDictTermRel({
         dictCode: this.domInfo.dictCode,
         dictItemCode: this.dictItemCode,
@@ -232,7 +228,6 @@ export default {
       this.dictItemCode = row.dictItemCode;
 
       GetDictList({ parentCode: this.domInfo.parentCode }).then((res) => {
-        console.log(res);
         this.options = res;
       });
     },
@@ -263,7 +258,6 @@ export default {
       GetDictQuery({
         dictCode: this.domInfo.dictCode,
       }).then((res) => {
-        console.log(res);
         this.tableData = res;
       });
     },

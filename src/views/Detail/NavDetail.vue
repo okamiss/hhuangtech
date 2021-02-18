@@ -145,7 +145,7 @@
         </el-table-column>
         <el-table-column prop="colType" label="类型" width="150">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <!-- <el-button
               size="small"
@@ -350,7 +350,7 @@
 </template>
 
 <script>
-import Bus from "../Bus";
+import Bus from '../Bus'
 import {
   GetDomDetail,
   CreateDom,
@@ -362,18 +362,18 @@ import {
   ApiFieldRecover,
   ApiFieldReuse,
   ApiFieldStop,
-} from "../../../api/index.js";
+} from '../../../api/index.js'
 export default {
   data() {
     return {
       form: {
-        name: "",
-        date1: "",
-        date2: "",
-        date3: "",
-        date4: "",
+        name: '',
+        date1: '',
+        date2: '',
+        date3: '',
+        date4: '',
         delivery: false,
-        oneHeight: "100px",
+        oneHeight: '100px',
       },
       showOne: true,
       showTwo: true,
@@ -409,20 +409,28 @@ export default {
       },
       tableData: [],
       typeList: [],
-      input3: "",
-      select: "",
+      input3: '',
+      select: '',
       status: null,
-    };
+    }
+  },
+  watch: {
+    $route: function(route) {
+      var query = route.query
+      this.tableData = []
+      this.domInfo = query
+      this.getDomInfo()
+    },
   },
   created() {
-    this.GetListType();
+    this.GetListType()
+    var query = this.$route.query
+    this.tableData = []
+    this.domInfo = query
+    this.getDomInfo()
   },
   mounted() {
-    Bus.$on("nodeCode", (data) => {
-      this.tableData = [];
-      this.domInfo = data;
-      this.getDomInfo();
-    });
+    Bus.$on('nodeCode', (data) => {})
     // Bus.$on("testData", (data) => {
 
     // });
@@ -431,12 +439,12 @@ export default {
   methods: {
     // 只看启用
     lookReuse() {
-      this.status = "0";
+      this.status = '0'
       // this.getCodeData();
     },
     // 只看停用
     lookStop() {
-      this.status = "2";
+      this.status = '2'
       // this.getCodeData();
     },
     // 删除
@@ -444,14 +452,14 @@ export default {
       ApiFieldRecover({ extcolCode: item.extcolCode }).then((res) => {
         if (res) {
           this.$message({
-            message: "操作成功！",
-            type: "success",
-          });
-          this.getCodeData();
+            message: '操作成功！',
+            type: 'success',
+          })
+          this.getCodeData()
         } else {
-          this.$message.error("操作失败！");
+          this.$message.error('操作失败！')
         }
-      });
+      })
     },
     // 启用
     fieldReuse(item) {
@@ -461,14 +469,14 @@ export default {
       }).then((res) => {
         if (res) {
           this.$message({
-            message: "操作成功！",
-            type: "success",
-          });
-          this.getCodeData();
+            message: '操作成功！',
+            type: 'success',
+          })
+          this.getCodeData()
         } else {
-          this.$message.error("操作失败！");
+          this.$message.error('操作失败！')
         }
-      });
+      })
     },
     // 停用
     fieldStop(item) {
@@ -478,40 +486,40 @@ export default {
       }).then((res) => {
         if (res) {
           this.$message({
-            message: "操作成功！",
-            type: "success",
-          });
-          this.getCodeData();
+            message: '操作成功！',
+            type: 'success',
+          })
+          this.getCodeData()
         } else {
-          this.$message.error("操作失败！");
+          this.$message.error('操作失败！')
         }
-      });
+      })
     },
     // 增加字段
     subAddCode() {
-      this.addFieldParams.nodeCode = this.form.parentCodes.split(",")[1];
-      this.addFieldParams.rootCode = this.form.rootTableCode;
+      this.addFieldParams.nodeCode = this.form.parentCodes.split(',')[1]
+      this.addFieldParams.rootCode = this.form.rootTableCode
 
       AddField(this.addFieldParams).then((res) => {
         if (res) {
           this.$message({
-            message: "添加成功！",
-            type: "success",
-          });
-          this.addField = false;
-          this.addFieldParams = {};
-          this.getCodeData();
+            message: '添加成功！',
+            type: 'success',
+          })
+          this.addField = false
+          this.addFieldParams = {}
+          this.getCodeData()
         } else {
-          this.$message.error("添加失败！");
+          this.$message.error('添加失败！')
         }
-      });
+      })
     },
 
     // 获取字段类型
     GetListType() {
       GetListType().then((res) => {
-        this.typeList = res;
-      });
+        this.typeList = res
+      })
     },
     // 获取字段
     getCodeData() {
@@ -519,110 +527,110 @@ export default {
         nodeCode: this.form.nodeCode,
         status: this.status,
       }).then((res) => {
-        this.tableData = res;
-      });
+        this.tableData = res
+      })
     },
 
     // 增加子节点
     addChildPar() {
-      this.addChildParams.parentCode = this.form.nodeCode;
+      this.addChildParams.parentCode = this.form.nodeCode
 
       if (
         !this.addChildParams.defaultDisplay ||
         !this.addChildParams.interiorName
       ) {
-        this.$message({ message: "请填写名称", type: "warning" });
-        return;
+        this.$message({ message: '请填写名称', type: 'warning' })
+        return
       }
       CreateDom(this.addChildParams).then((res) => {
         if (res) {
           this.$message({
-            type: "success",
-            message: "创建成功!",
-          });
-          this.addChild = false;
+            type: 'success',
+            message: '创建成功!',
+          })
+          this.addChild = false
           this.addChildParams = {
-            defaultDisplay: "",
+            defaultDisplay: '',
             parentCode: null,
-          };
-          Bus.$emit("upNav", this.domInfo.id);
+          }
+          Bus.$emit('upNav', this.domInfo.id)
         } else {
-          this.$message.error("创建失败！");
+          this.$message.error('创建失败！')
         }
-      });
+      })
     },
     // 获取节点信息
     getDomInfo() {
       GetDomDetail({ nodeCode: this.domInfo.nodeCode }).then((res) => {
-        this.form = res;
-        this.getCodeData();
-      });
+        this.form = res
+        this.getCodeData()
+      })
     },
 
     //   删除节点
     deleChild() {
-      this.$confirm("确定要删除这个节点吗, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('确定要删除这个节点吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
         center: true,
       })
         .then(() => {
           DeleteDom({ childCode: this.form.nodeCode }).then((res) => {
             if (res) {
               this.$message({
-                type: "success",
-                message: "删除成功!",
-              });
-              Bus.$emit("upNav", this.form.nodeCode);
+                type: 'success',
+                message: '删除成功!',
+              })
+              Bus.$emit('upNav', this.form.nodeCode)
             } else {
-              this.$message.error("删除失败!");
+              this.$message.error('删除失败!')
             }
-          });
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
     // 关闭节点弹窗
     addChildClose() {
-      this.addChild = false;
+      this.addChild = false
     },
     // 关闭字段弹窗
     addFieldClose() {
-      this.addField = false;
+      this.addField = false
     },
     // 提交保存节点
     onSubmit() {
       EidtDom(this.form).then((res) => {
         if (res) {
           this.$message({
-            type: "success",
-            message: "更新成功!",
-          });
-          this.getDomInfo();
-          Bus.$emit("upNav", this.domInfo.id);
+            type: 'success',
+            message: '更新成功!',
+          })
+          this.getDomInfo()
+          Bus.$emit('upNav', this.domInfo.id)
         } else {
-          this.$message.error("更新失败！");
+          this.$message.error('更新失败！')
         }
-      });
+      })
     },
     // 第一个card
     firTogg() {
-      this.showOne = !this.showOne;
+      this.showOne = !this.showOne
       //   var heightStyle = this.$refs.firTogg.offsetHeight;
       if (!this.showOne) {
-        this.$refs.firTogg.style.height = "80px";
-        this.$refs.firTogg.style.overflow = "hidden";
+        this.$refs.firTogg.style.height = '80px'
+        this.$refs.firTogg.style.overflow = 'hidden'
       } else {
-        this.$refs.firTogg.style.height = "auto";
+        this.$refs.firTogg.style.height = 'auto'
       }
     },
   },
-};
+}
 </script>
 
 <style lang="less" coped>

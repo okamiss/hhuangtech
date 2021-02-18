@@ -26,7 +26,6 @@
       >
         <ChildMenu
           :dataList="this.treeList"
-          :setPath="this.Navpath"
           @getItemVal="getMenuItem"
         ></ChildMenu>
       </el-menu>
@@ -41,7 +40,6 @@
       >
         <ChildMenu
           :dataList="this.treeDict"
-          :setPath="this.Dictpath"
           @getItemVal="getDictItem"
         ></ChildMenu>
       </el-menu>
@@ -50,9 +48,9 @@
 </template>
 
 <script>
-import Bus from "../Bus/index.js";
-import { GetMenuList, GetDictList } from "../../../api/index.js";
-import ChildMenu from "./ChildMenu";
+import Bus from '../Bus/index.js'
+import { GetMenuList, GetDictList } from '../../../api/index.js'
+import ChildMenu from './ChildMenu'
 export default {
   components: {
     ChildMenu,
@@ -64,59 +62,59 @@ export default {
       treeDict: [],
       dict: [{ nodeCode: 0 }],
       test: {},
-      Navpath: "/NavDetail",
-      Dictpath: "/DictDetail",
-      navActiveId: "1",
-      dictActiveId: "1",
+      navActiveId: '1',
+      dictActiveId: '1',
       value: 1,
       options: [
         {
           value: 1,
-          label: "属性配置",
+          label: '属性配置',
         },
         {
           value: 2,
-          label: "字典页",
+          label: '字典页',
         },
       ],
-    };
+    }
   },
   created() {
-    this.getTreeList(this.list);
-    this.GetDictListData(this.dict);
+    this.getTreeList(this.list)
+    this.GetDictListData(this.dict)
   },
   mounted() {
-    Bus.$on("upNav", (data) => {
+    Bus.$on('upNav', (data) => {
       if (data) {
-        this.treeList = [];
-        this.list = [{ nodeCode: 0 }];
-        this.getTreeList(this.list);
-        this.navActiveId = data;
+        this.treeList = []
+        this.list = [{ nodeCode: 0 }]
+        this.getTreeList(this.list)
+        this.navActiveId = data
       }
-    });
+    })
 
-    Bus.$on("upDict", (data) => {
+    Bus.$on('upDict', (data) => {
       if (data) {
-        this.treeDict = [];
-        this.dict = [{ nodeCode: 0 }];
-        this.GetDictListData(this.dict);
-        this.dictActiveId = data;
+        this.treeDict = []
+        this.dict = [{ nodeCode: 0 }]
+        this.GetDictListData(this.dict)
+        this.dictActiveId = data
       }
-    });
+    })
   },
-  watch: {
-    // treeList(a, b) {
-    //   // Bus.$emit("nodeCode", a[0]);
-    // },
-  },
+  watch: {},
   methods: {
     // 获取字典item
     getDictItem(item) {
-      Bus.$emit("dictInfo", item);
+      this.$router.push({
+        path: '/DictDetail',
+        query: item,
+      })
     },
     // 获取菜单item
     getMenuItem(item) {
-      Bus.$emit("nodeCode", item);
+      this.$router.push({
+        path: '/NavDetail',
+        query: item,
+      })
     },
     // 获取tree id
     handleOpen(key, keyPath) {},
@@ -126,13 +124,13 @@ export default {
       node.forEach((item) => {
         GetDictList({ parentCode: item.dictCode || 0 }).then((res) => {
           if (res.length) {
-            item.child = item.child || [];
-            item.child = [...item.child, ...res];
-            this.GetDictListData(res);
+            item.child = item.child || []
+            item.child = [...item.child, ...res]
+            this.GetDictListData(res)
           }
-        });
-      });
-      this.treeDict = this.dict[0].child;
+        })
+      })
+      this.treeDict = this.dict[0].child
     },
 
     // 获取菜单列
@@ -140,24 +138,20 @@ export default {
       node.forEach((item) => {
         GetMenuList({ parentCode: item.nodeCode || 0 }).then((res) => {
           if (res.length) {
-            item.child = item.child || [];
-            item.child = [...item.child, ...res];
-            this.getTreeList(res);
+            item.child = item.child || []
+            item.child = [...item.child, ...res]
+            this.getTreeList(res)
           }
-        });
-      });
-      this.treeList = this.list[0].child;
+        })
+      })
+      this.treeList = this.list[0].child
       // Bus.$emit("nodeCode", this.treeList[0]);
     },
   },
-};
+}
 </script>
 <style lang="less">
 .menu-tit {
-  // text-align: center;
-  // line-height: 30px;
-  // color: #fff;
-  // background: #409eff;
   height: 60px;
   display: flex;
   justify-content: center;

@@ -4,72 +4,51 @@
       <el-submenu :index="list.id" v-if="list.child">
         <template slot="title">
           <div @click="getItem(list)">
-            <router-link :to="{ path: setPath }" class="itembox">
-              <i class="el-icon-menu"></i>
-              <span>
-                {{ list.defaultDisplay }}
-              </span>
-            </router-link>
-            <!-- <span>{{ list.defaultDisplay }}</span> -->
+            <i class="el-icon-menu"></i>
+            <span>
+              {{ list.defaultDisplay }}
+            </span>
           </div>
         </template>
         <label>
-          <child-menu
-            :dataList="list.child"
-            :setPath="setPath"
-            @getItemVal="getItem"
-          ></child-menu>
+          <child-menu :dataList="list.child" @getItemVal="getItem"></child-menu>
         </label>
       </el-submenu>
       <el-menu-item v-else :index="list.id" @click="getItem(list)">
-        <router-link :to="{ path: setPath }" class="itembox">
-          <i class="el-icon-full-screen"></i>
-          <!-- <span slot="title"> {{ list.defaultDisplay }} </span> -->
-          {{ list.defaultDisplay }}
-        </router-link>
+        <i class="el-icon-full-screen"></i>
+
+        {{ list.defaultDisplay }}
       </el-menu-item>
     </label>
   </div>
 </template>
 
 <script>
-import Bus from "../Bus/index.js";
+import Bus from '../Bus/index.js'
 export default {
-  name: "childMenu",
+  name: 'childMenu',
   //   props: ["dataList"],
   props: {
     dataList: {
       type: Array,
       default: null,
     },
-    setPath: {
-      type: String,
-      default: null,
-    },
   },
   created() {},
-  mounted() {
-    // Bus.$on("create", (data) => {
-    //   if (data) {
-    //     this.getItem(data);
-    //   }
-    // });
-  },
+  mounted() {},
   watch: {
     dataList(a, b) {
       setTimeout(() => {
-        this.$forceUpdate();
-      }, 1000);
+        this.$forceUpdate()
+      }, 1000)
     },
   },
   methods: {
     getItem(list) {
-      // list.path = this.setPath;
-      this.$emit("getItemVal", list);
-      // Bus.$emit("nodeCode", list);
+      this.$emit('getItemVal', list)
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

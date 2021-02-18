@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import Bus from "../Bus/index.js";
+import Bus from '../Bus/index.js'
 import {
   CreateDict,
   DeleteDict,
@@ -167,7 +167,7 @@ import {
   CreateDictTerm,
   GetDictList,
   CreateDictTermRel,
-} from "../../../api/index.js";
+} from '../../../api/index.js'
 export default {
   data() {
     return {
@@ -176,9 +176,9 @@ export default {
       addDictInfo: { interiorName: null, defaultDisplay: null },
       addChildTermModel: false,
       addTermParams: {
-        defaultDisplay: "",
-        dictVal: "",
-        interiorName: "",
+        defaultDisplay: '',
+        dictVal: '',
+        interiorName: '',
       },
       domInfo: {
         treeNames: null,
@@ -188,14 +188,21 @@ export default {
       relParValue: null,
       options: [],
       dictItemCode: null,
-    };
+    }
   },
-  mounted() {
-    Bus.$on("dictInfo", (data) => {
-      this.domInfo = data;
-      this.GetDictQueryPar();
-    });
+  watch: {
+    $route: function(route) {
+      var query = route.query
+      this.domInfo = query
+      this.GetDictQueryPar()
+    },
   },
+  created() {
+    var query = this.$route.query
+    this.domInfo = query
+    this.GetDictQueryPar()
+  },
+  mounted() {},
   methods: {
     // 关联字典项
     relModelPar() {
@@ -207,50 +214,50 @@ export default {
         .then((res) => {
           if (res) {
             this.$message({
-              type: "success",
-              message: "关联成功!",
-            });
+              type: 'success',
+              message: '关联成功!',
+            })
           } else {
-            this.$message.error("关联失败!");
+            this.$message.error('关联失败!')
           }
         })
         .catch((err) => {
-          this.$message.error("服务器错误!");
-        });
+          this.$message.error('服务器错误!')
+        })
     },
     //  关闭关联弹窗
     relModelClose() {
-      this.relModel = false;
+      this.relModel = false
     },
     // 创建字典项关联
     handleEdit(row) {
-      this.relModel = true;
-      this.dictItemCode = row.dictItemCode;
+      this.relModel = true
+      this.dictItemCode = row.dictItemCode
 
       GetDictList({ parentCode: this.domInfo.parentCode }).then((res) => {
-        this.options = res;
-      });
+        this.options = res
+      })
     },
     // 删除字典项关联
     handleDelete(index, row) {
-      console.log(index, row);
+      console.log(index, row)
     },
 
     // 创建字典项
     CreateDictTermPar() {
-      this.addTermParams.dictCode = this.domInfo.dictCode;
+      this.addTermParams.dictCode = this.domInfo.dictCode
       CreateDictTerm(this.addTermParams).then((res) => {
         if (res) {
           this.$message({
-            type: "success",
-            message: "创建成功!",
-          });
-          this.addChildTermModel = false;
-          this.GetDictQueryPar();
+            type: 'success',
+            message: '创建成功!',
+          })
+          this.addChildTermModel = false
+          this.GetDictQueryPar()
         } else {
-          this.$message.error("创建失败!");
+          this.$message.error('创建失败!')
         }
-      });
+      })
     },
 
     // 查询字典项
@@ -258,66 +265,65 @@ export default {
       GetDictQuery({
         dictCode: this.domInfo.dictCode,
       }).then((res) => {
-        this.tableData = res;
-      });
+        this.tableData = res
+      })
     },
 
     // 删除字典
     DeleteDictPar() {
-      this.$confirm("确定要删除这个节点吗, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('确定要删除这个节点吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
         center: true,
       })
         .then(() => {
           DeleteDict({ dictCode: this.domInfo.dictCode }).then((res) => {
             if (res) {
               this.$message({
-                type: "success",
-                message: "删除成功!",
-              });
-              Bus.$emit("upDict", this.domInfo.parentCode);
+                type: 'success',
+                message: '删除成功!',
+              })
+              Bus.$emit('upDict', this.domInfo.parentCode)
             } else {
-              this.$message.error("删除失败!");
+              this.$message.error('删除失败!')
             }
-          });
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
     // 增加子字典
     addChildPar() {
-      this.addDictInfo.parentCode = this.domInfo.dictCode;
+      this.addDictInfo.parentCode = this.domInfo.dictCode
 
       CreateDict(this.addDictInfo).then((res) => {
         if (res) {
           this.$message({
-            message: "添加成功！",
-            type: "success",
-          });
-          this.addChild = false;
-          Bus.$emit("upDict", this.domInfo.id);
+            message: '添加成功！',
+            type: 'success',
+          })
+          this.addChild = false
+          Bus.$emit('upDict', this.domInfo.id)
         } else {
-          this.$message.error("添加失败！");
+          this.$message.error('添加失败！')
         }
-      });
+      })
     },
     // 关闭新增字典弹框
     addChildClose() {
-      this.addChild = false;
+      this.addChild = false
     },
     // 关闭字典项弹窗
     addTermParamsClose() {
-      this.addChildTermModel = false;
+      this.addChildTermModel = false
     },
   },
-};
+}
 </script>
 
-<style>
-</style>
+<style></style>

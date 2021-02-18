@@ -5,7 +5,7 @@
     </div>
     <div class="hh-nav">
       <div class="menu-tit">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="value" placeholder="请选择" @change="changeSel">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -22,7 +22,7 @@
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b"
-        v-if="value === 1"
+        v-if="value === '1'"
       >
         <ChildMenu
           :dataList="this.treeList"
@@ -64,14 +64,14 @@ export default {
       test: {},
       navActiveId: '1',
       dictActiveId: '1',
-      value: 1,
+      value: '1',
       options: [
         {
-          value: 1,
+          value: '1',
           label: '属性配置',
         },
         {
-          value: 2,
+          value: '2',
           label: '字典页',
         },
       ],
@@ -102,6 +102,10 @@ export default {
   },
   watch: {},
   methods: {
+    changeSel(e) {
+      console.log(e)
+      localStorage.setItem('changeVal', e)
+    },
     // 获取字典item
     getDictItem(item) {
       this.$router.push({
@@ -131,6 +135,10 @@ export default {
         })
       })
       this.treeDict = this.dict[0].child
+      let getChangeVal = localStorage.getItem('changeVal')
+      if (getChangeVal) {
+        this.value = getChangeVal
+      }
     },
 
     // 获取菜单列
@@ -146,6 +154,10 @@ export default {
       })
       this.treeList = this.list[0].child
       // Bus.$emit("nodeCode", this.treeList[0]);
+      let getChangeVal = localStorage.getItem('changeVal')
+      if (getChangeVal) {
+        this.value = getChangeVal
+      }
     },
   },
 }

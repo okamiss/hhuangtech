@@ -72,7 +72,7 @@
           width="180"
         ></el-table-column>
 
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="300">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)"
               >创建字典项关联</el-button
@@ -90,7 +90,7 @@
     <el-dialog
       title="增加字典"
       :visible.sync="addChild"
-      width="40%"
+      width="80%"
       :before-close="addChildClose"
     >
       <div class="treeNames">{{ domInfo.treeNames }}</div>
@@ -102,6 +102,25 @@
           <el-input v-model="addDictInfo.defaultDisplay"></el-input>
         </el-form-item>
       </el-form>
+      <div class="batTit">
+        批量增加字典项
+        <i @click="addBatItem" class="el-icon-circle-plus-outline"></i>
+      </div>
+      <el-row class="batchAdd" v-for="(item, index) in batchArr" :key="index">
+        <el-col :span="2" class="batName">内部名称：</el-col>
+        <el-col :span="5"
+          ><el-input v-model="item.interiorName"></el-input
+        ></el-col>
+        <el-col :span="2" class="batName">显示名称：</el-col>
+        <el-col :span="5"
+          ><el-input v-model="item.defaultDisplay"></el-input
+        ></el-col>
+        <!-- <el-col :span="2" class="batName">字典值：</el-col>
+        <el-col :span="5"><el-input></el-input></el-col> -->
+        <el-col :span="3" class="batCz"
+          ><i @click="batchDel(index)" class="el-icon-remove-outline"></i
+        ></el-col>
+      </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addChild = false">取 消</el-button>
         <el-button type="primary" @click="addChildPar">确 定</el-button>
@@ -167,13 +186,17 @@ import {
   CreateDictTerm,
   GetDictList,
   CreateDictTermRel,
+  DeleteDictTermRel,
 } from '../../../api/index.js'
 export default {
   data() {
     return {
       form: {},
       addChild: false,
-      addDictInfo: { interiorName: null, defaultDisplay: null },
+      addDictInfo: {
+        interiorName: null,
+        defaultDisplay: null,
+      },
       addChildTermModel: false,
       addTermParams: {
         defaultDisplay: '',
@@ -188,8 +211,10 @@ export default {
       relParValue: null,
       options: [],
       dictItemCode: null,
+      batchArr: [],
     }
   },
+  computed: {},
   watch: {
     $route: function(route) {
       var query = route.query
@@ -204,6 +229,19 @@ export default {
   },
   mounted() {},
   methods: {
+    // 批量删除字典项
+    batchDel(index) {
+      this.batchArr.splice(index, 1)
+    },
+
+    //   批量增加字典项
+    addBatItem() {
+      this.batchArr.push({
+        defaultDisplay: '',
+        interiorName: '',
+        // dictCode: this.domInfo.dictCode,
+      })
+    },
     // 关联字典项
     relModelPar() {
       CreateDictTermRel({
@@ -217,6 +255,7 @@ export default {
               type: 'success',
               message: '关联成功!',
             })
+            this.relModel = false
           } else {
             this.$message.error('关联失败!')
           }
@@ -239,8 +278,13 @@ export default {
       })
     },
     // 删除字典项关联
-    handleDelete(index, row) {
-      console.log(index, row)
+    handleDelete(row) {
+      DeleteDictTermRel({
+        dictCode: row.id,
+        dictItemCode: row.dictItemCode,
+      }).then((res) => {
+        console.log(res)
+      })
     },
 
     // 创建字典项
@@ -299,6 +343,9 @@ export default {
     },
     // 增加子字典
     addChildPar() {
+      console.log(this.batchArr)
+      //   return
+      this.addDictInfo.items = this.batchArr
       this.addDictInfo.parentCode = this.domInfo.dictCode
 
       CreateDict(this.addDictInfo).then((res) => {
@@ -326,4 +373,28 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.batchAdd {
+  margin-top: 10px;
+  .batName {
+    text-align: right;
+    line-height: 32px;
+  }
+  .batCz {
+    // text-align: center;
+    line-height: 32px;
+    font-size: 20px;
+    text-indent: 5px;
+    i {
+      cursor: pointer;
+    }
+  }
+}
+.batTit {
+  font-size: 18px;
+  margin-bottom: 10px;
+  i {
+    cursor: pointer;
+  }
+}
+</style>

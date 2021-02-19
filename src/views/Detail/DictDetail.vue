@@ -8,6 +8,7 @@
         >删除字典</el-button
       >
       <el-button
+        v-if="domInfo.parentCode === '0'"
         size="small"
         type="primary"
         round
@@ -16,76 +17,142 @@
       >
     </div>
     <div class="card-box" ref="firTogg">
-      <el-table :data="tableData" style="width: 100%">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="id">
-                <span>{{ props.row.id }}</span>
-              </el-form-item>
-              <el-form-item label="isNewRecord">
-                <span>{{ props.row.isNewRecord }}</span>
-              </el-form-item>
-              <el-form-item label="updateDate">
-                <span>{{ props.row.updateDate }}</span>
-              </el-form-item>
-              <el-form-item label="createDate">
-                <span>{{ props.row.createDate }}</span>
-              </el-form-item>
-              <el-form-item label="createBy">
-                <span>{{ props.row.createBy }}</span>
-              </el-form-item>
-              <el-form-item label="updateBy">
-                <span>{{ props.row.updateBy }}</span>
-              </el-form-item>
-              <el-form-item label="status">
-                <span>{{ props.row.status }}</span>
-              </el-form-item>
-              <el-form-item label="dictItemCode">
-                <span>{{ props.row.dictItemCode }}</span>
-              </el-form-item>
-              <el-form-item label="dictVal">
-                <span>{{ props.row.dictVal }}</span>
-              </el-form-item>
-              <el-form-item label="defaultDisplay">
-                <span>{{ props.row.defaultDisplay }}</span>
-              </el-form-item>
-              <el-form-item label="interiorName">
-                <span>{{ props.row.interiorName }}</span>
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="interiorName"
-          label="内部名称"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="defaultDisplay"
-          label="显示名称"
-          width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="dictVal"
-          label="字典值"
-          width="180"
-        ></el-table-column>
+      <el-row>
+        <el-col :span="12">
+          <el-table :data="tableData" style="width: 100%">
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="isNewRecord">
+                    <span>{{ props.row.isNewRecord }}</span>
+                  </el-form-item>
+                  <el-form-item label="updateDate">
+                    <span>{{ props.row.updateDate }}</span>
+                  </el-form-item>
+                  <el-form-item label="createDate">
+                    <span>{{ props.row.createDate }}</span>
+                  </el-form-item>
+                  <el-form-item label="createBy">
+                    <span>{{ props.row.createBy }}</span>
+                  </el-form-item>
+                  <el-form-item label="updateBy">
+                    <span>{{ props.row.updateBy }}</span>
+                  </el-form-item>
+                  <el-form-item label="status">
+                    <span>{{ props.row.status }}</span>
+                  </el-form-item>
 
-        <el-table-column label="操作" width="300">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
-              >创建字典项关联</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.row)"
-              >删除字典项关联</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
+                  <el-form-item label="dictVal">
+                    <span>{{ props.row.dictVal }}</span>
+                  </el-form-item>
+                  <el-form-item label="defaultDisplay">
+                    <span>{{ props.row.defaultDisplay }}</span>
+                  </el-form-item>
+                  <el-form-item label="interiorName">
+                    <span>{{ props.row.interiorName }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="interiorName"
+              label="内部名称"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              prop="defaultDisplay"
+              label="显示名称"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              prop="dictVal"
+              label="字典值"
+              width="150"
+            ></el-table-column>
+
+            <el-table-column label="操作" width="200">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="handleEdit(scope.row)"
+                  >创建字典项关联</el-button
+                >
+                <!-- <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.row)"
+                  >删除字典项关联</el-button
+                > -->
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="12">
+          <el-table :data="tableDataUsed" style="width: 100%">
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item label="isNewRecord">
+                    <span>{{ props.row.isNewRecord }}</span>
+                  </el-form-item>
+                  <el-form-item label="updateDate">
+                    <span>{{ props.row.updateDate }}</span>
+                  </el-form-item>
+                  <el-form-item label="createDate">
+                    <span>{{ props.row.createDate }}</span>
+                  </el-form-item>
+                  <el-form-item label="createBy">
+                    <span>{{ props.row.createBy }}</span>
+                  </el-form-item>
+                  <el-form-item label="updateBy">
+                    <span>{{ props.row.updateBy }}</span>
+                  </el-form-item>
+                  <el-form-item label="status">
+                    <span>{{ props.row.status }}</span>
+                  </el-form-item>
+
+                  <el-form-item label="dictVal">
+                    <span>{{ props.row.dictVal }}</span>
+                  </el-form-item>
+                  <el-form-item label="defaultDisplay">
+                    <span>{{ props.row.defaultDisplay }}</span>
+                  </el-form-item>
+                  <el-form-item label="interiorName">
+                    <span>{{ props.row.interiorName }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="interiorName"
+              label="内部名称"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              prop="defaultDisplay"
+              label="显示名称"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              prop="dictVal"
+              label="字典值"
+              width="150"
+            ></el-table-column>
+
+            <el-table-column label="操作" width="200">
+              <template slot-scope="scope">
+                <!-- <el-button size="mini" @click="handleEdit(scope.row)"
+                  >创建字典项关联</el-button
+                > -->
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.row)"
+                  >删除字典项关联</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
     </div>
     <el-dialog
       title="增加字典"
@@ -149,31 +216,6 @@
         <el-button type="primary" @click="CreateDictTermPar">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="关联字典项"
-      :visible.sync="relModel"
-      width="40%"
-      :before-close="relModelClose"
-    >
-      <el-row>
-        <el-col :span="6">选择关联父级</el-col>
-        <el-col :span="18">
-          <el-select v-model="relParValue" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.dictCode"
-              :label="item.interiorName"
-              :value="item.dictCode"
-            >
-            </el-option>
-          </el-select>
-        </el-col>
-      </el-row>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="relModel = false">取 消</el-button>
-        <el-button type="primary" @click="relModelPar">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -207,7 +249,7 @@ export default {
         treeNames: null,
       },
       tableData: [],
-      relModel: false,
+      tableDataUsed: [],
       relParValue: null,
       options: [],
       dictItemCode: null,
@@ -218,12 +260,15 @@ export default {
   watch: {
     $route: function(route) {
       var query = route.query
+      console.log(query)
+      this.tableData = []
       this.domInfo = query
       this.GetDictQueryPar()
     },
   },
   created() {
     var query = this.$route.query
+    this.tableData = []
     this.domInfo = query
     this.GetDictQueryPar()
   },
@@ -242,12 +287,16 @@ export default {
         // dictCode: this.domInfo.dictCode,
       })
     },
-    // 关联字典项
-    relModelPar() {
+
+    // 创建字典项关联
+    handleEdit(row) {
+      //   this.relModel = true
+      this.dictItemCode = row.dictItemCode
+
       CreateDictTermRel({
         dictCode: this.domInfo.dictCode,
-        dictItemCode: this.dictItemCode,
-        parentDictCode: this.relParValue,
+        dictItemCode: row.dictItemCode,
+        parentDictCode: this.domInfo.parentCode,
       })
         .then((res) => {
           if (res) {
@@ -255,7 +304,7 @@ export default {
               type: 'success',
               message: '关联成功!',
             })
-            this.relModel = false
+            this.GetDictQueryPar()
           } else {
             this.$message.error('关联失败!')
           }
@@ -264,26 +313,21 @@ export default {
           this.$message.error('服务器错误!')
         })
     },
-    //  关闭关联弹窗
-    relModelClose() {
-      this.relModel = false
-    },
-    // 创建字典项关联
-    handleEdit(row) {
-      this.relModel = true
-      this.dictItemCode = row.dictItemCode
-
-      GetDictList({ parentCode: this.domInfo.parentCode }).then((res) => {
-        this.options = res
-      })
-    },
     // 删除字典项关联
     handleDelete(row) {
       DeleteDictTermRel({
-        dictCode: row.id,
+        dictCode: this.domInfo.dictCode,
         dictItemCode: row.dictItemCode,
       }).then((res) => {
-        console.log(res)
+        if (res) {
+          this.$message({
+            type: 'success',
+            message: '删除关联成功!',
+          })
+          this.GetDictQueryPar()
+        } else {
+          this.$message.error('删除失败!')
+        }
       })
     },
 
@@ -307,9 +351,21 @@ export default {
     // 查询字典项
     GetDictQueryPar() {
       GetDictQuery({
-        dictCode: this.domInfo.dictCode,
+        dictCode:
+          this.domInfo.parentCode === '0'
+            ? this.domInfo.dictCode
+            : this.domInfo.parentCode,
+        currDictCode: this.domInfo.dictCode,
       }).then((res) => {
-        this.tableData = res
+        console.log(res)
+        if (this.domInfo.parentCode === '0') {
+          this.tableData = res.used
+          this.tableDataUsed = res.unuse
+        } else {
+          this.tableData = res.unuse
+          this.tableDataUsed = res.used
+          this.options = res
+        }
       })
     },
 

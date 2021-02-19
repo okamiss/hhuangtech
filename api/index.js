@@ -43,3 +43,19 @@ export const CreateDictTermRel = (params) =>
   post('/plm/dict/item/relation/create', params) //创建字典关联项
 export const DeleteDictTermRel = (params) =>
   post('/plm/dict/item/relation/delete', params) //删除字典关联项
+
+/*
+    目录
+*/
+
+export const GetFileList = (params) =>
+  get('/plm/dict/directory/children', params) //获取目录列表
+
+export const AddChildFile = (params) =>
+  post('/plm/dict/directory/create', params) //增加目录
+
+export const DelChildFile = (params) =>
+  post('/plm/dict/directory/delete', params) //删除目录
+
+export const UpdateFile = (params) => post('/plm/dict/directory/update', params) //更新目录
+export const MoveFile = (params) => post('/plm/dict/directory/move', params) //移动目录

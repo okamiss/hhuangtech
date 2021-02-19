@@ -15,41 +15,54 @@
           </el-option>
         </el-select>
       </div>
-      <el-menu
-        class="menu-Bar"
-        @open="handleOpen"
-        :default-active="navActiveId"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-        v-if="value === '1'"
-      >
-        <ChildMenu
-          :dataList="this.treeList"
-          @getItemVal="getMenuItem"
-        ></ChildMenu>
-      </el-menu>
+      <template v-if="value === '1'">
+        <el-menu
+          class="menu-Bar"
+          @open="handleOpen"
+          :default-active="navActiveId"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        >
+          <ChildMenu
+            :dataList="this.treeList"
+            @getItemVal="getMenuItem"
+          ></ChildMenu> </el-menu
+      ></template>
+      <template v-else>
+        <el-menu
+          class="menu-Bar"
+          :default-active="dictActiveId"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        >
+          <ChildMenu
+            :dataList="this.treeDict"
+            @getItemVal="getDictItem"
+          ></ChildMenu>
+        </el-menu>
 
-      <el-menu
-        v-else
-        class="menu-Bar"
-        :default-active="dictActiveId"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-      >
-        <ChildMenu
-          :dataList="this.treeDict"
-          @getItemVal="getDictItem"
-        ></ChildMenu>
-      </el-menu>
+        <el-menu
+          class="menu-Bar"
+          :default-active="fileActiveId"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        >
+          <ChildMenu
+            :dataList="this.treeFile"
+            @getItemVal="getFileItem"
+          ></ChildMenu>
+        </el-menu>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
 import Bus from '../Bus/index.js'
-import { GetMenuList, GetDictList } from '../../../api/index.js'
+import { GetMenuList, GetDictList, GetFileList } from '../../../api/index.js'
 import ChildMenu from './ChildMenu'
 export default {
   components: {
@@ -59,11 +72,20 @@ export default {
     return {
       treeList: [],
       list: [{ nodeCode: 0 }],
+      //   listIcon: 'el-icon-menu',
+      //   listIconC: 'el-icon-full-screen',
       treeDict: [],
       dict: [{ nodeCode: 0 }],
+      //   dictIcon: 'el-icon-collection',
+      //   dictIconC: 'el-icon-reading',
+      treeFile: [],
+      file: [{ nodeCode: 0 }],
+      //   fileIcon: 'el-icon-folder-opened',
+      //   fileIconC: 'el-icon-folder',
       test: {},
       navActiveId: '1',
       dictActiveId: '1',
+      fileActiveId: '1',
       value: '1',
       options: [
         {
@@ -80,6 +102,7 @@ export default {
   created() {
     this.getTreeList(this.list)
     this.GetDictListData(this.dict)
+    this.getFileTreeList(this.file)
   },
   mounted() {
     Bus.$on('upNav', (data) => {
@@ -99,12 +122,28 @@ export default {
         this.dictActiveId = data
       }
     })
+
+    Bus.$on('upFile', (data) => {
+      if (data) {
+        this.treeFile = []
+        this.file = [{ nodeCode: 0 }]
+        this.getFileTreeList(this.file)
+        this.fileActiveId = data
+      }
+    })
   },
   watch: {},
   methods: {
     changeSel(e) {
       console.log(e)
       localStorage.setItem('changeVal', e)
+    },
+    // 获取目录item
+    getFileItem(item) {
+      this.$router.push({
+        path: '/FileDetail',
+        query: item,
+      })
     },
     // 获取字典item
     getDictItem(item) {
@@ -158,6 +197,22 @@ export default {
       if (getChangeVal) {
         this.value = getChangeVal
       }
+    },
+
+    // 获取目录列表
+    getFileTreeList(node) {
+      node.forEach((item) => {
+        GetFileList({ parentCode: item.directoryCode || 0 }).then((res) => {
+          if (res.length) {
+            item.child = item.child || []
+            item.child = [...item.child, ...res]
+            this.getFileTreeList(res)
+          }
+        })
+      })
+      this.treeFile = this.file[0].child
+      console.log(this.treeFile)
+      localStorage.setItem('fileList', JSON.stringify(this.treeFile))
     },
   },
 }

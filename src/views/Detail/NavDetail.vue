@@ -594,7 +594,7 @@ export default {
             message: '已取消删除',
           })
         })
-    },
+    }, 
     // 关闭节点弹窗
     addChildClose() {
       this.addChild = false

@@ -4,7 +4,7 @@
       <el-submenu :index="list.id" v-if="list.child">
         <template slot="title">
           <div @click="getItem(list)">
-            <i class="el-icon-menu"></i>
+            <i :class="icon"></i>
             <span>
               {{ list.defaultDisplay }}
             </span>
@@ -15,8 +15,7 @@
         </label>
       </el-submenu>
       <el-menu-item v-else :index="list.id" @click="getItem(list)">
-        <i class="el-icon-full-screen"></i>
-
+        <i :class="iconC"></i>
         {{ list.defaultDisplay }}
       </el-menu-item>
     </label>
@@ -28,6 +27,12 @@ import Bus from '../Bus/index.js'
 export default {
   name: 'childMenu',
   //   props: ["dataList"],
+  data() {
+    return {
+      icon: 'el-icon-menu',
+      iconC: 'el-icon-full-screen',
+    }
+  },
   props: {
     dataList: {
       type: Array,
@@ -38,9 +43,12 @@ export default {
   mounted() {},
   watch: {
     dataList(a, b) {
+      //   if (a[0].directoryCode) {
+      //     this.icon = 'el-icon-folder-opened'
+      //   }
       setTimeout(() => {
         this.$forceUpdate()
-      }, 1000)
+      }, 2000)
     },
   },
   methods: {

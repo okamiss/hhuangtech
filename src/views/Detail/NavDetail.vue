@@ -226,7 +226,7 @@
       :before-close="addFieldClose"
       center
     >
-      <!-- {{ addFieldParams.colType }} -->
+      {{ addFieldParams.colType }}
       <el-form ref="form" :model="addFieldParams" label-width="150px">
         <el-row>
           <el-col :span="12">
@@ -244,6 +244,7 @@
           <el-col :span="12">
             <el-form-item label="列类型">
               <el-select
+                filterable
                 v-model="addFieldParams.colType"
                 placeholder="请选列类型"
               >
@@ -262,13 +263,15 @@
             v-if="
               addFieldParams.colType === 'multi_select' ||
                 addFieldParams.colType === 'dropdown' ||
-                addFieldParams.colType === 'chain'
+                addFieldParams.colType === 'chain' ||
+                addFieldParams.colType === 'composite'
             "
           >
             <el-form-item label="从字典中选择">
               <el-cascader
                 :options="options"
                 @change="handleChange"
+                filterable
                 :props="{
                   checkStrictly: true,
                   value: 'dictCode',
@@ -282,7 +285,7 @@
             ></el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="addFieldParams.colType !== 'objects_out'">
           <el-col :span="12">
             <el-form-item label="可在'创建'时编辑">
               <el-switch
@@ -303,7 +306,7 @@
           </el-col>
         </el-row>
 
-        <el-row>
+        <el-row v-if="addFieldParams.colType !== 'objects_out'">
           <el-col :span="12">
             <el-form-item label="文本高度">
               <el-input v-model="addFieldParams.textHeight"></el-input>
@@ -316,7 +319,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="12" v-if="addFieldParams.colType !== 'objects_out'">
             <el-form-item label="文本长度">
               <el-input v-model="defVal"></el-input>
             </el-form-item>
@@ -327,19 +330,30 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="addFieldParams.colType === 'currency'">
-          <el-col :span="12">
+        <el-row>
+          <el-col :span="12" v-if="addFieldParams.colType === 'currency'">
             <el-form-item label="货币符号">
               <el-input v-model="defVal"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col
+            :span="12"
+            v-if="
+              addFieldParams.colType === 'currency' ||
+                addFieldParams.colType === 'double'
+            "
+          >
             <el-form-item label="显示的小数位">
               <el-input v-model="defVal"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="addFieldParams.colType === 'objects_out'">
+        <el-row
+          v-if="
+            addFieldParams.colType !== 'objects_out' &&
+              addFieldParams.colType !== 'date'
+          "
+        >
           <el-col :span="12">
             <el-form-item label="表格可自动换行">
               <el-input v-model="defVal"></el-input>
@@ -347,6 +361,69 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="表格最小换行宽度">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row v-if="addFieldParams.colType === 'picture'">
+          <el-col :span="12">
+            <el-form-item label="图片高度">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="图片宽度">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="addFieldParams.colType === 'picture'">
+          <el-col :span="12">
+            <el-form-item label="图片尺寸">
+              <el-input v-model="defVal">
+                <template slot="append">MB</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="addFieldParams.colType === 'date'">
+          <el-col :span="12">
+            <el-form-item label="是否默认当前日期">
+              <el-switch active-color="#13ce66" v-model="defVal"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="日期格式">
+              <el-select v-model="optionDateVal" placeholder="请选择">
+                <el-option
+                  v-for="item in optionDate"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="addFieldParams.colType === 'date'">
+          <el-col :span="12">
+            <el-form-item label="是否换行">
+              <el-switch active-color="#13ce66" v-model="defVal"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="addFieldParams.colType === 'boolean'">
+          <el-col :span="12">
+            <el-form-item label="默认值">
+              <el-switch active-color="#13ce66" v-model="defVal"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="addFieldParams.colType === 'sequence'">
+          <el-col :span="12">
+            <el-form-item label="序列位数">
               <el-input v-model="defVal"></el-input>
             </el-form-item>
           </el-col>
@@ -418,6 +495,22 @@ export default {
       select: '',
       status: null,
       options: [],
+      selDictCode: [],
+      optionDateVal: '',
+      optionDate: [
+        {
+          value: '1',
+          label: 'yyyy年MM月dd日 HH时mm分ss秒',
+        },
+        {
+          value: '2',
+          label: 'yyyy/MM/dd HH:mm',
+        },
+        {
+          value: '3',
+          label: 'yyyy-MM-dd HH:mm:ss',
+        },
+      ],
     }
   },
   watch: {
@@ -446,10 +539,8 @@ export default {
   methods: {
     //   选择字典change
     handleChange(e) {
-      e.forEach((item) => {
-        let lastVal = item.slice(-1).join('')
-        console.log(lastVal)
-      })
+      this.selDictCode = e.slice(-1).join('')
+      console.log(this.selDictCode)
     },
     // 只看启用
     lookReuse() {

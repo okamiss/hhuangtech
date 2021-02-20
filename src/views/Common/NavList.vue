@@ -134,7 +134,6 @@ export default {
   watch: {},
   methods: {
     changeSel(e) {
-      console.log(e)
       localStorage.setItem('changeVal', e)
     },
     // 获取目录item
@@ -192,6 +191,7 @@ export default {
       if (getChangeVal) {
         this.value = getChangeVal
       }
+      localStorage.setItem('dictList', JSON.stringify(this.treeDict))
     },
 
     // 获取菜单列
@@ -231,7 +231,10 @@ export default {
         })
       })
       this.treeFile = this.file[0].child
-      console.log(this.treeFile)
+      let getChangeVal = localStorage.getItem('changeVal')
+      if (getChangeVal) {
+        this.value = getChangeVal
+      }
       localStorage.setItem('fileList', JSON.stringify(this.treeFile))
     },
   },

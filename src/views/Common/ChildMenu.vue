@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import Bus from '../Bus/index.js'
 export default {
   name: 'childMenu',
   //   props: ["dataList"],

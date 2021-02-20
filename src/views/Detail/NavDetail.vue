@@ -111,7 +111,7 @@
               <el-form-item label="内部名称">
                 <span>{{ props.row.interiorName }}</span>
               </el-form-item>
-              <el-form-item label="默认显示">
+              <el-form-item label="显示名称">
                 <span>{{ props.row.defaultDisplay }}</span>
               </el-form-item>
               <el-form-item label="类型">
@@ -144,7 +144,7 @@
 
         <el-table-column prop="interiorName" label="内部名称" width="200">
         </el-table-column>
-        <el-table-column prop="defaultDisplay" label="默认显示" width="200">
+        <el-table-column prop="defaultDisplay" label="显示名称" width="200">
         </el-table-column>
         <el-table-column prop="colType" label="类型" width="150">
         </el-table-column>
@@ -226,6 +226,7 @@
       :before-close="addFieldClose"
       center
     >
+      <!-- {{ addFieldParams.colType }} -->
       <el-form ref="form" :model="addFieldParams" label-width="150px">
         <el-row>
           <el-col :span="12">
@@ -233,6 +234,13 @@
               <el-input v-model="addFieldParams.interiorName"></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="显示名称">
+              <el-input v-model="addFieldParams.defaultDisplay"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="列类型">
               <el-select
@@ -249,80 +257,52 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="可在创建时编辑">
-              <el-input v-model="addFieldParams.createEditable"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="数据源">
-              <el-input v-model="addFieldParams.datasource"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="外部显示">
-              <el-input v-model="addFieldParams.defaultDisplay"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="说明">
-              <el-input v-model="addFieldParams.description"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <!-- <el-form-item label="extcolCode">
-              <el-input v-model="addFieldParams.extcolCode"></el-input>
-            </el-form-item> -->
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="公式">
-              <el-input v-model="addFieldParams.formula"></el-input>
-            </el-form-item>
+          <el-col
+            :span="12"
+            v-if="
+              addFieldParams.colType === 'multi_select' ||
+                addFieldParams.colType === 'dropdown' ||
+                addFieldParams.colType === 'chain'
+            "
+          >
+            <el-form-item label="从字典中选择">
+              <el-cascader
+                :options="options"
+                @change="handleChange"
+                :props="{
+                  checkStrictly: true,
+                  value: 'dictCode',
+                  label: 'defaultDisplay',
+                  expandTrigger: 'hover',
+                  children: 'child',
+                }"
+                collapse-tags
+                clearable
+              ></el-cascader
+            ></el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="国际化代码">
-              <el-input v-model="addFieldParams.i18nCode"></el-input>
+            <el-form-item label="可在'创建'时编辑">
+              <el-switch
+                v-model="addFieldParams.createEditable"
+                active-color="#409EFF"
+              >
+              </el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="国际化显示">
-              <el-input v-model="addFieldParams.i18nDisplay"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="关联对象">
-              <el-input v-model="addFieldParams.relatedObject"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="序列代码">
-              <el-input v-model="addFieldParams.seqCode"></el-input>
+            <el-form-item label="可在'更新'时编辑">
+              <el-switch
+                v-model="addFieldParams.updateEditable"
+                active-color="#409EFF"
+              >
+              </el-switch>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="分片代码">
-              <el-input v-model="addFieldParams.shardingCode"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="shardingColCode">
-              <el-input v-model="addFieldParams.shardingColCode"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="文本高度">
@@ -337,11 +317,49 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="updateEditable">
-              <el-input v-model="addFieldParams.updateEditable"></el-input>
+            <el-form-item label="文本长度">
+              <el-input v-model="defVal"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12"></el-col>
+          <el-col :span="12">
+            <el-form-item label="工具提示">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="addFieldParams.colType === 'currency'">
+          <el-col :span="12">
+            <el-form-item label="货币符号">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="显示的小数位">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="addFieldParams.colType === 'objects_out'">
+          <el-col :span="12">
+            <el-form-item label="表格可自动换行">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="表格最小换行宽度">
+              <el-input v-model="defVal"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="说明">
+              <el-input
+                type="textarea"
+                v-model="addFieldParams.description"
+              ></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -369,6 +387,7 @@ import {
 export default {
   data() {
     return {
+      defVal: null,
       form: {
         name: '',
         date1: '',
@@ -389,24 +408,7 @@ export default {
         parentCode: null,
       },
       addField: false,
-      addFieldParams: {
-        // alias: "1",
-        // createEditable: "1",
-        // datasource: "1",
-        // defaultDisplay: "1",
-        // description: "1",
-        // extcolCode: "1",
-        // formula: "1",
-        // i18nCode: "1",
-        // i18nDisplay: "1",
-        // relatedObject: "1",
-        // seqCode: "1",
-        // shardingCode: "1",
-        // shardingColCode: "1",
-        // textHeight: "1",
-        // textWidth: "1",
-        // updateEditable: "1",
-      },
+      addFieldParams: {},
       domInfo: {
         treeNames: null,
       },
@@ -415,9 +417,11 @@ export default {
       input3: '',
       select: '',
       status: null,
+      options: [],
     }
   },
   watch: {
+    //   通过路由监听地址栏
     $route: function(route) {
       var query = route.query
       this.tableData = []
@@ -431,15 +435,22 @@ export default {
     this.tableData = []
     this.domInfo = query
     this.getDomInfo()
-  },
-  mounted() {
-    Bus.$on('nodeCode', (data) => {})
-    // Bus.$on("testData", (data) => {
 
-    // });
+    setTimeout(() => {
+      let getDictList = JSON.parse(localStorage.getItem('dictList'))
+      this.options = getDictList
+    }, 2000)
   },
+  mounted() {},
   filters: {},
   methods: {
+    //   选择字典change
+    handleChange(e) {
+      e.forEach((item) => {
+        let lastVal = item.slice(-1).join('')
+        console.log(lastVal)
+      })
+    },
     // 只看启用
     lookReuse() {
       this.status = '0'
@@ -503,17 +514,28 @@ export default {
       this.addFieldParams.nodeCode = this.form.parentCodes.split(',')[1]
       this.addFieldParams.rootCode = this.form.rootTableCode
 
+      if (
+        !this.addFieldParams.interiorName ||
+        !this.addFieldParams.defaultDisplay ||
+        !this.addFieldParams.colType
+      ) {
+        this.$message({
+          message: '内部名称,显示名称,列类型是必填选项！',
+          type: 'warning',
+        })
+        return
+      }
       AddField(this.addFieldParams).then((res) => {
-        if (res) {
+        if (res.result === 'true') {
           this.$message({
-            message: '添加成功！',
+            message: res.message,
             type: 'success',
           })
           this.addField = false
           this.addFieldParams = {}
           this.getCodeData()
         } else {
-          this.$message.error('添加失败！')
+          this.$message.error(res.message)
         }
       })
     },

@@ -64,6 +64,7 @@
 import Bus from '../Bus/index.js'
 import { GetMenuList, GetDictList, GetFileList } from '../../../api/index.js'
 import ChildMenu from './ChildMenu'
+import { Icon } from 'element-ui'
 export default {
   components: {
     ChildMenu,
@@ -72,20 +73,14 @@ export default {
     return {
       treeList: [],
       list: [{ nodeCode: 0 }],
-      //   listIcon: 'el-icon-menu',
-      //   listIconC: 'el-icon-full-screen',
       treeDict: [],
       dict: [{ nodeCode: 0 }],
-      //   dictIcon: 'el-icon-collection',
-      //   dictIconC: 'el-icon-reading',
       treeFile: [],
       file: [{ nodeCode: 0 }],
-      //   fileIcon: 'el-icon-folder-opened',
-      //   fileIconC: 'el-icon-folder',
       test: {},
-      navActiveId: '1',
-      dictActiveId: '1',
-      fileActiveId: '1',
+      navActiveId: null,
+      dictActiveId: null,
+      fileActiveId: null,
       value: '1',
       options: [
         {
@@ -103,6 +98,10 @@ export default {
     this.getTreeList(this.list)
     this.GetDictListData(this.dict)
     this.getFileTreeList(this.file)
+
+    this.navActiveId = localStorage.getItem('navActiveId')
+    this.dictActiveId = localStorage.getItem('dictActiveId')
+    this.fileActiveId = localStorage.getItem('fileActiveId')
   },
   mounted() {
     Bus.$on('upNav', (data) => {
@@ -144,6 +143,10 @@ export default {
         path: '/FileDetail',
         query: item,
       })
+
+      localStorage.setItem('fileActiveId', item.id)
+      localStorage.setItem('dictActiveId', null)
+      localStorage.setItem('navActiveId', null)
     },
     // 获取字典item
     getDictItem(item) {
@@ -151,6 +154,10 @@ export default {
         path: '/DictDetail',
         query: item,
       })
+
+      localStorage.setItem('dictActiveId', item.id)
+      localStorage.setItem('navActiveId', null)
+      localStorage.setItem('fileActiveId', null)
     },
     // 获取菜单item
     getMenuItem(item) {
@@ -158,6 +165,10 @@ export default {
         path: '/NavDetail',
         query: item,
       })
+
+      localStorage.setItem('navActiveId', item.id)
+      localStorage.setItem('dictActiveId', null)
+      localStorage.setItem('fileActiveId', null)
     },
     // 获取tree id
     handleOpen(key, keyPath) {},
@@ -167,9 +178,12 @@ export default {
       node.forEach((item) => {
         GetDictList({ parentCode: item.dictCode || 0 }).then((res) => {
           if (res.length) {
+            item.icon = 'el-icon-collection'
             item.child = item.child || []
             item.child = [...item.child, ...res]
             this.GetDictListData(res)
+          } else {
+            item.icon = 'el-icon-reading'
           }
         })
       })
@@ -185,9 +199,12 @@ export default {
       node.forEach((item) => {
         GetMenuList({ parentCode: item.nodeCode || 0 }).then((res) => {
           if (res.length) {
+            item.icon = 'el-icon-menu'
             item.child = item.child || []
             item.child = [...item.child, ...res]
             this.getTreeList(res)
+          } else {
+            item.icon = 'el-icon-full-screen'
           }
         })
       })
@@ -204,9 +221,12 @@ export default {
       node.forEach((item) => {
         GetFileList({ parentCode: item.directoryCode || 0 }).then((res) => {
           if (res.length) {
+            item.icon = 'el-icon-folder-opened'
             item.child = item.child || []
             item.child = [...item.child, ...res]
             this.getFileTreeList(res)
+          } else {
+            item.icon = 'el-icon-folder'
           }
         })
       })

@@ -4,7 +4,7 @@
       <el-submenu :index="list.id" v-if="list.child">
         <template slot="title">
           <div @click="getItem(list)">
-            <i :class="icon"></i>
+            <i :class="list.icon"></i>
             <span>
               {{ list.defaultDisplay }}
             </span>
@@ -15,7 +15,7 @@
         </label>
       </el-submenu>
       <el-menu-item v-else :index="list.id" @click="getItem(list)">
-        <i :class="iconC"></i>
+        <i :class="list.icon"></i>
         {{ list.defaultDisplay }}
       </el-menu-item>
     </label>
@@ -29,8 +29,8 @@ export default {
   //   props: ["dataList"],
   data() {
     return {
-      icon: 'el-icon-menu',
-      iconC: 'el-icon-full-screen',
+      icon: '',
+      iconC: '',
     }
   },
   props: {
@@ -43,9 +43,6 @@ export default {
   mounted() {},
   watch: {
     dataList(a, b) {
-      //   if (a[0].directoryCode) {
-      //     this.icon = 'el-icon-folder-opened'
-      //   }
       setTimeout(() => {
         this.$forceUpdate()
       }, 2000)

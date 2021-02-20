@@ -44,6 +44,9 @@ export const CreateDictTermRel = (params) =>
 export const DeleteDictTermRel = (params) =>
   post('/plm/dict/item/relation/delete', params) //删除字典关联项
 
+export const MoveDict = (params) =>
+  post('/plm/dict/directory/relation/move', params) //创建字典
+
 /*
     目录
 */

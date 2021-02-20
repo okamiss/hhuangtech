@@ -15,6 +15,9 @@
         @click="addChildTermModel = true"
         >创建字典项</el-button
       >
+      <el-button size="small" type="primary" round @click="moveFileModel = true"
+        >移动到目录</el-button
+      >
     </div>
     <div class="card-box" ref="firTogg">
       <el-row>
@@ -216,6 +219,30 @@
         <el-button type="primary" @click="CreateDictTermPar">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="请选择移动目标目录"
+      :visible.sync="moveFileModel"
+      width="40%"
+      :before-close="moveFileModelClose"
+    >
+      <div class="treeNames">当前目录：{{ domInfo.treeNames }}</div>
+      <el-cascader
+        :options="options"
+        @change="handleChange"
+        :props="{
+          checkStrictly: true,
+          value: 'directoryCode',
+          label: 'defaultDisplay',
+          expandTrigger: 'hover',
+          children: 'child',
+        }"
+        clearable
+      ></el-cascader>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="moveFileModel = false">取 消</el-button>
+        <el-button type="primary" @click="moveFileSave">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -229,10 +256,12 @@ import {
   GetDictList,
   CreateDictTermRel,
   DeleteDictTermRel,
+  MoveDict,
 } from '../../../api/index.js'
 export default {
   data() {
     return {
+      moveFileModel: false,
       form: {},
       addChild: false,
       addDictInfo: {
@@ -253,14 +282,14 @@ export default {
       relParValue: null,
       options: [],
       dictItemCode: null,
-      batchArr: [],
+      batchArr: [{ interiorName: '', defaultDisplay: '' }],
+      moveToCode: null,
     }
   },
   computed: {},
   watch: {
     $route: function(route) {
       var query = route.query
-      console.log(query)
       this.tableData = []
       this.domInfo = query
       this.GetDictQueryPar()
@@ -271,9 +300,42 @@ export default {
     this.tableData = []
     this.domInfo = query
     this.GetDictQueryPar()
+
+    setTimeout(() => {
+      let getFileList = JSON.parse(localStorage.getItem('fileList'))
+      this.options = getFileList
+    }, 2000)
   },
   mounted() {},
   methods: {
+    //   选择目录change
+    handleChange(e) {
+      this.moveToCode = e.slice(-1).join('')
+    },
+    // 关闭移动目录窗口
+    moveFileModelClose() {
+      this.moveFileModel = false
+    },
+    // 移动字典到目标
+    moveFileSave() {
+      //   return
+      MoveDict({
+        dictCode: this.domInfo.dictCode,
+        destDirectoryCode: this.moveToCode,
+      }).then((res) => {
+        if (res) {
+          this.$message({
+            type: 'success',
+            message: '移动成功!',
+          })
+          this.moveFileModel = false
+          Bus.$emit('upDict', this.domInfo.id)
+          Bus.$emit('upFile', this.domInfo.id)
+        } else {
+          this.$message.error('移动失败！')
+        }
+      })
+    },
     // 批量删除字典项
     batchDel(index) {
       this.batchArr.splice(index, 1)
@@ -357,14 +419,13 @@ export default {
             : this.domInfo.parentCode,
         currDictCode: this.domInfo.dictCode,
       }).then((res) => {
-        console.log(res)
         if (this.domInfo.parentCode === '0') {
           this.tableData = res.used
           this.tableDataUsed = res.unuse
         } else {
           this.tableData = res.unuse
           this.tableDataUsed = res.used
-          this.options = res
+          //   this.options = res
         }
       })
     },
@@ -399,7 +460,6 @@ export default {
     },
     // 增加子字典
     addChildPar() {
-      console.log(this.batchArr)
       //   return
       this.addDictInfo.items = this.batchArr
       this.addDictInfo.parentCode = this.domInfo.dictCode

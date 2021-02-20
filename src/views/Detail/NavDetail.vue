@@ -108,19 +108,22 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="id">
-                <span>{{ props.row.id }}</span>
+              <el-form-item label="内部名称">
+                <span>{{ props.row.interiorName }}</span>
               </el-form-item>
-              <el-form-item label="defaultDisplay">
+              <el-form-item label="默认显示">
                 <span>{{ props.row.defaultDisplay }}</span>
               </el-form-item>
-              <el-form-item label="extcolCode">
-                <span>{{ props.row.extcolCode }}</span>
+              <el-form-item label="类型">
+                <span>{{ props.row.colType }}</span>
               </el-form-item>
+              <!-- <el-form-item label="extcolCode">
+                <span>{{ props.row.extcolCode }}</span>
+              </el-form-item> -->
               <el-form-item label="isNewRecord">
                 <span>{{ props.row.isNewRecord }}</span>
               </el-form-item>
-              <el-form-item label="nodeCode">
+              <!-- <el-form-item label="nodeCode">
                 <span>{{ props.row.nodeCode }}</span>
               </el-form-item>
               <el-form-item label="rootCode">
@@ -134,14 +137,14 @@
               </el-form-item>
               <el-form-item label="status">
                 <span>{{ props.row.status }}</span>
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </template>
         </el-table-column>
 
         <el-table-column prop="interiorName" label="内部名称" width="200">
         </el-table-column>
-        <el-table-column prop="defaultDisplay" label="外部名称" width="200">
+        <el-table-column prop="defaultDisplay" label="默认显示" width="200">
         </el-table-column>
         <el-table-column prop="colType" label="类型" width="150">
         </el-table-column>
@@ -594,7 +597,7 @@ export default {
             message: '已取消删除',
           })
         })
-    }, 
+    },
     // 关闭节点弹窗
     addChildClose() {
       this.addChild = false

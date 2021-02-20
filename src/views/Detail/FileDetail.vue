@@ -7,9 +7,7 @@
       <el-button size="small" type="danger" round @click="deleFile"
         >删除目录</el-button
       >
-      <!-- <el-button size="small" type="primary" round @click="addDictModel = true">
-        增加字典</el-button
-      > -->
+
       <el-button
         size="small"
         type="primary"
@@ -17,6 +15,9 @@
         @click="moveFileModel = true"
       >
         移动目录</el-button
+      >
+      <el-button size="small" type="primary" round @click="addDictModel = true">
+        增加字典</el-button
       >
     </div>
 
@@ -69,6 +70,7 @@
       width="40%"
       :before-close="moveFileModelClose"
     >
+      <div class="treeNames">当前目录：{{ domInfo.treeNames }}</div>
       <el-cascader
         :options="options"
         @change="handleChange"
@@ -86,6 +88,45 @@
         <el-button type="primary" @click="moveFileSave">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="增加字典"
+      :visible.sync="addDictModel"
+      width="80%"
+      :before-close="dictChildClose"
+    >
+      <div class="treeNames">{{ domInfo.treeNames }}</div>
+      <el-form ref="form" :model="addDictInfo" label-width="80px">
+        <el-form-item label="内部名称">
+          <el-input v-model="addDictInfo.interiorName"></el-input>
+        </el-form-item>
+        <el-form-item label="显示名称">
+          <el-input v-model="addDictInfo.defaultDisplay"></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="batTit">
+        批量增加字典项
+        <i @click="addBatItem" class="el-icon-circle-plus-outline"></i>
+      </div>
+      <el-row class="batchAdd" v-for="(item, index) in batchArr" :key="index">
+        <el-col :span="2" class="batName">内部名称：</el-col>
+        <el-col :span="5"
+          ><el-input v-model="item.interiorName"></el-input
+        ></el-col>
+        <el-col :span="2" class="batName">显示名称：</el-col>
+        <el-col :span="5"
+          ><el-input v-model="item.defaultDisplay"></el-input
+        ></el-col>
+        <!-- <el-col :span="2" class="batName">字典值：</el-col>
+        <el-col :span="5"><el-input></el-input></el-col> -->
+        <el-col :span="3" class="batCz"
+          ><i @click="batchDel(index)" class="el-icon-remove-outline"></i
+        ></el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDictModel = false">取 消</el-button>
+        <el-button type="primary" @click="addDictChildPar">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -96,6 +137,7 @@ import {
   DelChildFile,
   UpdateFile,
   MoveFile,
+  CreateDict,
 } from '../../../api/index.js'
 import { parse } from 'qs'
 export default {
@@ -108,20 +150,23 @@ export default {
       addFileParams: {},
       form: {},
       options: [],
+      batchArr: [{ interiorName: '', defaultDisplay: '' }],
       moveToCode: null,
+      addDictInfo: {
+        interiorName: null,
+        defaultDisplay: null,
+      },
     }
   },
   watch: {
     $route: function(route) {
       var query = route.query
-      console.log(query)
       this.domInfo = query
       this.form = query
     },
   },
   created() {
     var query = this.$route.query
-    console.log(query)
     this.domInfo = query
     this.form = query
 
@@ -131,6 +176,42 @@ export default {
     }, 2000)
   },
   methods: {
+    // 关闭新增字典弹框
+    dictChildClose() {
+      this.addDictModel = false
+    },
+    // 批量删除字典项
+    batchDel(index) {
+      this.batchArr.splice(index, 1)
+    },
+
+    //   批量增加字典项
+    addBatItem() {
+      this.batchArr.push({
+        defaultDisplay: '',
+        interiorName: '',
+        // dictCode: this.domInfo.dictCode,
+      })
+    },
+    // 增加子字典
+    addDictChildPar() {
+      this.addDictInfo.items = this.batchArr
+      this.addDictInfo.directoryCode = this.domInfo.directoryCode
+      //   console.log(this.addDictInfo)
+      //   return
+      CreateDict(this.addDictInfo).then((res) => {
+        if (res) {
+          this.$message({
+            message: '添加成功！',
+            type: 'success',
+          })
+          this.addDictModel = false
+          Bus.$emit('upFile', this.domInfo.id)
+        } else {
+          this.$message.error('添加失败！')
+        }
+      })
+    },
     //   选择目录change
     handleChange(e) {
       this.moveToCode = e.slice(-1).join('')
@@ -235,5 +316,28 @@ export default {
   //   i {
   //     font-size: 30px;
   //   }
+}
+.batchAdd {
+  margin-top: 10px;
+  .batName {
+    text-align: right;
+    line-height: 32px;
+  }
+  .batCz {
+    // text-align: center;
+    line-height: 32px;
+    font-size: 20px;
+    text-indent: 5px;
+    i {
+      cursor: pointer;
+    }
+  }
+}
+.batTit {
+  font-size: 18px;
+  margin-bottom: 10px;
+  i {
+    cursor: pointer;
+  }
 }
 </style>

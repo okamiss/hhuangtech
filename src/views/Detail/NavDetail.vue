@@ -43,7 +43,7 @@
           <el-col :span="9">
             <el-form-item label="可实例化">
               <el-switch
-                active-color="#13ce66"
+                active-color="#409EFF"
                 v-model="form.data1"
               ></el-switch>
             </el-form-item>
@@ -51,7 +51,7 @@
           <el-col :span="9" :offset="2">
             <el-form-item label="可有子类型">
               <el-switch
-                active-color="#13ce66"
+                active-color="#409EFF"
                 v-model="form.isRoot"
               ></el-switch>
             </el-form-item>
@@ -315,6 +315,40 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row v-if="addFieldParams.colType !== 'objects_out'">
+          <el-col :span="12">
+            <el-form-item label="可在'创建'时编辑">
+              <el-switch
+                v-model="addFieldParams.createEditable"
+                active-color="#409EFF"
+              >
+              </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="可在'更新'时编辑">
+              <el-switch
+                v-model="addFieldParams.updateEditable"
+                active-color="#409EFF"
+              >
+              </el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="是否唯一">
+              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否必填">
+              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="列类型">
@@ -360,27 +394,6 @@
             ></el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="addFieldParams.colType !== 'objects_out'">
-          <el-col :span="12">
-            <el-form-item label="可在'创建'时编辑">
-              <el-switch
-                v-model="addFieldParams.createEditable"
-                active-color="#409EFF"
-              >
-              </el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="可在'更新'时编辑">
-              <el-switch
-                v-model="addFieldParams.updateEditable"
-                active-color="#409EFF"
-              >
-              </el-switch>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
         <el-row v-if="addFieldParams.colType !== 'objects_out'">
           <el-col :span="12">
             <el-form-item label="文本高度">
@@ -465,7 +478,7 @@
         <el-row v-if="addFieldParams.colType === 'date'">
           <el-col :span="12">
             <el-form-item label="是否默认当前日期">
-              <el-switch active-color="#13ce66" v-model="defVal"></el-switch>
+              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -485,17 +498,18 @@
         <el-row v-if="addFieldParams.colType === 'date'">
           <el-col :span="12">
             <el-form-item label="是否换行">
-              <el-switch active-color="#13ce66" v-model="defVal"></el-switch>
+              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="addFieldParams.colType === 'boolean'">
           <el-col :span="12">
             <el-form-item label="默认值">
-              <el-switch active-color="#13ce66" v-model="defVal"></el-switch>
+              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row v-if="addFieldParams.colType === 'sequence'">
           <el-col :span="12">
             <el-form-item label="序列位数">
@@ -539,7 +553,7 @@ import {
 export default {
   data() {
     return {
-      defVal: null,
+      defVal: '',
       form: {
         name: '',
         date1: '',

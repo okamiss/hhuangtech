@@ -74,7 +74,7 @@
           <el-select v-model="form.date1" placeholder="请选择">
             <el-option label="设计" value="11111"></el-option>
             <el-option label="研发" value="22222"></el-option>
-            <el-option label="上线" value="22222"></el-option>
+            <el-option label="上线" value="33333"></el-option>
           </el-select>
         </el-form-item>
 
@@ -85,6 +85,89 @@
           <!-- <el-button>取消</el-button> -->
         </el-form-item>
       </el-form>
+    </div>
+    <div class="card-box">
+      <div>选择联动关系</div>
+      <el-row>
+        <el-col :span="5">
+          <el-select v-model="defVal" placeholder="请选择联动字段">
+            <el-option
+              v-for="item in textData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <el-table
+            ref="multipleTable"
+            :data="tabTestData"
+            tooltip-effect="dark"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column type="selection" width="55"> </el-table-column>
+
+            <el-table-column prop="name" label="名称" width="120">
+            </el-table-column>
+            <el-table-column prop="value" label="值" show-overflow-tooltip>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="5" :offset="1">
+          <el-select v-model="defVal" placeholder="请选择联动字段">
+            <el-option
+              v-for="item in textData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <el-table
+            ref="multipleTable"
+            :data="tabTestData"
+            tooltip-effect="dark"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column type="selection" width="55"> </el-table-column>
+
+            <el-table-column prop="name" label="名称" width="120">
+            </el-table-column>
+            <el-table-column prop="value" label="值" show-overflow-tooltip>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="5" :offset="1">
+          <el-select v-model="defVal" placeholder="请选择联动字段">
+            <el-option
+              v-for="item in textData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+          <el-table
+            ref="multipleTable"
+            :data="tabTestData"
+            tooltip-effect="dark"
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column type="selection" width="55"> </el-table-column>
+
+            <el-table-column prop="name" label="名称" width="120">
+            </el-table-column>
+            <el-table-column prop="value" label="值" show-overflow-tooltip>
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="2" :offset="2">
+          <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
+        </el-col>
+      </el-row>
     </div>
     <div class="card-box">
       <div class="select">
@@ -180,15 +263,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="card-box">
-      <el-row>
-        <el-col :span="10">1</el-col>
-        <el-col :span="10">1</el-col>
-        <el-col :span="2" :offset="2">
-          <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
-        </el-col>
-      </el-row>
-    </div>
+
     <div class="card-box">
       <el-row>
         <el-col :span="10">1</el-col>
@@ -511,6 +586,51 @@ export default {
           label: 'yyyy-MM-dd HH:mm:ss',
         },
       ],
+      textData: [
+        {
+          value: '1',
+          label: '字典项1',
+        },
+        {
+          value: '2',
+          label: '字典项2',
+        },
+        {
+          value: '3',
+          label: '字典项3',
+        },
+        {
+          value: '4',
+          label: '字典项4',
+        },
+        {
+          value: '5',
+          label: '字典项5',
+        },
+      ],
+      tabTestData: [
+        {
+          name: '字典项字段111',
+          value: '值',
+        },
+        {
+          name: '字典项字段222',
+          value: '值',
+        },
+        {
+          name: '字典项字段333',
+          value: '值',
+        },
+        {
+          name: '字典项字段444',
+          value: '值',
+        },
+        {
+          name: '字典项字段555',
+          value: '值',
+        },
+      ],
+      multipleSelection: [],
     }
   },
   watch: {
@@ -537,6 +657,11 @@ export default {
   mounted() {},
   filters: {},
   methods: {
+    //   选中的 值
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log(val)
+    },
     //   选择字典change
     handleChange(e) {
       this.selDictCode = e.slice(-1).join('')

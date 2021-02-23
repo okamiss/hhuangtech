@@ -373,7 +373,8 @@
               addFieldParams.colType === 'multi_select' ||
                 addFieldParams.colType === 'dropdown' ||
                 addFieldParams.colType === 'chain' ||
-                addFieldParams.colType === 'composite'
+                addFieldParams.colType === 'composite' ||
+                addFieldParams.colType === 'washing_style'
             "
           >
             <el-form-item label="从字典中选择">

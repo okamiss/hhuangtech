@@ -1,93 +1,215 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
-
 
 body,
 html {
-    width: 100%;
-    height: 100%;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #333;
-    background: #f8f9fc;
+  width: 100%;
+  height: 100%;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #333;
+  font-size: 14px;
 }
 
 a {
-    color: #333;
-    text-decoration: none;
+  color: #333;
+  text-decoration: none;
 }
 
 #app {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-
+  display: flex;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 
 .clear {
-    clear: both;
+  clear: both;
 }
 
 .container-left {
-    width: 300px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #ccc;
-    box-sizing: border-box;
-
+  width: 256px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ccc;
+  box-sizing: border-box;
+  background: #101d38;
 }
 
 .hh-logo {
-    width: 100%;
-    height: 80px;
-    border-bottom: 1px solid #ccc;
-    box-sizing: border-box;
+  width: 100%;
+  height: 64px;
+  box-sizing: border-box;
+  background: #002140;
+  text-align: center;
+  line-height: 64px;
+
+  font-size: 22px;
+}
+.hh-logo a {
+  color: #fff;
 }
 
 .hh-nav {
-    flex: 1;
-    width: 100%;
-    background: #fff;
-    overflow-y: scroll;
+  flex: 1;
+  width: 100%;
+
+  overflow-y: scroll;
 }
 
 .container-right {
-    flex: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f0f2f5;
 }
 
 .hh-usinfo {
-    width: 100%;
-    height: 80px;
-    border-bottom: 1px solid #ccc;
-    box-sizing: border-box;
+  width: 100%;
+  height: 64px;
+  box-sizing: border-box;
+  background: #fff;
 }
 
 .hh-cont {
-    flex: 1;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: scroll;
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: scroll;
 }
 
 .card-box {
-    background: #fff;
-    padding: 20px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    margin-bottom: 20px;
+  background: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  margin-bottom: 20px;
 }
 
 .hh-nav::-webkit-scrollbar,
-.hh-cont::-webkit-scrollbar {
-    display: none;
+.hh-cont::-webkit-scrollbar,
+.child-list::-webkit-scrollbar,
+.lk-all-tab::-webkit-scrollbar {
+  display: none;
 }
+
+/* 重置按钮 */
+
+.el-button--radius {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  color: #3377ff;
+  background-color: #d6e4ff;
+  border-color: #d6e4ff;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.el-button--radius:hover,
+.el-button--radius:focus {
+  color: #3377ff;
+  background-color: #d6e4ff;
+  border-color: #d6e4ff;
+}
+
+.el-button--blue {
+  height: 32px;
+  line-height: 32px;
+  padding: 0 20px;
+  color: #fff;
+  font-size: 16px;
+  background-color: #3377ff;
+  border-color: #3377ff;
+}
+
+.el-button--blue:hover,
+.el-button--blue:focus {
+  color: #fff;
+  background-color: #3377ff;
+  border-color: #3377ff;
+}
+
+.el-button--bluex {
+  height: 32px;
+  line-height: 32px;
+  font-size: 16px;
+  padding: 0 20px;
+  color: #3377ff;
+  background-color: #fff;
+  border-color: #3377ff;
+}
+
+.el-button--bluex:hover,
+.el-button--bluex:focus {
+  color: #3377ff;
+  background-color: #fff;
+  border-color: #3377ff;
+}
+
+.el-button--redx {
+  height: 32px;
+  line-height: 32px;
+  font-size: 16px;
+  padding: 0 20px;
+  color: #f5222d;
+  background-color: #fff;
+  border-color: #f5222d;
+}
+
+.el-button--redx:hover,
+.el-button--redx:focus {
+  color: #f5222d;
+  background-color: #fff;
+  border-color: #f5222d;
+}
+
+.dlg-xian {
+  height: 0;
+  border: 2px solid #3377ff;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* .el-dialog__header {
+  height: 56px;
+  box-sizing: border-box;
+  border-bottom: 2px solid #3377ff;
+} */
+.el-dialog__title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #000;
+}
+.el-dialog__body {
+  padding-top: 10px;
+}
+.el-dialog__footer {
+  display: flex;
+  justify-content: center;
+}
+
+.el-form-item__label {
+  font-size: 16px !important;
+  font-weight: 500;
+  color: #000 !important;
+}
+
+
+.treeNames {
+    width: 100%;
+    line-height: 30px;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    color: #3377ff;
+    opacity: 0.85;
+    font-size: 18px;
+  }

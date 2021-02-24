@@ -1,24 +1,10 @@
 <template>
   <div>
     <div class="card-box">
-      <el-button size="small" type="primary" round @click="addFileModel = true"
-        >增加子目录</el-button
-      >
-      <el-button size="small" type="danger" round @click="deleFile"
-        >删除目录</el-button
-      >
-
-      <el-button
-        size="small"
-        type="primary"
-        round
-        @click="moveFileModel = true"
-      >
-        移动目录</el-button
-      >
-      <el-button size="small" type="primary" round @click="addDictModel = true">
-        增加字典</el-button
-      >
+      <el-button type="blue" @click="addFileModel = true">增加子目录</el-button>
+      <el-button type="blue" @click="moveFileModel = true">移动目录</el-button>
+      <el-button type="blue" @click="addDictModel = true">增加字典</el-button>
+      <el-button type="redx" @click="deleFile">删除目录</el-button>
     </div>
 
     <div class="card-box" ref="firTogg">
@@ -37,9 +23,7 @@
         </el-row>
 
         <el-form-item>
-          <el-button size="small" type="primary" @click="updateFile"
-            >更新</el-button
-          >
+          <el-button type="blue" @click="updateFile">更新</el-button>
           <!-- <el-button>取消</el-button> -->
         </el-form-item>
       </el-form>
@@ -50,6 +34,7 @@
       width="40%"
       :before-close="addFileModelClose"
     >
+      <div class="dlg-xian"></div>
       <div class="treeNames">{{ domInfo.treeNames }}</div>
       <el-form ref="form" :model="addFileParams" label-width="80px">
         <el-form-item label="内部名称">
@@ -60,16 +45,17 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addFileModel = false">取 消</el-button>
-        <el-button type="primary" @click="addFileParamsSave">确 定</el-button>
+        <el-button type="bluex" @click="addFileModel = false">取 消</el-button>
+        <el-button type="blue" @click="addFileParamsSave">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      title="请选择移动目标目录"
+      title="移动目录"
       :visible.sync="moveFileModel"
       width="40%"
       :before-close="moveFileModelClose"
     >
+      <div class="dlg-xian"></div>
       <div class="treeNames">当前目录：{{ domInfo.treeNames }}</div>
       <el-cascader
         :options="options"
@@ -84,16 +70,17 @@
         clearable
       ></el-cascader>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="moveFileModel = false">取 消</el-button>
-        <el-button type="primary" @click="moveFileSave">确 定</el-button>
+        <el-button type="bluex" @click="moveFileModel = false">取 消</el-button>
+        <el-button type="blue" @click="moveFileSave">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
       title="增加字典"
       :visible.sync="addDictModel"
-      width="80%"
+      width="60%"
       :before-close="dictChildClose"
     >
+      <div class="dlg-xian"></div>
       <div class="treeNames">{{ domInfo.treeNames }}</div>
       <el-form ref="form" :model="addDictInfo" label-width="80px">
         <el-form-item label="内部名称">
@@ -107,21 +94,17 @@
         批量增加字典项
         <i @click="addBatItem" class="el-icon-circle-plus-outline"></i>
       </div>
-      <el-row class="batchAdd" v-for="(item, index) in batchArr" :key="index">
-        <el-col :span="2" class="batName">内部名称：</el-col>
-        <el-col :span="5"
-          ><el-input v-model="item.interiorName"></el-input
-        ></el-col>
-        <el-col :span="2" class="batName">显示名称：</el-col>
-        <el-col :span="5"
-          ><el-input v-model="item.defaultDisplay"></el-input
-        ></el-col>
-        <!-- <el-col :span="2" class="batName">字典值：</el-col>
-        <el-col :span="5"><el-input></el-input></el-col> -->
-        <el-col :span="3" class="batCz"
-          ><i @click="batchDel(index)" class="el-icon-remove-outline"></i
-        ></el-col>
-      </el-row>
+      <div class="batchAdd" v-for="(item, index) in batchArr" :key="index">
+        <div class="batName">内部名称：</div>
+        <el-input v-model="item.interiorName"></el-input>
+
+        <div class="batName">显示名称：</div>
+        <el-input v-model="item.defaultDisplay"></el-input>
+
+        <div :span="3" class="batCz">
+          <i @click="batchDel(index)" class="el-icon-remove-outline"></i>
+        </div>
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDictModel = false">取 消</el-button>
         <el-button type="primary" @click="addDictChildPar">确 定</el-button>
@@ -318,16 +301,24 @@ export default {
   //   }
 }
 .batchAdd {
+  width: 100%;
   margin-top: 10px;
+  height: 32px;
   .batName {
-    text-align: right;
+    // text-align: left;
+    float: left;
     line-height: 32px;
+  }
+  .el-input {
+    float: left;
+    width: 210px;
+    margin-right: 23px;
   }
   .batCz {
     // text-align: center;
     line-height: 32px;
     font-size: 20px;
-    text-indent: 5px;
+    float: left;
     i {
       cursor: pointer;
     }

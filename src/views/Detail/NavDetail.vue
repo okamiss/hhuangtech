@@ -1,67 +1,56 @@
 <template>
   <div>
     <div class="card-box">
-      <el-button size="small" type="primary" round @click="addChild = true"
-        >增加子节点</el-button
-      >
-      <el-button size="small" type="danger" round @click="deleChild"
-        >删除节点</el-button
-      >
-      <el-button size="small" type="primary" round @click="addField = true">
-        增加字段</el-button
-      >
+      <el-button type="blue" @click="addField = true"> 增加字段</el-button>
+      <el-button type="blue" @click="addChild = true">增加子节点</el-button>
+      <el-button type="redx" @click="deleChild">删除节点</el-button>
     </div>
     <div class="card-box" ref="firTogg">
-      <el-form ref="form" :model="form" label-width="100px">
-        <el-row>
-          <el-col :span="9">
+      <el-form
+        ref="form"
+        :model="form"
+        label-width="80px"
+        label-position="left"
+      >
+        <el-row :gutter="40">
+          <el-col :span="7">
             <el-form-item label="内部名称">
               <el-input v-model="form.interiorName" disabled></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="9" :offset="2">
+          <el-col :span="7">
             <el-form-item label="显示名称">
               <el-input v-model="form.defaultDisplay"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="2" :offset="2">
+          <el-col :span="1" :offset="7">
             <el-button
               v-if="showOne"
-              type="primary"
-              icon="el-icon-arrow-up"
-              circle
+              type="radius"
+              class="rotate90"
+              icon="el-icon-d-arrow-left"
               @click="firTogg"
             ></el-button>
             <el-button
               v-else
-              type="primary"
-              icon="el-icon-arrow-down"
-              circle
+              type="radius"
+              class="rotate90"
+              icon="el-icon-d-arrow-right"
               @click="firTogg"
             ></el-button>
           </el-col>
-          <el-col :span="9">
-            <el-form-item label="可实例化">
-              <el-switch
-                active-color="#409EFF"
-                v-model="form.data1"
-              ></el-switch>
+        </el-row>
+        <el-row :gutter="40">
+          <el-col :span="7">
+            <el-form-item label="生命周期">
+              <el-select v-model="form.date1" placeholder="请选择">
+                <el-option label="设计" value="11111"></el-option>
+                <el-option label="研发" value="22222"></el-option>
+                <el-option label="上线" value="33333"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="9" :offset="2">
-            <el-form-item label="可有子类型">
-              <el-switch
-                active-color="#409EFF"
-                v-model="form.isRoot"
-              ></el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :span="9">
-            <el-form-item label="说明">
-              <el-input type="textarea" v-model="form.date1"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="9" :offset="2">
+          <el-col :span="7">
             <el-form-item label="图标">
               <el-input v-model="form.date3">
                 <el-button slot="append">选择</el-button>
@@ -69,111 +58,49 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <el-form-item label="生命周期">
-          <el-select v-model="form.date1" placeholder="请选择">
-            <el-option label="设计" value="11111"></el-option>
-            <el-option label="研发" value="22222"></el-option>
-            <el-option label="上线" value="33333"></el-option>
-          </el-select>
-        </el-form-item>
+        <el-row :gutter="40">
+          <el-col :span="7">
+            <el-form-item label="可实例化">
+              <el-switch
+                active-color="#409EFF"
+                v-model="form.data1"
+              ></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="可有子类">
+              <el-switch
+                active-color="#409EFF"
+                v-model="form.isRoot"
+              ></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="14">
+            <el-form-item label="说明">
+              <el-input
+                type="textarea"
+                :rows="4"
+                v-model="form.date1"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-form-item>
-          <el-button size="small" type="primary" @click="onSubmit"
-            >保存</el-button
-          >
+          <el-button type="blue" @click="onSubmit">保存</el-button>
           <!-- <el-button>取消</el-button> -->
         </el-form-item>
       </el-form>
     </div>
-    <div class="card-box">
-      <div>选择联动关系</div>
-      <el-row>
-        <el-col :span="5">
-          <el-select v-model="defVal" placeholder="请选择联动字段">
-            <el-option
-              v-for="item in textData"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-          <el-table
-            ref="multipleTable"
-            :data="tabTestData"
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55"> </el-table-column>
 
-            <el-table-column prop="name" label="名称" width="120">
-            </el-table-column>
-            <el-table-column prop="value" label="值" show-overflow-tooltip>
-            </el-table-column>
-          </el-table>
-        </el-col>
-        <el-col :span="5" :offset="1">
-          <el-select v-model="defVal" placeholder="请选择联动字段">
-            <el-option
-              v-for="item in textData"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-          <el-table
-            ref="multipleTable"
-            :data="tabTestData"
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55"> </el-table-column>
-
-            <el-table-column prop="name" label="名称" width="120">
-            </el-table-column>
-            <el-table-column prop="value" label="值" show-overflow-tooltip>
-            </el-table-column>
-          </el-table>
-        </el-col>
-        <el-col :span="5" :offset="1">
-          <el-select v-model="defVal" placeholder="请选择联动字段">
-            <el-option
-              v-for="item in textData"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-          <el-table
-            ref="multipleTable"
-            :data="tabTestData"
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55"> </el-table-column>
-
-            <el-table-column prop="name" label="名称" width="120">
-            </el-table-column>
-            <el-table-column prop="value" label="值" show-overflow-tooltip>
-            </el-table-column>
-          </el-table>
-        </el-col>
-        <el-col :span="2" :offset="2">
-          <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
-        </el-col>
-      </el-row>
-    </div>
     <div class="card-box">
       <div class="select">
-        <span>筛选</span>
-        <el-button size="small" round @click="lookReuse">只看启用</el-button>
-        <el-button size="small" round @click="lookStop">只看停用</el-button>
+        <!-- <span></span> -->
+        <!-- <el-button size="small">筛选</el-button> -->
+        <el-button type="bluex" @click="lookReuse">只看启用</el-button>
+        <el-button type="bluex" @click="lookStop">只看停用</el-button>
         <el-input
           placeholder="请输入内容"
           v-model="input3"
@@ -187,7 +114,20 @@
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
       </div>
-      <el-table :data="tableData" border style="width: 100%" type="expand">
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%"
+        type="expand"
+        :header-cell-style="{
+          height: 60 + 'px',
+          background: '#F7F7F7',
+          'font-size': 18 + 'px',
+          color: '#384B59',
+          'font-weight': 500,
+        }"
+        :row-style="{ height: 60 + 'px', 'font-size': 14 + 'px' }"
+      >
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
@@ -225,11 +165,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="interiorName" label="内部名称" width="200">
+        <el-table-column prop="interiorName" label="内部名称" width="300">
         </el-table-column>
-        <el-table-column prop="defaultDisplay" label="显示名称" width="200">
+        <el-table-column prop="defaultDisplay" label="显示名称" width="300">
         </el-table-column>
-        <el-table-column prop="colType" label="类型" width="150">
+        <el-table-column prop="colType" label="类型" width="200">
         </el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
@@ -242,18 +182,14 @@
               删除</el-button
             > -->
             <el-button
-              size="small"
-              type="primary"
-              round
+              type="blue"
               @click="fieldReuse(scope.row)"
               v-if="scope.row.status === '2'"
             >
               启用</el-button
             >
             <el-button
-              size="small"
-              type="danger"
-              round
+              type="redx"
               @click="fieldStop(scope.row)"
               v-if="scope.row.status === '0'"
             >
@@ -264,7 +200,7 @@
       </el-table>
     </div>
 
-    <div class="card-box">
+    <!-- <div class="card-box">
       <el-row>
         <el-col :span="10">1</el-col>
         <el-col :span="10">1</el-col>
@@ -272,15 +208,16 @@
           <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
         </el-col>
       </el-row>
-    </div>
+    </div> -->
 
     <el-dialog
-      title="增加子类型"
+      title="增加子节点"
       :visible.sync="addChild"
       width="40%"
       :before-close="addChildClose"
     >
-      <div class="treeNames">{{ domInfo.treeNames }}</div>
+      <div class="dlg-xian"></div>
+      <div class="treeNames">当前位置：{{ domInfo.treeNames }}</div>
       <el-form ref="form" :model="addChildParams" label-width="80px">
         <el-form-item label="内部名称">
           <el-input v-model="addChildParams.interiorName"></el-input>
@@ -290,8 +227,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addChild = false">取 消</el-button>
-        <el-button type="primary" @click="addChildPar">确 定</el-button>
+        <el-button type="bluex" @click="addChild = false">取 消</el-button>
+        <el-button type="blue" @click="addChildPar">确 定</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -299,11 +236,16 @@
       :visible.sync="addField"
       width="80%"
       :before-close="addFieldClose"
-      center
     >
+      <div class="dlg-xian"></div>
       {{ addFieldParams.colType }}
-      <el-form ref="form" :model="addFieldParams" label-width="150px">
-        <el-row>
+      <el-form
+        ref="form"
+        :model="addFieldParams"
+        label-width="80px"
+        label-position="left"
+      >
+        <el-row :gutter="40">
           <el-col :span="12">
             <el-form-item label="内部名称">
               <el-input v-model="addFieldParams.interiorName"></el-input>
@@ -316,55 +258,61 @@
           </el-col>
         </el-row>
 
-        <el-row v-if="addFieldParams.colType !== 'objects_out'">
-          <el-col :span="12">
-            <el-form-item label="可在'创建'时编辑">
+        <el-row v-if="addFieldParams.colType !== 'objects_out'" :gutter="40">
+          <el-col :span="6">
+            <el-form-item label="可在'创建'时编辑" label-width="140px">
               <el-switch
                 v-model="addFieldParams.createEditable"
-                active-color="#409EFF"
+                active-color="#3377FF"
               >
               </el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="可在'更新'时编辑">
+          <el-col :span="6">
+            <el-form-item label="可在'更新'时编辑" label-width="140px">
               <el-switch
                 v-model="addFieldParams.updateEditable"
-                active-color="#409EFF"
+                active-color="#3377FF"
               >
               </el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item label="是否唯一">
+              <el-switch active-color="#3377FF" v-model="defVal"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item label="是否必填">
+              <el-switch active-color="#3377FF" v-model="defVal"></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="是否唯一">
-              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="是否必填">
-              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
+        <el-row :gutter="40">
           <el-col :span="12">
             <el-form-item label="列类型">
-              <el-select
-                filterable
-                v-model="addFieldParams.colType"
-                placeholder="请选列类型"
+              <el-input
+                placeholder="请输入内容"
+                v-model="defVal"
+                class="input-with-select"
               >
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.javaType"
-                  :label="item.remarks"
-                  :value="item.javaType"
+                <el-select
+                  slot="append"
+                  filterable
+                  v-model="addFieldParams.colType"
+                  placeholder="请选列类型"
+                  class="searCaseSel"
                 >
-                </el-option>
-              </el-select>
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.javaType"
+                    :label="item.remarks"
+                    :value="item.javaType"
+                  >
+                  </el-option>
+                </el-select>
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col
@@ -377,7 +325,7 @@
                 addFieldParams.colType === 'washing_style'
             "
           >
-            <el-form-item label="从字典中选择">
+            <el-form-item label="从字典中选择" label-width="110px">
               <el-cascader
                 :options="options"
                 @change="handleChange"
@@ -395,7 +343,7 @@
             ></el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="addFieldParams.colType !== 'objects_out'">
+        <el-row v-if="addFieldParams.colType !== 'objects_out'" :gutter="40">
           <el-col :span="12">
             <el-form-item label="文本高度">
               <el-input v-model="addFieldParams.textHeight"></el-input>
@@ -407,7 +355,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row :gutter="40">
           <el-col :span="12" v-if="addFieldParams.colType !== 'objects_out'">
             <el-form-item label="文本长度">
               <el-input v-model="defVal"></el-input>
@@ -419,7 +367,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row :gutter="40">
           <el-col :span="12" v-if="addFieldParams.colType === 'currency'">
             <el-form-item label="货币符号">
               <el-input v-model="defVal"></el-input>
@@ -442,20 +390,21 @@
             addFieldParams.colType !== 'objects_out' &&
               addFieldParams.colType !== 'date'
           "
+          :gutter="40"
         >
           <el-col :span="12">
-            <el-form-item label="表格可自动换行">
+            <el-form-item label="表格可自动换行" label-width="130px">
               <el-input v-model="defVal"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="表格最小换行宽度">
+            <el-form-item label="表格最小换行宽度" label-width="140px">
               <el-input v-model="defVal"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-row v-if="addFieldParams.colType === 'picture'">
+        <el-row v-if="addFieldParams.colType === 'picture'" :gutter="40">
           <el-col :span="12">
             <el-form-item label="图片高度">
               <el-input v-model="defVal"></el-input>
@@ -467,7 +416,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="addFieldParams.colType === 'picture'">
+        <el-row v-if="addFieldParams.colType === 'picture'" :gutter="40">
           <el-col :span="12">
             <el-form-item label="图片尺寸">
               <el-input v-model="defVal">
@@ -476,10 +425,15 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="addFieldParams.colType === 'date'">
-          <el-col :span="12">
-            <el-form-item label="是否默认当前日期">
-              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
+        <el-row v-if="addFieldParams.colType === 'date'" :gutter="40">
+          <el-col :span="6">
+            <el-form-item label="是否默认当前日期" label-width="140px">
+              <el-switch active-color="#3377FF" v-model="defVal"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6" v-if="addFieldParams.colType === 'date'">
+            <el-form-item label="是否换行">
+              <el-switch active-color="#3377FF" v-model="defVal"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -496,14 +450,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="addFieldParams.colType === 'date'">
-          <el-col :span="12">
-            <el-form-item label="是否换行">
-              <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row v-if="addFieldParams.colType === 'boolean'">
+
+        <el-row v-if="addFieldParams.colType === 'boolean'" :gutter="40">
           <el-col :span="12">
             <el-form-item label="默认值">
               <el-switch active-color="#409EFF" v-model="defVal"></el-switch>
@@ -511,17 +459,18 @@
           </el-col>
         </el-row>
 
-        <el-row v-if="addFieldParams.colType === 'sequence'">
+        <el-row v-if="addFieldParams.colType === 'sequence'" :gutter="40">
           <el-col :span="12">
             <el-form-item label="序列位数">
               <el-input v-model="defVal"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="12">
+        <el-row :gutter="40">
+          <el-col :span="24">
             <el-form-item label="说明">
               <el-input
+                :rows="5"
                 type="textarea"
                 v-model="addFieldParams.description"
               ></el-input>
@@ -530,8 +479,8 @@
         </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addField = false">取 消</el-button>
-        <el-button type="primary" @click="subAddCode">确 定</el-button>
+        <el-button type="bluex" @click="addField = false">取 消</el-button>
+        <el-button type="blue" @click="subAddCode">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -879,7 +828,7 @@ export default {
       this.showOne = !this.showOne
       //   var heightStyle = this.$refs.firTogg.offsetHeight;
       if (!this.showOne) {
-        this.$refs.firTogg.style.height = '80px'
+        this.$refs.firTogg.style.height = '70px'
         this.$refs.firTogg.style.overflow = 'hidden'
       } else {
         this.$refs.firTogg.style.height = 'auto'
@@ -917,15 +866,7 @@ export default {
 .el-table {
   position: absolute;
 }
-.treeNames {
-  width: 100%;
-  // background: #ccc;
-  line-height: 30px;
-  text-indent: 12px;
-  color: blue;
-  font-weight: bold;
-  font-size: 17px;
-}
+
 .select {
   display: flex;
   // justify-content: start;
@@ -934,14 +875,42 @@ export default {
   margin-bottom: 20px;
   span {
     display: block;
-    margin-right: 10px;
+    // margin-right: 10px;
   }
   .el-input-group {
     width: 400px;
     margin-left: 10px;
     .el-select {
       width: 110px;
+      span {
+        margin-top: -1px;
+      }
     }
   }
+  .el-input-group__prepend {
+    background-color: transparent !important;
+  }
+  .el-input-group__append {
+    background-color: #3377ff !important;
+
+    color: #fff;
+    width: 88px;
+    padding: 0;
+    text-align: center;
+  }
+}
+.el-form-item {
+  margin-bottom: 10px !important;
+}
+
+.rotate90 {
+  transform: rotate(90deg);
+  -ms-transform: rotate(90deg); /* IE 9 */
+  -moz-transform: rotate(90deg); /* Firefox */
+  -webkit-transform: rotate(90deg); /* Safari 和 Chrome */
+  -o-transform: rotate(90deg); /* Opera */
+}
+.searCaseSel {
+  width: 120px;
 }
 </style>

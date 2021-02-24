@@ -1,10 +1,23 @@
 <template>
   <div class="container-left">
     <div class="hh-logo">
-      <router-link :to="{ path: '/' }">首页</router-link>
+      <router-link :to="{ path: '/' }">HHuangtech</router-link>
+    </div>
+    <div class="menu-search">
+      <el-input placeholder="查找菜单" v-model="defVal">
+        <i slot="prefix" class="el-input__icon el-icon-search"></i>
+      </el-input>
+    </div>
+    <div class="menu-change">
+      <div class="menu-change-item" @click="menuChangeVal('1')">
+        <i class="el-icon-s-operation"></i>属性配置
+      </div>
+      <div class="menu-change-item" @click="menuChangeVal('2')">
+        <i class="el-icon-collection"></i>字典页
+      </div>
     </div>
     <div class="hh-nav">
-      <div class="menu-tit">
+      <!-- <div class="menu-tit">
         <el-select v-model="value" placeholder="请选择" @change="changeSel">
           <el-option
             v-for="item in options"
@@ -14,15 +27,15 @@
           >
           </el-option>
         </el-select>
-      </div>
+      </div> -->
       <template v-if="value === '1'">
         <el-menu
           class="menu-Bar"
           @open="handleOpen"
           :default-active="navActiveId"
-          background-color="#545c64"
+          background-color="transparent"
           text-color="#fff"
-          active-text-color="#ffd04b"
+          active-text-color="#fff"
         >
           <ChildMenu
             :dataList="this.treeList"
@@ -33,7 +46,7 @@
         <el-menu
           class="menu-Bar"
           :default-active="dictActiveId"
-          background-color="#545c64"
+          background-color="transparent"
           text-color="#fff"
           active-text-color="#ffd04b"
         >
@@ -46,7 +59,7 @@
         <el-menu
           class="menu-Bar"
           :default-active="fileActiveId"
-          background-color="#545c64"
+          background-color="transparent"
           text-color="#fff"
           active-text-color="#ffd04b"
         >
@@ -71,6 +84,7 @@ export default {
   },
   data() {
     return {
+      defVal: '',
       treeList: [],
       list: [{ nodeCode: 0 }],
       treeDict: [],
@@ -133,7 +147,9 @@ export default {
   },
   watch: {},
   methods: {
-    changeSel(e) {
+    //   菜单字典选项
+    menuChangeVal(e) {
+      this.value = e
       localStorage.setItem('changeVal', e)
     },
     // 获取目录item
@@ -246,5 +262,80 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.el-submenu__title:hover {
+  background-color: transparent !important;
+}
+
+.el-menu-item:hover {
+  background-color: #3377ff !important;
+}
+.el-menu-item.is-active {
+  background-color: #3370ff !important;
+  color: #fff;
+  span {
+    color: #fff !important;
+  }
+}
+.el-menu-item,
+.el-submenu__title {
+  height: 48px !important;
+  line-height: 48px !important;
+}
+
+.menu-search {
+  margin-top: 16px;
+  padding: 0 18px;
+  box-sizing: border-box;
+  height: 36px;
+
+  .el-input {
+    background: #28344c;
+    border-radius: 50px;
+    overflow: hidden;
+
+    .el-input__inner {
+      opacity: 1;
+      background: none;
+      border: none;
+      color: #999999;
+      font-size: 14px;
+    }
+    span {
+      margin-top: -3px;
+    }
+  }
+}
+.menu-change {
+  margin-top: 20px;
+  margin-bottom: 18px;
+  padding: 0 18px;
+  box-sizing: border-box;
+  height: 38px;
+  .menu-change-item {
+    width: 50%;
+    float: left;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    i {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      line-height: 25px;
+      border-radius: 50px;
+      background: #fff;
+      color: #3377ff;
+      margin-right: 12px;
+    }
+  }
+  .menu-change-item:first-child {
+    border-right: 1px solid #28344c;
+    box-sizing: border-box;
+  }
 }
 </style>

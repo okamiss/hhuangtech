@@ -25,10 +25,9 @@ axios.interceptors.request.use(
     }
 
     if (setData.length <= 2) {
-      config.url =
-        config.url + '?__sid=' + sid + '&' + qs.stringify(config.data)
+      config.url = `${config.url}?__sid=${sid}&${qs.stringify(config.data)}`
     } else {
-      config.url = config.url + '?__sid=' + sid
+      config.url = `${config.url}?__sid=${sid}`
     }
 
     config.data = JSON.stringify(config.data)

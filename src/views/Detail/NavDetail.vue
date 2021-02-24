@@ -251,10 +251,13 @@
               <el-input v-model="addFieldParams.interiorName"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="11">
             <el-form-item label="显示名称">
               <el-input v-model="addFieldParams.defaultDisplay"></el-input>
             </el-form-item>
+          </el-col>
+          <el-col :span="1" class="inter-img">
+            <img src="@/assets/img/inter_icon.png" alt="" />
           </el-col>
         </el-row>
 
@@ -503,6 +506,7 @@ import {
 export default {
   data() {
     return {
+      interVisible: false,
       defVal: '',
       form: {
         name: '',

@@ -48,7 +48,7 @@
           :default-active="dictActiveId"
           background-color="transparent"
           text-color="#fff"
-          active-text-color="#ffd04b"
+          active-text-color="#fff"
         >
           <ChildMenu
             :dataList="this.treeDict"
@@ -61,7 +61,7 @@
           :default-active="fileActiveId"
           background-color="transparent"
           text-color="#fff"
-          active-text-color="#ffd04b"
+          active-text-color="#fff"
         >
           <ChildMenu
             :dataList="this.treeFile"

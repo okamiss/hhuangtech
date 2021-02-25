@@ -34,38 +34,49 @@
       </div>
     </div>
 
-    <div class="lk-sel">
+    <!-- <div class="lk-sel">
       <el-select v-model="value" placeholder="新建联动">
         <el-option
           v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+          :key="item.id"
+          :label="item.defaultDisplay"
+          :value="item.id"
         >
         </el-option>
       </el-select>
-      <!-- <el-button @click="dialogVisible = true">查看已联动的字段</el-button> -->
-    </div>
+    </div> -->
 
     <div class="lk-tab">
       <div class="lk-tab-item">
         <el-table
+          height="450"
           ref="multipleTable"
           :data="tabTestData"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange"
+          @cell-click="getFirClick"
           :header-cell-style="tableHeaderStyle"
-          :row-style="{ height: 60 + 'px', 'font-size': 14 + 'px' }"
+          :row-style="{
+            height: 60 + 'px',
+            'line-height': 60 + 'px',
+            'font-size': 14 + 'px',
+          }"
         >
-          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column width="55">
+            <template slot-scope="scope">
+              <el-checkbox v-model="scope.row.checked"></el-checkbox>
+            </template>
+          </el-table-column>
 
           <el-table-column label="一级标题">
             <template slot-scope="scope">
+              {{ scope.row.defaultDisplay }}
               <el-popover
                 trigger="click"
                 placement="right-start"
-                :ref="`popover-${scope.row.value}`"
+                :ref="`popover-${scope.row.id}`"
+                class="zzz"
               >
                 <div class="addNextModel">
                   <div class="child-tit">二级标题</div>
@@ -100,9 +111,12 @@
                     >
                   </div>
                 </div>
-                <div slot="reference" class="row-name">
-                  {{ scope.row.name }}
-                  <i class="el-icon-circle-plus-outline"></i>
+
+                <div slot="reference">
+                  <i
+                    v-if="scope.row.checked"
+                    class="el-icon-circle-plus-outline"
+                  ></i>
                 </div>
               </el-popover>
             </template>
@@ -123,52 +137,31 @@
 </template>
 
 <script>
+import { GetCode } from '../../../api/index.js'
 export default {
   data() {
     return {
       dialogVisible: false,
-      options: [
-        {
-          value: '1',
-          label: '选项1',
-        },
-        {
-          value: '2',
-          label: '选项2',
-        },
-        {
-          value: '3',
-          label: '选项3',
-        },
-      ],
+      options: [],
       value: '',
-      tabTestData: [
-        {
-          name: '字典项字段111',
-          value: '1',
-        },
-        {
-          name: '字典项字段222',
-          value: '2',
-        },
-        {
-          name: '字典项字段333',
-          value: '3',
-        },
-        {
-          name: '字典项字段444',
-          value: '4',
-        },
-        {
-          name: '字典项字段555',
-          value: '5',
-        },
-      ],
+      tabTestData: [],
       multipleSelection: [],
       defVal: '',
+      nodeCode: '',
     }
   },
+  created() {
+    const getNodeCode = this.$route.query
+    console.log(getNodeCode)
+    this.nodeCode = getNodeCode.nodecode
+    this.getKzList()
+  },
   methods: {
+    //   点击获取列信息
+    getFirClick(row) {
+      console.log(row)
+    },
+    //   关闭二级弹窗
     saveChildPar() {
       for (const key in this.$refs) {
         if (key.indexOf('popover-') !== -1) {
@@ -176,16 +169,28 @@ export default {
         }
       }
     },
+    // 获取扩展列表
+    getKzList() {
+      console.log(this.nodeCode)
+      GetCode({ nodeCode: this.nodeCode }).then((res) => {
+        console.log(res)
+        res.forEach((item) => {
+          item.checked = false
+        })
+        // this.options = res
+        this.tabTestData = res
+      })
+    },
     // handleClose() {
     //   this.dialogVisible = false
     // },
     //   编辑
     handleEdit(index, row) {
-      console.log(index, row)
+      //   console.log(index, row)
     },
     //   删除
     handleDelete(index, row) {
-      console.log(index, row)
+      //   console.log(index, row)
     },
     // 设置表头样式
 
@@ -269,12 +274,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.child-tit {
-  font-size: 14px;
-  color: #242a33;
-  height: 30px;
-  border-bottom: 1px solid #e8e8e8;
-}
+
 .child-search {
   width: 100%;
   height: 24px;
@@ -325,9 +325,11 @@ export default {
     padding: 0 15px;
   }
 }
-.row-name {
+
+.zzz {
+  height: 100%;
+  float: right;
   i {
-    float: right;
     font-size: 16px;
     color: #3377ff;
     cursor: pointer;

@@ -99,8 +99,19 @@
       <div class="select">
         <!-- <span></span> -->
         <!-- <el-button size="small">筛选</el-button> -->
-        <el-button type="bluex" @click="lookReuse">只看启用</el-button>
-        <el-button type="bluex" @click="lookStop">只看停用</el-button>
+        <template v-if="status === '0'">
+          <el-button type="blue" @click="lookReuse">只看启用</el-button>
+          <el-button type="bluex" @click="lookStop">只看停用</el-button>
+        </template>
+        <template v-else-if="status === '2'">
+          <el-button type="bluex" @click="lookReuse">只看启用</el-button>
+          <el-button type="blue" @click="lookStop">只看停用</el-button>
+        </template>
+        <template v-else>
+          <el-button type="bluex" @click="lookReuse">只看启用</el-button>
+          <el-button type="bluex" @click="lookStop">只看停用</el-button>
+        </template>
+
         <el-input
           placeholder="请输入内容"
           v-model="input3"
@@ -234,7 +245,7 @@
     <el-dialog
       title="增加字段"
       :visible.sync="addField"
-      width="80%"
+      width="1140px"
       :before-close="addFieldClose"
     >
       <div class="dlg-xian"></div>
@@ -246,18 +257,73 @@
         label-position="left"
       >
         <el-row :gutter="40">
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="内部名称">
               <el-input v-model="addFieldParams.interiorName"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="7">
             <el-form-item label="显示名称">
               <el-input v-model="addFieldParams.defaultDisplay"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="1" class="inter-img">
-            <img src="@/assets/img/inter_icon.png" alt="" />
+            <el-popover
+              placement="bottom-end"
+              trigger="manual"
+              v-model="interVisible"
+              width="400"
+            >
+              <div class="child-tit">国际化配置</div>
+              <el-button type="blue" @click="interVisible = false"
+                >确定</el-button
+              >
+              <img
+                slot="reference"
+                @click="interVisible = true"
+                src="@/assets/img/inter_icon.png"
+                alt=""
+              />
+            </el-popover>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="字段类型">
+              <el-select
+                v-model="addFieldParams.colType"
+                filterable
+                placeholder="请选字段类型"
+              >
+                <el-option
+                  v-for="item in typeList"
+                  :key="item.javaType"
+                  :label="item.remarks"
+                  :value="item.javaType"
+                >
+                </el-option>
+              </el-select>
+
+              <!-- <el-input
+                placeholder="请输入内容"
+                v-model="defVal"
+                class="input-with-select"
+              >
+                <el-select
+                  slot="append"
+                  filterable
+                  v-model="addFieldParams.colType"
+                  placeholder="请选列类型"
+                  class="searCaseSel"
+                >
+                  <el-option
+                    v-for="item in typeList"
+                    :key="item.javaType"
+                    :label="item.remarks"
+                    :value="item.javaType"
+                  >
+                  </el-option>
+                </el-select>
+              </el-input> -->
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -293,31 +359,6 @@
         </el-row>
 
         <el-row :gutter="40">
-          <el-col :span="12">
-            <el-form-item label="列类型">
-              <el-input
-                placeholder="请输入内容"
-                v-model="defVal"
-                class="input-with-select"
-              >
-                <el-select
-                  slot="append"
-                  filterable
-                  v-model="addFieldParams.colType"
-                  placeholder="请选列类型"
-                  class="searCaseSel"
-                >
-                  <el-option
-                    v-for="item in typeList"
-                    :key="item.javaType"
-                    :label="item.remarks"
-                    :value="item.javaType"
-                  >
-                  </el-option>
-                </el-select>
-              </el-input>
-            </el-form-item>
-          </el-col>
           <el-col
             :span="12"
             v-if="
@@ -328,7 +369,7 @@
                 addFieldParams.colType === 'washing_style'
             "
           >
-            <el-form-item label="从字典中选择" label-width="110px">
+            <el-form-item label="选择字典" label-width="110px">
               <el-cascader
                 :options="options"
                 @change="handleChange"
@@ -361,30 +402,19 @@
         <el-row :gutter="40">
           <el-col :span="12" v-if="addFieldParams.colType !== 'objects_out'">
             <el-form-item label="文本长度">
-              <el-input v-model="defVal"></el-input>
+              <el-input v-model="addFieldParams.textMaxLength"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="工具提示">
-              <el-input v-model="defVal"></el-input>
+              <el-input v-model="addFieldParams.tips"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="40">
-          <el-col :span="12" v-if="addFieldParams.colType === 'currency'">
-            <el-form-item label="货币符号">
-              <el-input v-model="defVal"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-            v-if="
-              addFieldParams.colType === 'currency' ||
-                addFieldParams.colType === 'double'
-            "
-          >
-            <el-form-item label="显示的小数位">
-              <el-input v-model="defVal"></el-input>
+          <el-col :span="12">
+            <el-form-item label="公式">
+              <el-input v-model="addFieldParams.formula"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -397,12 +427,34 @@
         >
           <el-col :span="12">
             <el-form-item label="表格可自动换行" label-width="130px">
-              <el-input v-model="defVal"></el-input>
+              <el-switch
+                v-model="addFieldParams.autoLinefeed"
+                active-color="#3377FF"
+              >
+              </el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="表格最小换行宽度" label-width="140px">
-              <el-input v-model="defVal"></el-input>
+              <el-input v-model="addFieldParams.minLinefeedWidth"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="40">
+          <el-col :span="12" v-if="addFieldParams.colType === 'currency'">
+            <el-form-item label="货币符号">
+              <el-input v-model="addFieldParams.currency"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+            v-if="
+              addFieldParams.colType === 'currency' ||
+                addFieldParams.colType === 'double'
+            "
+          >
+            <el-form-item label="显示的小数位">
+              <el-input v-model="addFieldParams.decimals"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -410,19 +462,19 @@
         <el-row v-if="addFieldParams.colType === 'picture'" :gutter="40">
           <el-col :span="12">
             <el-form-item label="图片高度">
-              <el-input v-model="defVal"></el-input>
+              <el-input v-model="addFieldParams.picHeight"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="图片宽度">
-              <el-input v-model="defVal"></el-input>
+              <el-input v-model="addFieldParams.picWidth"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="addFieldParams.colType === 'picture'" :gutter="40">
           <el-col :span="12">
             <el-form-item label="图片尺寸">
-              <el-input v-model="defVal">
+              <el-input v-model="addFieldParams.picMaxSize">
                 <template slot="append">MB</template>
               </el-input>
             </el-form-item>
@@ -528,7 +580,13 @@ export default {
         parentCode: null,
       },
       addField: false,
-      addFieldParams: {},
+      addFieldParams: {
+        items: [
+          {
+            objectCode: null,
+          },
+        ],
+      },
       domInfo: {
         treeNames: null,
       },
@@ -637,12 +695,22 @@ export default {
     },
     // 只看启用
     lookReuse() {
-      this.status = '0'
+      if (this.status === '0') {
+        this.status = null
+      } else {
+        this.status = '0'
+      }
+
       // this.getCodeData();
     },
     // 只看停用
     lookStop() {
-      this.status = '2'
+      if (this.status === '2') {
+        this.status = null
+      } else {
+        this.status = '2'
+      }
+
       // this.getCodeData();
     },
     // 删除
@@ -695,6 +763,16 @@ export default {
     },
     // 增加字段
     subAddCode() {
+      if (
+        /(multi_select|dropdown|chain|composite|washing_style)/i.test(
+          this.addFieldParams.colType
+        )
+      ) {
+        this.addFieldParams.items[0].objectCode = this.selDictCode
+      } else {
+        delete this.addFieldParams.items
+      }
+
       this.addFieldParams.nodeCode = this.form.parentCodes.split(',')[1]
       this.addFieldParams.rootCode = this.form.rootTableCode
 
@@ -716,7 +794,13 @@ export default {
             type: 'success',
           })
           this.addField = false
-          this.addFieldParams = {}
+          this.addFieldParams = {
+            items: [
+              {
+                objectCode: null,
+              },
+            ],
+          }
           this.getCodeData()
         } else {
           this.$message.error(res.message)

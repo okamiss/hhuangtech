@@ -62,3 +62,7 @@ export const DelChildFile = (params) =>
 
 export const UpdateFile = (params) => post('/plm/dict/directory/update', params) //更新目录
 export const MoveFile = (params) => post('/plm/dict/directory/move', params) //移动目录
+
+// 联动
+export const linkage = (params) =>
+  post('/plm/core/ext/column/related/define', params) //联动

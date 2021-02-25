@@ -131,7 +131,12 @@ a {
   border-color: #3377ff;
 }
 
-.el-button--blue:hover,
+.el-button--blue:hover {
+  color: #fff;
+  background-color: #3377ff;
+  border-color: #3377ff;
+  opacity: 0.8;
+}
 .el-button--blue:focus {
   color: #fff;
   background-color: #3377ff;
@@ -223,4 +228,15 @@ a {
   width: 24px;
   height: 24px;
   cursor: pointer;
+}
+
+.el-input__icon {
+  line-height: 32px;
+}
+
+.child-tit {
+  font-size: 14px;
+  color: #242a33;
+  height: 30px;
+  border-bottom: 1px solid #e8e8e8;
 }

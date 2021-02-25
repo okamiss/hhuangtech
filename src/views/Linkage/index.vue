@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { GetCode } from '../../../api/index.js'
+import { getObjLink, getDictUsed } from '../../../api/index.js'
 export default {
   data() {
     return {
@@ -147,13 +147,14 @@ export default {
       tabTestData: [],
       multipleSelection: [],
       defVal: '',
-      nodeCode: '',
+      extcolCode: '',
+      objectCode: '',
     }
   },
   created() {
     const getNodeCode = this.$route.query
     console.log(getNodeCode)
-    this.nodeCode = getNodeCode.nodecode
+    this.extcolCode = getNodeCode.extcolCode
     this.getKzList()
   },
   methods: {
@@ -169,16 +170,24 @@ export default {
         }
       }
     },
-    // 获取扩展列表
-    getKzList() {
-      console.log(this.nodeCode)
-      GetCode({ nodeCode: this.nodeCode }).then((res) => {
-        console.log(res)
+
+    // 查询已使用的字典项
+    getDictUsedFun() {
+      getDictUsed({ dictCode: this.objectCode }).then((res) => {
+        // console.log(res)
         res.forEach((item) => {
           item.checked = false
         })
-        // this.options = res
         this.tabTestData = res
+      })
+    },
+    // 获取扩展列表
+    getKzList() {
+      getObjLink({ extcolCode: this.extcolCode }).then((res) => {
+        // console.log(res)
+        console.log(res.extColumnDictRelationPoList[0].objectCode)
+        this.objectCode = res.extColumnDictRelationPoList[0].objectCode
+        this.getDictUsedFun()
       })
     },
     // handleClose() {

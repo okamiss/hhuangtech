@@ -66,3 +66,8 @@ export const MoveFile = (params) => post('/plm/dict/directory/move', params) //�
 // 联动
 export const linkage = (params) =>
   post('/plm/core/ext/column/related/define', params) //联动
+
+export const getObjLink = (params) =>
+  get('/plm/node/sharding/extcol/object/links', params) //获取联动列
+
+export const getDictUsed = (params) => get('/plm/dict/item/used', params) //通过字典代码查询已经使用的字典项

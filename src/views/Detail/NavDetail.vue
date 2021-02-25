@@ -182,16 +182,8 @@
         </el-table-column>
         <el-table-column prop="colType" label="类型" width="200">
         </el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
-            <!-- <el-button
-              size="small"
-              type="info"
-              round
-              @click="fieldRecover(scope.row)"
-            >
-              删除</el-button
-            > -->
             <el-button
               type="blue"
               @click="fieldReuse(scope.row)"
@@ -205,6 +197,9 @@
               v-if="scope.row.status === '0'"
             >
               停用</el-button
+            >
+            <el-button type="blue" @click="goToLinkage(scope.row)">
+              联动</el-button
             >
           </template>
         </el-table-column>
@@ -683,6 +678,13 @@ export default {
   mounted() {},
   filters: {},
   methods: {
+    // goto联动
+    goToLinkage(row) {
+      this.$router.push({
+        path: '/Linkage',
+        query: row,
+      })
+    },
     //   选中的 值
     handleSelectionChange(val) {
       this.multipleSelection = val

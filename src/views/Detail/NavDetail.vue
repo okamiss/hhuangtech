@@ -687,6 +687,7 @@ export default {
       const params = {
         nodeCode: this.domInfo.nodeCode,
         extcolCode: row.extcolCode,
+        interiorName: row.interiorName,
       }
       this.$router.push({
         path: '/Linkage',
@@ -696,12 +697,10 @@ export default {
     //   选中的 值
     handleSelectionChange(val) {
       this.multipleSelection = val
-      console.log(val)
     },
     //   选择字典change
     handleChange(e) {
       this.selDictCode = e.slice(-1).join('')
-      console.log(this.selDictCode)
     },
     // 只看启用
     lookReuse() {
@@ -782,8 +781,9 @@ export default {
       } else {
         delete this.addFieldParams.items
       }
-
       this.addFieldParams.nodeCode = this.form.parentCodes.split(',')[1]
+        ? this.form.parentCodes.split(',')[1]
+        : this.form.nodeCode
       this.addFieldParams.rootCode = this.form.rootTableCode
 
       if (

@@ -22,7 +22,7 @@ export const GetCode = (params) =>
   post('/plm/node/sharding/extcol/extended', params) //获取扩展列
 export const GetListType = () => get('/plm/rs/col/type/list') //获取列表类型
 export const AddField = (params) =>
-  post('/plm/node/sharding/extcol/extend', params) //获取字段详情
+  post('/plm/node/sharding/extcol/extend', params) //扩展
 export const ApiFieldRecover = (params) =>
   post('/plm/node/sharding/extcol/recover', params) //删除
 export const ApiFieldReuse = (params) =>

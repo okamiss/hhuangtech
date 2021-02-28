@@ -1,6 +1,38 @@
 <template>
   <div class="linkage">
-    <div class="lk-tit">选择联动关系</div>
+    <div class="lk-tit">
+      增加联动关系
+      <!-- <i
+        class="el-icon-circle-plus-outline"
+        @click="addLinkRel"
+      ></i> -->
+    </div>
+    <div class="lk-select">
+      <div class="lk-select-item" v-for="(item, index) in list" :key="index">
+        <el-select
+          v-model="item.value"
+          placeholder="请选择"
+          @change="linkChange(item.value, index)"
+        >
+          <el-option
+            v-for="item2 in item.selList"
+            :key="item2.extcolCode"
+            :label="item2.defaultDisplay"
+            :value="item2.extcolCode"
+          >
+          </el-option>
+        </el-select>
+        <!-- <i
+          v-if="index !== 0"
+          class="el-icon-remove-outline"
+          @click="delLinkRel(index)"
+        ></i> -->
+      </div>
+
+      <div class="lk-select-item">
+        <el-button type="blue" @click="saveLinkRel">确定</el-button>
+      </div>
+    </div>
     <div class="lk-all-tab">
       <div class="lk-all-tab-fx">
         <el-table
@@ -12,38 +44,25 @@
           row-key="id"
           :tree-props="{ children: 'chains', hasChildren: 'hasChildren' }"
         >
-          <el-table-column prop="extcolName" label="一级标题" width="400">
-          </el-table-column>
-
-          <el-table-column align="center" label="操作" width="200">
+          <el-table-column width="400">
             <template slot-scope="scope">
+              {{ scope.row.primary.defaultDisplay }}
               <el-button
+                class="editBtn"
                 @click="handleEdit(scope.$index, scope.row)"
                 type="blue"
                 >编辑</el-button
               >
-              <el-button
-                @click="handleDelete(scope.$index, scope.row)"
-                type="redx"
-                >删除</el-button
-              >
+            </template>
+          </el-table-column>
+          <el-table-column width="400">
+            <template slot-scope="scope">
+              {{ scope.row.secondary.defaultDisplay }}
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
-
-    <!-- <div class="lk-sel">
-      <el-select v-model="value" placeholder="新建联动">
-        <el-option
-          v-for="item in options"
-          :key="item.id"
-          :label="item.defaultDisplay"
-          :value="item.id"
-        >
-        </el-option>
-      </el-select>
-    </div> -->
 
     <div class="lk-tab">
       <div class="lk-tab-item">
@@ -68,54 +87,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="字典项1">
-            <template slot-scope="scope">
-              {{ scope.row.defaultDisplay }}
-              <el-popover
-                trigger="click"
-                placement="right-start"
-                :ref="`popover-${scope.row.id}`"
-                class="rigIcon"
-              >
-                <div class="addNextModel">
-                  <div class="child-tit">字段</div>
-                  <div class="child-search">
-                    <el-input
-                      placeholder="请输入内容"
-                      prefix-icon="el-icon-search"
-                      v-model="defVal"
-                    >
-                    </el-input>
-                  </div>
-                  <div class="child-list">
-                    <el-radio-group v-model="radio1">
-                      <el-radio-button
-                        v-for="(item, index) in fieldList"
-                        :key="index"
-                        :label="item.extcolCode"
-                        >{{ item.defaultDisplay }}</el-radio-button
-                      >
-                    </el-radio-group>
-                    <!-- <span class="child-list-act">杭州</span> -->
-                    <!-- <span v-for="(item, index) in fieldList" :key="index">{{
-                      item.defaultDisplay
-                    }}</span> -->
-                  </div>
-                  <div class="child-btn">
-                    <el-button type="primary" @click="saveChildPar"
-                      >确定</el-button
-                    >
-                  </div>
-                </div>
-
-                <div slot="reference">
-                  <i
-                    v-if="scope.row.checked"
-                    class="el-icon-circle-plus-outline"
-                  ></i>
-                </div>
-              </el-popover>
-            </template>
+          <el-table-column label="字典项1" prop="defaultDisplay">
           </el-table-column>
         </el-table>
       </div>
@@ -156,6 +128,7 @@
 </template>
 
 <script>
+import { parse } from 'qs'
 import {
   getObjLink,
   getDictUsed,
@@ -180,20 +153,74 @@ export default {
       fieldList: [],
       firLink: [],
       secLink: [],
+      firdictCode: '',
       secdictCode: '',
       tabList: [],
+      list: [
+        {
+          value: null,
+          selList: [],
+        },
+        {
+          value: null,
+          selList: [],
+        },
+      ],
+      interiorName: '',
+      firCode: '',
+      secCode: '',
+      relatedCode: '',
     }
   },
   created() {
     const getLinkInfo = this.$route.query
     this.extcolCode = getLinkInfo.extcolCode
     this.nodeCode = getLinkInfo.nodeCode
-    this.getKzList()
+    this.interiorName = getLinkInfo.interiorName
+    // this.getKzList()
     this.getCodeList()
     this.relatedQuery()
+
+    // this.list[0].value = getLinkInfo.extcolCode
   },
   methods: {
-    //   确定联动关系
+    //   删除字段联动关系
+    delLinkRel(index) {
+      this.list.splice(index, 1)
+    },
+    //   增加字段联动关系
+    addLinkRel() {
+      this.list.push({
+        value: null,
+        selList: this.fieldList,
+      })
+    },
+    // 确定字段联动关系
+    saveLinkRel() {
+      const params = {
+        chainExtcolCode: this.list[1].value,
+        oriChainExtcolCode: this.list[1].value,
+        flag: 2,
+        extcolCode: this.list[0].value,
+        nodeCode: this.nodeCode,
+      }
+      console.log(params)
+      linkage(params).then((res) => {
+        console.log(res)
+        if (res.result === 'true') {
+          this.$message({
+            type: 'success',
+            message: res.message,
+          })
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    linkChange(a, b) {
+      //   this.getKzList(a, b)
+    },
+    //   确定字典项联动关系
     confLink() {
       const secList = []
 
@@ -206,13 +233,15 @@ export default {
       })
 
       const params = {
-        dictCode: this.objectCode,
+        dictCode: this.firdictCode,
         dictItemCode: this.firLink.dictItemCode,
-        extcolCode: this.extcolCode,
-        flag: 2,
+        extcolCode: this.firCode,
+        flag: 1,
         items: secList,
         nodeCode: this.nodeCode,
-        relatedExtcolCode: this.radio1,
+        oriChainExtcolCode: this.secCode,
+        chainExtcolCode: this.secCode,
+        relatedCode: this.relatedCode,
       }
       linkage(params).then((res) => {
         if (res.result === 'true') {
@@ -220,6 +249,7 @@ export default {
             type: 'success',
             message: res.message,
           })
+          this.tabList = []
           this.relatedQuery()
         } else {
           this.$message.error(res.message)
@@ -229,23 +259,25 @@ export default {
 
     // 查询关联关系
     relatedQuery() {
-      getRelatedQuery({ extcolCode: this.extcolCode }).then((res) => {
+      getRelatedQuery({
+        nodeCode: this.nodeCode,
+        interiorName: '',
+      }).then((res) => {
         console.log(res)
-        res.forEach((item) => {
-          getRelatedInstance({ relatedCode: item.relatedCode }).then((ress) => {
-            console.log(ress)
-            ress.id = Math.round(Math.random() * 1000)
-            if (ress.chains) {
-              ress.chains.forEach((item) => {
-                item.id = Math.round(Math.random() * 1000)
-              })
-            }
-
-            this.tabList.push(ress)
-          })
-        })
+        this.tabList = res
+        // res.forEach((item) => {
+        //   getRelatedInstance({ relatedCode: item.relatedCode }).then((ress) => {
+        //     ress.id = Math.round(Math.random() * 1000)
+        //     if (ress.chains) {
+        //       ress.chains.forEach((item) => {
+        //         item.id = Math.round(Math.random() * 1000)
+        //       })
+        //     }
+        //     this.tabList.push(ress)
+        //     console.log(this.tabList)
+        //   })
+        // })
       })
-      //   console.log(this.tabList)
     },
 
     // 赋值表格索引
@@ -267,60 +299,44 @@ export default {
       })
       this.firLink = row
     },
-    //   关闭选择字段弹窗
-    saveChildPar() {
-      for (const key in this.$refs) {
-        if (key.indexOf('popover-') !== -1) {
-          this.$refs[key].doClose()
-        }
-      }
-
-      getObjLink({ extcolCode: this.radio1 }).then((res) => {
-        if (res) {
-          this.secdictCode = res[0].objectCode
-          getDictUsed({
-            dictCode: res[0].objectCode,
-          }).then((res) => {
-            this.tabTestData2 = res
-          })
-        }
-
-        if (res.result === false) {
-          this.$message({
-            message: '没有可关联的字典项',
-            type: 'warning',
-          })
-          this.tabTestData2 = []
-        }
-
-        // this.objectCode = res.extColumnDictRelationPoList[0].objectCode
-        // this.getDictUsedFun()
-      })
-    },
 
     // 查询已扩展的字段
     getCodeList() {
-      GetCode({ nodeCode: this.nodeCode }).then((res) => {
-        this.fieldList = res
-      })
+      GetCode({ nodeCode: this.nodeCode, colType: 'chain', status: '' }).then(
+        (res) => {
+          this.fieldList = res
+          this.list[0].selList = res
+          this.list[1].selList = res
+        }
+      )
     },
 
     // 查询已使用的字典项
-    getDictUsedFun() {
+    getDictUsedFun(b) {
       getDictUsed({ dictCode: this.objectCode }).then((res) => {
         res.forEach((item) => {
           item.checked = false
         })
-        this.tabTestData = res
+        if (b === 0) {
+          this.tabTestData = res
+        } else {
+          this.tabTestData2 = res
+        }
       })
     },
     // 查询对象连接
-    getKzList() {
-      getObjLink({ extcolCode: this.extcolCode }).then((res) => {
-        // console.log(res)
+    getKzList(a, b) {
+      getObjLink({ extcolCode: a, nodeCode: this.nodeCode }).then((res) => {
         if (res) {
+          console.log(res)
           this.objectCode = res[0].objectCode
-          this.getDictUsedFun()
+          if (b === 0) {
+            this.firdictCode = res[0].objectCode
+          }
+          if (b === 1) {
+            this.secdictCode = res[0].objectCode
+          }
+          this.getDictUsedFun(b)
         }
       })
     },
@@ -329,12 +345,14 @@ export default {
     // },
     //   编辑
     handleEdit(index, row) {
-      //   console.log(index, row)
+      console.log(row)
+      this.getKzList(row.primary.extcolCode, 0)
+      this.getKzList(row.secondary.extcolCode, 1)
+      this.firCode = row.primary.extcolCode
+      this.secCode = row.secondary.extcolCode
+      this.relatedCode = row.relatedCode
     },
-    //   删除
-    handleDelete(index, row) {
-      //   console.log(index, row)
-    },
+
     // 设置表头样式
 
     tableHeaderStyle({ row, column, rowIndex, columnIndex }) {
@@ -371,6 +389,10 @@ export default {
     font-size: 18px;
     font-weight: bold;
     text-indent: 24px;
+    i {
+      color: #3377ff;
+      cursor: pointer;
+    }
   }
   .lk-sel {
     padding: 39px 40px 0;
@@ -483,5 +505,32 @@ export default {
     color: #3377ff;
     cursor: pointer;
   }
+}
+
+.lk-select {
+  padding: 20px 24px;
+  box-sizing: border-box;
+  .lk-select-item {
+    width: 19%;
+    margin-right: 1%;
+    float: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .el-select {
+      flex: 1;
+    }
+    i {
+      display: block;
+      width: 32px;
+      height: 32px;
+      text-align: center;
+      line-height: 32px;
+      cursor: pointer;
+    }
+  }
+}
+.editBtn {
+  margin-left: 10px;
 }
 </style>

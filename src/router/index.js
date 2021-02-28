@@ -5,6 +5,7 @@ import NavDetail from '../views/Detail/NavDetail'
 import DictDetail from '../views/Detail/DictDetail'
 import FileDetail from '../views/Detail/FileDetail'
 import Linkage from '../views/Linkage'
+import LinkageNew from '../views/Linkage/New'
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,11 @@ const routes = [
     path: '/Linkage',
     name: 'Linkage',
     component: Linkage,
+  },
+  {
+    path: '/LinkageNew',
+    name: 'LinkageNew',
+    component: LinkageNew,
   },
 
   { path: '*', redirect: '/Home' },

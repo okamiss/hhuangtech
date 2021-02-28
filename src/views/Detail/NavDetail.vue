@@ -198,7 +198,11 @@
             >
               停用</el-button
             >
-            <el-button type="blue" @click="goToLinkage(scope.row)">
+            <el-button
+              v-if="scope.row.colType === 'chain'"
+              type="blue"
+              @click="goToLinkage(scope.row)"
+            >
               联动</el-button
             >
           </template>
@@ -680,9 +684,13 @@ export default {
   methods: {
     // goto联动
     goToLinkage(row) {
+      const params = {
+        nodeCode: this.domInfo.nodeCode,
+        extcolCode: row.extcolCode,
+      }
       this.$router.push({
         path: '/Linkage',
-        query: row,
+        query: params,
       })
     },
     //   选中的 值

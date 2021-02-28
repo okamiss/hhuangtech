@@ -71,3 +71,8 @@ export const getObjLink = (params) =>
   get('/plm/node/sharding/extcol/object/links', params) //获取联动列
 
 export const getDictUsed = (params) => get('/plm/dict/item/used', params) //通过字典代码查询已经使用的字典项
+export const getRelatedInstance = (params) =>
+  get('/plm/core/ext/column/related/get/related/instance', params) //查询联动实例
+
+export const getRelatedQuery = (params) =>
+  get('/plm/core/ext/column/related/query', params) // 查询关联关系

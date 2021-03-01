@@ -326,6 +326,7 @@ export default {
   background-color: #f1f1f1;
   i {
     float: right;
+    cursor: pointer;
   }
 }
 .item:hover {

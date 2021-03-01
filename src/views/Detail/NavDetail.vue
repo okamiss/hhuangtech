@@ -4,6 +4,7 @@
       <el-button type="blue" @click="addField = true"> 增加字段</el-button>
       <el-button type="blue" @click="addChild = true">增加子节点</el-button>
       <el-button type="redx" @click="deleChild">删除节点</el-button>
+      <el-button type="blue" @click="goGroup">创建组</el-button>
     </div>
     <div class="card-box" ref="firTogg">
       <el-form
@@ -693,6 +694,13 @@ export default {
         path: '/Linkage',
         query: params,
       })
+    },
+    // 创建组
+    goGroup() {
+      const params = {
+        nodeCode: this.domInfo.nodeCode,
+      }
+      this.$router.push({ path: '/Group', query: params })
     },
     //   选中的 值
     handleSelectionChange(val) {

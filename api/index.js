@@ -76,3 +76,22 @@ export const getRelatedInstance = (params) =>
 
 export const getRelatedQuery = (params) =>
   get('/plm/core/ext/column/related/query', params) // 查询关联关系
+
+/*
+    组  
+*/
+
+export const createGroup = (params) =>
+  post('/plm/node/group/define/create', params) // 创建组
+
+export const getGroupList = (params) =>
+  get('/plm/node/group/define/list', params) // 查询组
+
+export const addFieldToGroup = (params) =>
+  post('/plm/node/group/extcol/create', params) // 向组添加字段
+
+export const getGroupInfo = (params) =>
+  get('/plm/node/group/extcol/info', params) // 通过组代码查询组信息(包含组定义信息,节点信息,扩展列信息)
+
+export const removeGroup = (params) =>
+  post('/plm/node/group/define/remove', params) // 通过组代码查询组信息(包含组定义信息,节点信息,扩展列信息)

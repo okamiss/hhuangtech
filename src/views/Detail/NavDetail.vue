@@ -1,170 +1,173 @@
 <template>
   <div>
-    <div class="card-box">
-      <el-button type="blue" @click="addField = true"> 增加字段</el-button>
-      <el-button type="blue" @click="addChild = true">增加子节点</el-button>
-      <el-button type="redx" @click="deleChild">删除节点</el-button>
-      <el-button type="blue" @click="goGroup">创建组</el-button>
-    </div>
     <div class="card-box def-height" ref="firTogg">
-      <el-form
-        ref="form"
-        :model="form"
-        label-width="80px"
-        label-position="left"
-      >
-        <el-row :gutter="40">
-          <el-col :span="7">
-            <el-form-item label="内部名称">
-              <el-input v-model="form.interiorName" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="显示名称">
-              <el-input v-model="form.defaultDisplay"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="1" :offset="7">
-            <el-button
-              v-if="showOne"
-              type="radius"
-              class="rotate90"
-              icon="el-icon-d-arrow-left"
-              @click="firTogg"
-            ></el-button>
-            <el-button
-              v-else
-              type="radius"
-              class="rotate90"
-              icon="el-icon-d-arrow-right"
-              @click="firTogg"
-            ></el-button>
-          </el-col>
-        </el-row>
-        <el-row :gutter="40">
-          <el-col :span="7">
-            <el-form-item label="生命周期">
-              <el-select v-model="form.date1" placeholder="请选择">
-                <el-option label="设计" value="11111"></el-option>
-                <el-option label="研发" value="22222"></el-option>
-                <el-option label="上线" value="33333"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="图标">
-              <el-input v-model="form.date3">
-                <el-button slot="append">选择</el-button>
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="40">
-          <el-col :span="7">
-            <el-form-item label="可实例化">
-              <el-switch
-                active-color="#409EFF"
-                v-model="form.data1"
-              ></el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7">
-            <el-form-item label="可有子类">
-              <el-switch
-                active-color="#409EFF"
-                v-model="form.isRoot"
-              ></el-switch>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="14">
-            <el-form-item label="说明">
-              <el-input
-                type="textarea"
-                :rows="4"
-                v-model="form.date1"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-form-item>
-          <el-button type="blue" @click="onSubmit">保存</el-button>
-          <!-- <el-button>取消</el-button> -->
-        </el-form-item>
-      </el-form>
-    </div>
-
-    <div class="card-box">
-      <el-button type="blue" @click="saveCreateGroup">创建组</el-button>
-      <div class="create-group">
-        <div class="create-group-item">
-          <span>组名称</span>
-          <el-input v-model="groupParams.defaultDisplay"></el-input>
-        </div>
-        <div class="create-group-item">
-          <span>组列数</span>
-          <el-input v-model="groupParams.maxRows"></el-input>
-        </div>
-      </div>
-      <div class="clear"></div>
-    </div>
-    <div class="card-box">
-      <div class="change-group-sel">
-        <div class="change-group-sel-item">字段</div>
-        <div class="change-group-sel-item change-group-sel-act">
-          布局 <i class="el-icon-arrow-down"></i>
-        </div>
-        <div class="change-group-sel-item">联动</div>
-      </div>
-      <div class="group-list" v-for="item in groupList" :key="item.id">
-        <div class="group-list-tit">
-          <div class="group-list-tit-attr">可用属性</div>
-          <div class="group-list-tit-group">
-            {{ item.defaultDisplay }} <i class="el-icon-edit-outline"></i>
-            <i class="el-icon-delete" @click="delGroup(item.groupCode)"></i>
-          </div>
-        </div>
-        <!-- {{ item.list }} -->
-        <div class="group-list-data">
-          <div
-            class="group-list-data-col"
-            v-for="(item2, index2) in item.list"
-            :key="index2"
+      <el-row>
+        <el-col :span="22">
+          <el-button type="blue" @click="addChild = true">增加子节点</el-button>
+          <el-button type="redx" @click="deleChild">删除节点</el-button>
+          <el-form
+            ref="form"
+            :model="form"
+            label-width="80px"
+            label-position="left"
+            style="margin-top:10px"
           >
-            <draggable
-              v-model="item.list[index2]"
-              :group="item.id"
-              animation="300"
-              dragClass="dragClass"
-              ghostClass="ghostClass"
-              chosenClass="chosenClass"
-              @start="onStart"
-              @end="onEnd(item)"
-              class="colHeight"
-            >
-              <transition-group>
-                <div
-                  class="group-list-data-item"
-                  v-for="item3 in item2"
-                  :key="item3.id + item3.interiorName"
-                >
-                  {{ item3.interiorName }}
-                </div>
-              </transition-group>
-            </draggable>
-          </div>
+            <el-row :gutter="40">
+              <el-col :span="7">
+                <el-form-item label="内部名称">
+                  <el-input v-model="form.interiorName" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item label="显示名称">
+                  <el-input v-model="form.defaultDisplay"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="40">
+              <el-col :span="7">
+                <el-form-item label="生命周期">
+                  <el-select v-model="form.date1" placeholder="请选择">
+                    <el-option label="设计" value="11111"></el-option>
+                    <el-option label="研发" value="22222"></el-option>
+                    <el-option label="上线" value="33333"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item label="图标">
+                  <el-input v-model="form.date3">
+                    <el-button slot="append">选择</el-button>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="40">
+              <el-col :span="7">
+                <el-form-item label="可实例化">
+                  <el-switch
+                    active-color="#409EFF"
+                    v-model="form.data1"
+                  ></el-switch>
+                </el-form-item>
+              </el-col>
+              <el-col :span="7">
+                <el-form-item label="可有子类">
+                  <el-switch
+                    active-color="#409EFF"
+                    v-model="form.isRoot"
+                  ></el-switch>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="14">
+                <el-form-item label="说明">
+                  <el-input
+                    type="textarea"
+                    :rows="4"
+                    v-model="form.date1"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <div class="clear"></div>
-        </div>
-      </div>
+            <el-form-item>
+              <el-button type="blue" @click="onSubmit">保存</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="2">
+          <el-button
+            v-if="showOne"
+            type="radius"
+            class="rotate90"
+            icon="el-icon-d-arrow-left"
+            @click="firTogg"
+          ></el-button>
+          <el-button
+            v-else
+            type="radius"
+            class="rotate90"
+            icon="el-icon-d-arrow-right"
+            @click="firTogg"
+          ></el-button>
+        </el-col>
+      </el-row>
     </div>
 
-    <div class="card-box">
+    <div class="card-box" v-show="changeBoxVal === 2" ref="secTogg">
+      <el-row>
+        <el-col :span="22">
+          <el-button type="blue">创建组</el-button>
+          <div class="create-group">
+            <el-form
+              ref="form"
+              :model="groupParams"
+              label-width="80px"
+              label-position="left"
+            >
+              <el-row :gutter="20">
+                <el-col :span="8">
+                  <el-form-item label="内部名称">
+                    <el-input></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="显示名称">
+                    <el-input v-model="groupParams.defaultDispla"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="20">
+                <el-col :span="8">
+                  <el-form-item label="组列数">
+                    <el-input
+                      v-model="groupParams.maxRows"
+                    ></el-input> </el-form-item></el-col
+              ></el-row>
+              <el-row :gutter="20">
+                <el-col :span="16">
+                  <el-form-item label="说明">
+                    <el-input
+                      type="textarea"
+                    ></el-input> </el-form-item></el-col
+              ></el-row>
+              <el-row :gutter="20">
+                <el-col :span="16">
+                  <el-form-item>
+                    <el-button type="blue" @click="saveCreateGroup"
+                      >确定</el-button
+                    >
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </div>
+          <div class="clear"></div>
+        </el-col>
+        <el-col :span="2">
+          <el-button
+            v-if="showTwo"
+            type="radius"
+            class="rotate90"
+            icon="el-icon-d-arrow-left"
+            @click="secTogg"
+          ></el-button>
+          <el-button
+            v-else
+            type="radius"
+            class="rotate90"
+            icon="el-icon-d-arrow-right"
+            @click="secTogg"
+          ></el-button>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="card-box" v-if="changeBoxVal === 1">
       <div class="select">
-        <!-- <span></span> -->
-        <!-- <el-button size="small">筛选</el-button> -->
+        <el-button type="blue" @click="addField = true"> 增加字段</el-button>
         <template v-if="status === '0'">
           <el-button type="blue" @click="lookReuse">只看启用</el-button>
           <el-button type="bluex" @click="lookStop">只看停用</el-button>
@@ -190,102 +193,159 @@
           </el-select>
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
+        <el-button type="blue" style="margin-left:10px" @click="changeBox(2)">
+          管理布局</el-button
+        >
+        <el-button type="blue" @click="changeBox(3)"> 管理联动</el-button>
       </div>
-      <el-table
-        :data="tableData"
-        border
-        style="width: 100%"
-        type="expand"
-        :header-cell-style="{
-          height: 60 + 'px',
-          background: '#F7F7F7',
-          'font-size': 18 + 'px',
-          color: '#384B59',
-          'font-weight': 500,
-        }"
-        :row-style="{ height: 60 + 'px', 'font-size': 14 + 'px' }"
-      >
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="内部名称">
-                <span>{{ props.row.interiorName }}</span>
-              </el-form-item>
-              <el-form-item label="显示名称">
-                <span>{{ props.row.defaultDisplay }}</span>
-              </el-form-item>
-              <el-form-item label="类型">
-                <span>{{ props.row.colType }}</span>
-              </el-form-item>
-              <!-- <el-form-item label="extcolCode">
-                <span>{{ props.row.extcolCode }}</span>
-              </el-form-item> -->
-              <el-form-item label="isNewRecord">
-                <span>{{ props.row.isNewRecord }}</span>
-              </el-form-item>
-              <!-- <el-form-item label="nodeCode">
-                <span>{{ props.row.nodeCode }}</span>
-              </el-form-item>
-              <el-form-item label="rootCode">
-                <span>{{ props.row.rootCode }}</span>
-              </el-form-item>
-              <el-form-item label="shardingCode">
-                <span>{{ props.row.shardingCode }}</span>
-              </el-form-item>
-              <el-form-item label="shardingColCode">
-                <span>{{ props.row.shardingColCode }}</span>
-              </el-form-item>
-              <el-form-item label="status">
-                <span>{{ props.row.status }}</span>
-              </el-form-item> -->
-            </el-form>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="interiorName" label="内部名称" width="300">
-        </el-table-column>
-        <el-table-column prop="defaultDisplay" label="显示名称" width="300">
-        </el-table-column>
-        <el-table-column prop="colType" label="类型" width="200">
-        </el-table-column>
-        <el-table-column label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button
-              type="blue"
-              @click="fieldReuse(scope.row)"
-              v-if="scope.row.status === '2'"
-            >
-              启用</el-button
-            >
-            <el-button
-              type="redx"
-              @click="fieldStop(scope.row)"
-              v-if="scope.row.status === '0'"
-            >
-              停用</el-button
-            >
-            <el-button
-              v-if="scope.row.colType === 'chain'"
-              type="blue"
-              @click="goToLinkage(scope.row)"
-            >
-              联动</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
     </div>
 
-    <!-- <div class="card-box">
-      <el-row>
-        <el-col :span="10">1</el-col>
-        <el-col :span="10">1</el-col>
-        <el-col :span="2" :offset="2">
-          <el-button type="primary" icon="el-icon-arrow-up" circle></el-button>
-        </el-col>
-      </el-row>
-    </div> -->
+    <div class="card-box">
+      <div class="change-group-sel">
+        <div
+          class="change-group-sel-item"
+          :class="{ 'change-group-sel-act': changeBoxVal === 1 }"
+          @click="changeBox(1)"
+        >
+          字段
+        </div>
+        <div
+          class="change-group-sel-item "
+          :class="{ 'change-group-sel-act': changeBoxVal === 2 }"
+          @click="changeBox(2)"
+        >
+          布局
+          <i
+            class="el-icon-close"
+            v-if="changeBoxVal === 2"
+            @click.stop="changeBox(1)"
+          ></i>
+        </div>
+        <div
+          class="change-group-sel-item"
+          :class="{ 'change-group-sel-act': changeBoxVal === 3 }"
+          @click="changeBox(3)"
+        >
+          联动
+          <i
+            class="el-icon-close"
+            v-if="changeBoxVal === 3"
+            @click.stop="changeBox(1)"
+          ></i>
+        </div>
+      </div>
+      <template v-if="changeBoxVal === 2">
+        <div class="group-list" v-for="item in groupList" :key="item.id">
+          <div class="group-list-tit">
+            <div class="group-list-tit-attr">可用属性</div>
+            <div class="group-list-tit-group">
+              {{ item.defaultDisplay }} <i class="el-icon-edit-outline"></i>
+              <i class="el-icon-delete" @click="delGroup(item.groupCode)"></i>
+            </div>
+          </div>
+          <!-- {{ item.list }} -->
+          <div class="group-list-data">
+            <div
+              class="group-list-data-col"
+              v-for="(item2, index2) in item.list"
+              :key="index2"
+            >
+              <draggable
+                v-model="item.list[index2]"
+                :group="item.id"
+                animation="300"
+                dragClass="dragClass"
+                ghostClass="ghostClass"
+                chosenClass="chosenClass"
+                @start="onStart"
+                @end="onEnd(item)"
+                class="colHeight"
+              >
+                <transition-group>
+                  <div
+                    class="group-list-data-item"
+                    v-for="item3 in item2"
+                    :key="item3.id + item3.interiorName"
+                  >
+                    {{ item3.interiorName }}
+                  </div>
+                </transition-group>
+              </draggable>
+            </div>
 
+            <div class="clear"></div>
+          </div>
+        </div>
+      </template>
+      <template v-if="changeBoxVal === 1">
+        <el-table
+          :data="tableData"
+          border
+          style="width: 100%; margin-top:32px"
+          type="expand"
+          :header-cell-style="{
+            height: 60 + 'px',
+            background: '#F7F7F7',
+            'font-size': 18 + 'px',
+            color: '#384B59',
+            'font-weight': 500,
+          }"
+          :row-style="{ height: 60 + 'px', 'font-size': 14 + 'px' }"
+        >
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="内部名称">
+                  <span>{{ props.row.interiorName }}</span>
+                </el-form-item>
+                <el-form-item label="显示名称">
+                  <span>{{ props.row.defaultDisplay }}</span>
+                </el-form-item>
+                <el-form-item label="类型">
+                  <span>{{ props.row.colType }}</span>
+                </el-form-item>
+
+                <el-form-item label="isNewRecord">
+                  <span>{{ props.row.isNewRecord }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="interiorName" label="内部名称" width="300">
+          </el-table-column>
+          <el-table-column prop="defaultDisplay" label="显示名称" width="300">
+          </el-table-column>
+          <el-table-column prop="colType" label="类型" width="200">
+          </el-table-column>
+          <el-table-column label="操作" width="200">
+            <template slot-scope="scope">
+              <el-button
+                type="blue"
+                @click="fieldReuse(scope.row)"
+                v-if="scope.row.status === '2'"
+              >
+                启用</el-button
+              >
+              <el-button
+                type="redx"
+                @click="fieldStop(scope.row)"
+                v-if="scope.row.status === '0'"
+              >
+                停用</el-button
+              >
+              <el-button
+                v-if="scope.row.colType === 'chain'"
+                type="blue"
+                @click="goToLinkage(scope.row)"
+              >
+                联动</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </div>
     <el-dialog
       title="增加子节点"
       :visible.sync="addChild"
@@ -636,6 +696,7 @@ export default {
 
   data() {
     return {
+      changeBoxVal: 1,
       interVisible: false,
       defVal: '',
       form: {
@@ -730,6 +791,11 @@ export default {
   mounted() {},
   filters: {},
   methods: {
+    //   切换三大模块
+    changeBox(e) {
+      this.changeBoxVal = e
+      //   this.$refs.secTogg.style.height = 'auto'
+    },
     //   删除组
     delGroup(groupCode) {
       this.$confirm('确定删除这个组吗, 是否继续?', '提示', {
@@ -793,7 +859,16 @@ export default {
         maxRows: a.maxRows,
         nodeCode: a.nodeCode,
       }
-      editGroup(params).then((res) => {})
+      editGroup(params).then((res) => {
+        if (res.result) {
+          this.$message({
+            message: '已自动保存布局',
+            type: 'success',
+          })
+        } else {
+          this.$message.error(res.message)
+        }
+      })
     },
 
     // 获取组列表
@@ -828,13 +903,6 @@ export default {
         path: '/Linkage',
         query: params,
       })
-    },
-    // 创建组
-    goGroup() {
-      const params = {
-        nodeCode: this.domInfo.nodeCode,
-      }
-      this.$router.push({ path: '/Group', query: params })
     },
     //   选中的 值
     handleSelectionChange(val) {
@@ -1069,10 +1137,20 @@ export default {
       this.showOne = !this.showOne
       //   var heightStyle = this.$refs.firTogg.offsetHeight;
       if (!this.showOne) {
-        this.$refs.firTogg.style.height = '70px'
+        this.$refs.firTogg.style.height = '110px'
         this.$refs.firTogg.style.overflow = 'hidden'
       } else {
         this.$refs.firTogg.style.height = 'auto'
+      }
+    },
+    secTogg() {
+      this.showTwo = !this.showTwo
+      //   var heightStyle = this.$refs.firTogg.offsetHeight;
+      if (!this.showTwo) {
+        this.$refs.secTogg.style.height = '110px'
+        this.$refs.secTogg.style.overflow = 'hidden'
+      } else {
+        this.$refs.secTogg.style.height = 'auto'
       }
     },
   },
@@ -1081,7 +1159,7 @@ export default {
 
 <style lang="less" coped>
 .def-height {
-  height: 70px;
+  height: 110px;
   overflow: hidden;
 }
 .el-input {
@@ -1117,7 +1195,6 @@ export default {
   // justify-content: start;
   justify-content: left;
   align-items: center;
-  margin-bottom: 20px;
   span {
     display: block;
     // margin-right: 10px;
@@ -1160,43 +1237,40 @@ export default {
 }
 
 .change-group-sel {
+  position: absolute;
   height: 32px;
+  box-sizing: border-box;
+  z-index: 5;
   .change-group-sel-item {
     height: 100%;
     float: left;
     width: 88px;
-    background: #f7f7f7;
+    // background: #f7f7f7;
+    color: #3377ff;
     line-height: 32px;
     text-align: center;
+    font-size: 20px;
+    font-weight: bold;
     cursor: pointer;
+
     i {
       margin-left: 5px;
+      font-size: 12px;
     }
   }
   .change-group-sel-act {
-    background: #3377ff;
-    color: #fff;
+    background: #f7f7f7;
+    border-top: 1px solid #3377ff;
+    border-bottom: 2px solid #f7f7f7;
   }
 }
 
 .create-group {
   margin-top: 10px;
-  height: 32px;
-  .create-group-item {
-    height: 100%;
-    width: 338px;
-    display: flex;
-    float: left;
-    margin-right: 24px;
-    span {
-      width: 68px;
-      line-height: 32px;
-      font-size: 16px;
-    }
-    .el-input {
-      flex: 1;
-    }
-  }
+}
+
+.group-list:nth-child(2) {
+  margin-top: 32px;
 }
 
 .group-list {
@@ -1207,6 +1281,7 @@ export default {
     background: #f7f7f7;
     display: flex;
     border-top: 1px solid #3377ff;
+    box-sizing: border-box;
   }
   .group-list-tit-attr {
     width: 312px;

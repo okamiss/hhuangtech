@@ -6,7 +6,7 @@
       <el-button type="redx" @click="deleChild">删除节点</el-button>
       <el-button type="blue" @click="goGroup">创建组</el-button>
     </div>
-    <div class="card-box" ref="firTogg">
+    <div class="card-box def-height" ref="firTogg">
       <el-form
         ref="form"
         :model="form"
@@ -94,6 +94,71 @@
           <!-- <el-button>取消</el-button> -->
         </el-form-item>
       </el-form>
+    </div>
+
+    <div class="card-box">
+      <el-button type="blue" @click="saveCreateGroup">创建组</el-button>
+      <div class="create-group">
+        <div class="create-group-item">
+          <span>组名称</span>
+          <el-input v-model="groupParams.defaultDisplay"></el-input>
+        </div>
+        <div class="create-group-item">
+          <span>组列数</span>
+          <el-input v-model="groupParams.maxRows"></el-input>
+        </div>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="card-box">
+      <div class="change-group-sel">
+        <div class="change-group-sel-item">字段</div>
+        <div class="change-group-sel-item change-group-sel-act">
+          布局 <i class="el-icon-arrow-down"></i>
+        </div>
+        <div class="change-group-sel-item">联动</div>
+      </div>
+      <div class="group-list" v-for="item in groupList" :key="item.id">
+        <div class="group-list-tit">
+          <div class="group-list-tit-attr">可用属性</div>
+          <div class="group-list-tit-group">
+            {{ item.defaultDisplay }} <i class="el-icon-edit-outline"></i>
+            <i class="el-icon-delete" @click="delGroup(item.groupCode)"></i>
+          </div>
+        </div>
+        <!-- {{ item.list }} -->
+        <div class="group-list-data">
+          <div
+            class="group-list-data-col"
+            v-for="(item2, index2) in item.list"
+            :key="index2"
+          >
+            <draggable
+              v-model="item.list[index2]"
+              :group="item.id"
+              animation="300"
+              dragClass="dragClass"
+              ghostClass="ghostClass"
+              chosenClass="chosenClass"
+              @start="onStart"
+              @end="onEnd(item)"
+              class="colHeight"
+            >
+              <transition-group>
+                <div
+                  class="group-list-data-item"
+                  v-for="item3 in item2"
+                  :key="item3.id + item3.interiorName"
+                >
+                  {{ item3.interiorName }}
+                </div>
+              </transition-group>
+            </draggable>
+          </div>
+
+          <div class="clear"></div>
+        </div>
+      </div>
     </div>
 
     <div class="card-box">
@@ -542,6 +607,8 @@
 </template>
 
 <script>
+//导入draggable组件
+import draggable from 'vuedraggable'
 import Bus from '../Bus'
 import {
   GetDomDetail,
@@ -554,8 +621,19 @@ import {
   ApiFieldRecover,
   ApiFieldReuse,
   ApiFieldStop,
+  createGroup,
+  getGroupList,
+  addFieldToGroup,
+  getGroupInfo,
+  removeGroup,
+  editGroup,
 } from '../../../api/index.js'
 export default {
+  //注册draggable组件
+  components: {
+    draggable,
+  },
+
   data() {
     return {
       interVisible: false,
@@ -569,7 +647,7 @@ export default {
         delivery: false,
         oneHeight: '100px',
       },
-      showOne: true,
+      showOne: false,
       showTwo: true,
       showThree: true,
       showTour: true,
@@ -612,57 +690,24 @@ export default {
           label: 'yyyy-MM-dd HH:mm:ss',
         },
       ],
-      textData: [
-        {
-          value: '1',
-          label: '字典项1',
-        },
-        {
-          value: '2',
-          label: '字典项2',
-        },
-        {
-          value: '3',
-          label: '字典项3',
-        },
-        {
-          value: '4',
-          label: '字典项4',
-        },
-        {
-          value: '5',
-          label: '字典项5',
-        },
-      ],
-      tabTestData: [
-        {
-          name: '字典项字段111',
-          value: '值',
-        },
-        {
-          name: '字典项字段222',
-          value: '值',
-        },
-        {
-          name: '字典项字段333',
-          value: '值',
-        },
-        {
-          name: '字典项字段444',
-          value: '值',
-        },
-        {
-          name: '字典项字段555',
-          value: '值',
-        },
-      ],
       multipleSelection: [],
+      nodeCode: '',
+      groupList: [],
+      groupParams: {
+        defaultDisplay: '',
+        groupCode: '',
+        layoutCss: '',
+        nodeCode: '',
+        maxRows: '',
+      },
     }
   },
   watch: {
     //   通过路由监听地址栏
     $route: function(route) {
       var query = route.query
+      this.nodeCode = query.nodeCode
+      this.groupParams.nodeCode = query.nodeCode
       this.tableData = []
       this.domInfo = query
       this.getDomInfo()
@@ -671,6 +716,8 @@ export default {
   created() {
     this.GetListType()
     var query = this.$route.query
+    this.nodeCode = query.nodeCode
+    this.groupParams.nodeCode = query.nodeCode
     this.tableData = []
     this.domInfo = query
     this.getDomInfo()
@@ -683,6 +730,93 @@ export default {
   mounted() {},
   filters: {},
   methods: {
+    //   删除组
+    delGroup(groupCode) {
+      this.$confirm('确定删除这个组吗, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true,
+      })
+        .then(() => {
+          removeGroup({ groupCode }).then((res) => {
+            if (res.result) {
+              this.$message({
+                message: res.message,
+                type: 'success',
+              })
+              this.addFieldGroupModel = false
+              this.getGroupListFun()
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+
+    // 创建组
+    saveCreateGroup() {
+      createGroup(this.groupParams).then((res) => {
+        if (res.result) {
+          this.$message({
+            message: res.message,
+            type: 'success',
+          })
+          this.createGroupModel = false
+          this.getGroupListFun()
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    //开始拖拽事件
+    onStart() {},
+    //拖拽结束事件
+    onEnd(a) {
+      const list = a.list
+      list.forEach((item, index) => {
+        item.forEach((itemc) => {
+          itemc.position = index
+        })
+      })
+
+      const params = {
+        defaultDisplay: a.defaultDisplay,
+        groupCode: a.groupCode,
+        layoutCss: JSON.stringify(list),
+        maxRows: a.maxRows,
+        nodeCode: a.nodeCode,
+      }
+      editGroup(params).then((res) => {})
+    },
+
+    // 获取组列表
+    getGroupListFun() {
+      getGroupList({ nodeCode: this.nodeCode }).then((res) => {
+        res.forEach((item) => {
+          if (item.layoutCss) {
+            const getListStyle = JSON.parse(item.layoutCss)
+            item.list = getListStyle
+          } else {
+            item.list = []
+            item.list.push(this.tableData)
+            for (let i = 0; i < item.maxRows; i++) {
+              item.list.push([])
+            }
+          }
+        })
+        setTimeout(() => {
+          this.groupList = res
+        }, 500)
+      })
+    },
+
     // goto联动
     goToLinkage(row) {
       const params = {
@@ -839,6 +973,7 @@ export default {
         status: this.status,
       }).then((res) => {
         this.tableData = res
+        this.getGroupListFun()
       })
     },
 
@@ -945,6 +1080,10 @@ export default {
 </script>
 
 <style lang="less" coped>
+.def-height {
+  height: 70px;
+  overflow: hidden;
+}
 .el-input {
   height: 32px;
   input {
@@ -1018,5 +1157,130 @@ export default {
 }
 .searCaseSel {
   width: 120px;
+}
+
+.change-group-sel {
+  height: 32px;
+  .change-group-sel-item {
+    height: 100%;
+    float: left;
+    width: 88px;
+    background: #f7f7f7;
+    line-height: 32px;
+    text-align: center;
+    cursor: pointer;
+    i {
+      margin-left: 5px;
+    }
+  }
+  .change-group-sel-act {
+    background: #3377ff;
+    color: #fff;
+  }
+}
+
+.create-group {
+  margin-top: 10px;
+  height: 32px;
+  .create-group-item {
+    height: 100%;
+    width: 338px;
+    display: flex;
+    float: left;
+    margin-right: 24px;
+    span {
+      width: 68px;
+      line-height: 32px;
+      font-size: 16px;
+    }
+    .el-input {
+      flex: 1;
+    }
+  }
+}
+
+.group-list {
+  margin-bottom: 40px;
+  .group-list-tit {
+    width: 100%;
+    height: 40px;
+    background: #f7f7f7;
+    display: flex;
+    border-top: 1px solid #3377ff;
+  }
+  .group-list-tit-attr {
+    width: 312px;
+    height: 100%;
+    border-right: 1px solid #e8e8e8;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 40px;
+    text-indent: 24px;
+  }
+  .group-list-tit-group {
+    flex: 1;
+    height: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 40px;
+    text-indent: 24px;
+    i {
+      text-indent: 12px;
+      cursor: pointer;
+    }
+  }
+}
+.group-list-data {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #e8e8e8;
+  box-sizing: border-box;
+  display: flex;
+  .group-list-data-col {
+    overflow-y: scroll;
+    float: left;
+    flex: 1;
+    height: 100%;
+    box-sizing: border-box;
+    border-right: 1px solid #e8e8e8;
+
+    .group-list-data-item {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      text-indent: 24px;
+      box-sizing: border-box;
+      border-bottom: 1px solid #e8e8e8;
+      cursor: move;
+    }
+  }
+  .group-list-data-col:first-child {
+    flex: inherit;
+    width: 312px;
+  }
+}
+
+/*定义要拖拽元素的样式*/
+.ghostClass {
+  background-color: #0984e3 !important;
+}
+.chosenClass {
+  background-color: #81ecec !important;
+  opacity: 1 !important;
+}
+.dragClass {
+  background-color: #00cec9 !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background-image: none !important;
+}
+
+.colHeight {
+  /* height: 50px; */
+  span {
+    display: block;
+    height: 200px;
+  }
 }
 </style>

@@ -212,6 +212,8 @@ export default {
             type: 'success',
             message: res.message,
           })
+          this.tabList = []
+          this.relatedQuery()
         } else {
           this.$message.error(res.message)
         }

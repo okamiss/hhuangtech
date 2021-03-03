@@ -36,6 +36,12 @@ axios.interceptors.request.use(
       'Content-Type': 'application/json;charset=UTF-8',
     }
 
+    // if (config.method === 'post') {
+    //   config.headers = {
+    //     'Content-Type': 'multipart/form-data',
+    //   }
+    // }
+
     return config
   },
   (error) => {
@@ -46,6 +52,7 @@ axios.interceptors.request.use(
 //http response 拦截器
 axios.interceptors.response.use(
   (response) => {
+    // console.log(response)
     if (response) {
       // router.push({
       //     path: "/",

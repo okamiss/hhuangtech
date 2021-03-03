@@ -77,7 +77,6 @@
 import Bus from '../Bus/index.js'
 import { GetMenuList, GetDictList, GetFileList } from '../../../api/index.js'
 import ChildMenu from './ChildMenu'
-import { Icon } from 'element-ui'
 export default {
   components: {
     ChildMenu,
@@ -165,6 +164,13 @@ export default {
     },
     // 获取字典item
     getDictItem(item) {
+      console.log(item)
+      const params = {
+        dictCode: item.dictCode,
+        id: item.id,
+        parentCode: item.parentCode,
+        treeNames: item.treeNames,
+      }
       this.$router.push({
         path: '/DictDetail',
         query: item,

@@ -14,7 +14,7 @@
       <el-button type="redx" @click="DeleteDictPar">删除字典</el-button>
     </div>
 
-    <div class="dict-box-dn" ref="firTogg">
+    <div class="dict-box-dn">
       <div class="dict-box-item">
         <el-table
           :data="tableData"
@@ -64,6 +64,7 @@
           </el-table-column>
           <el-table-column label="图标">
             <template slot-scope="scope">
+              {{ scope.row.dictVal }}
               <img
                 :src="require(`@/assets/img/carewash/${scope.row.dictVal}`)"
               />
@@ -136,11 +137,11 @@
             </template>
           </el-table-column>
           <el-table-column label="图标">
-            <template slot-scope="scope">
+            <!-- <template slot-scope="scope">
               <img
                 :src="require(`@/assets/img/carewash/${scope.row.dictVal}`)"
               />
-            </template>
+            </template> -->
           </el-table-column>
           <el-table-column
             prop="interiorName"
@@ -308,7 +309,7 @@ export default {
     setTimeout(() => {
       let getFileList = JSON.parse(localStorage.getItem('fileList'))
       this.options = getFileList
-    }, 2000)
+    }, 1000)
   },
   mounted() {},
   methods: {
@@ -429,7 +430,6 @@ export default {
         } else {
           this.tableData = res.unuse
           this.tableDataUsed = res.used
-          //   this.options = res
         }
       })
     },

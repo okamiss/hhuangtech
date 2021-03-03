@@ -90,13 +90,16 @@ a {
   padding: 20px;
   box-sizing: border-box;
   border-radius: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.hh-nav::-webkit-scrollbar,
+/* .hh-nav::-webkit-scrollbar,
 .hh-cont::-webkit-scrollbar,
 .child-list::-webkit-scrollbar,
 .lk-all-tab::-webkit-scrollbar {
+  display: none;
+} */
+::-webkit-scrollbar {
   display: none;
 }
 

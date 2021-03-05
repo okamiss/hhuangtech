@@ -7,6 +7,7 @@ import FileDetail from '../views/Detail/FileDetail'
 import Linkage from '../views/Linkage'
 import LinkageNew from '../views/Linkage/New'
 import Group from '../views/Group'
+import GroupPreview from '../views/Group/Preview'
 
 Vue.use(VueRouter)
 
@@ -54,6 +55,11 @@ const routes = [
     path: '/Group',
     name: 'Group',
     component: Group,
+  },
+  {
+    path: '/GroupPreview',
+    name: 'GroupPreview',
+    component: GroupPreview,
   },
 
   { path: '*', redirect: '/Home' },

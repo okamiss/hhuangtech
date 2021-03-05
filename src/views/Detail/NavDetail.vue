@@ -165,41 +165,6 @@
       </el-row>
     </div>
 
-    <div class="card-box" v-if="changeBoxVal === 1">
-      <div class="select">
-        <el-button type="blue" @click="addField = true"> 增加字段</el-button>
-        <template v-if="status === '0'">
-          <el-button type="blue" @click="lookReuse">只看启用</el-button>
-          <el-button type="bluex" @click="lookStop">只看停用</el-button>
-        </template>
-        <template v-else-if="status === '2'">
-          <el-button type="bluex" @click="lookReuse">只看启用</el-button>
-          <el-button type="blue" @click="lookStop">只看停用</el-button>
-        </template>
-        <template v-else>
-          <el-button type="bluex" @click="lookReuse">只看启用</el-button>
-          <el-button type="bluex" @click="lookStop">只看停用</el-button>
-        </template>
-
-        <el-input
-          placeholder="请输入内容"
-          v-model="input3"
-          class="input-with-select"
-        >
-          <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="内部名称" value="1"></el-option>
-            <el-option label="外部名称" value="2"></el-option>
-            <el-option label="类型" value="3"></el-option>
-          </el-select>
-          <el-button slot="append" icon="el-icon-search"></el-button>
-        </el-input>
-        <el-button type="blue" style="margin-left:10px" @click="changeBox(2)">
-          管理布局</el-button
-        >
-        <el-button type="blue" @click="changeBox(3)"> 管理联动</el-button>
-      </div>
-    </div>
-
     <div class="card-box">
       <div class="change-group-sel">
         <div
@@ -234,6 +199,109 @@
           ></i>
         </div>
       </div>
+
+      <template v-if="changeBoxVal === 1">
+        <div class="select">
+          <el-button type="blue" @click="addField = true"> 增加字段</el-button>
+          <template v-if="status === '0'">
+            <el-button type="blue" @click="lookReuse">只看启用</el-button>
+            <el-button type="bluex" @click="lookStop">只看停用</el-button>
+          </template>
+          <template v-else-if="status === '2'">
+            <el-button type="bluex" @click="lookReuse">只看启用</el-button>
+            <el-button type="blue" @click="lookStop">只看停用</el-button>
+          </template>
+          <template v-else>
+            <el-button type="bluex" @click="lookReuse">只看启用</el-button>
+            <el-button type="bluex" @click="lookStop">只看停用</el-button>
+          </template>
+
+          <el-input
+            placeholder="请输入内容"
+            v-model="input3"
+            class="input-with-select"
+          >
+            <el-select v-model="select" slot="prepend" placeholder="请选择">
+              <el-option label="内部名称" value="1"></el-option>
+              <el-option label="外部名称" value="2"></el-option>
+              <el-option label="类型" value="3"></el-option>
+            </el-select>
+            <el-button slot="append" icon="el-icon-search"></el-button>
+          </el-input>
+          <el-button type="blue" style="margin-left:10px" @click="changeBox(2)">
+            管理布局</el-button
+          >
+          <el-button type="blue" @click="changeBox(3)"> 管理联动</el-button>
+        </div>
+
+        <el-row>
+          <el-col :span="23">
+            <el-table
+              :data="tableData"
+              border
+              style="width: 100%;"
+              type="expand"
+            >
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <el-form
+                    label-position="left"
+                    inline
+                    class="demo-table-expand"
+                  >
+                    <el-form-item label="内部名称">
+                      <span>{{ props.row.interiorName }}</span>
+                    </el-form-item>
+                    <el-form-item label="显示名称">
+                      <span>{{ props.row.defaultDisplay }}</span>
+                    </el-form-item>
+                    <el-form-item label="类型">
+                      <span>{{ props.row.colType }}</span>
+                    </el-form-item>
+
+                    <el-form-item label="isNewRecord">
+                      <span>{{ props.row.isNewRecord }}</span>
+                    </el-form-item>
+                  </el-form>
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="interiorName" label="内部名称" width="">
+              </el-table-column>
+              <el-table-column prop="defaultDisplay" label="显示名称" width="">
+              </el-table-column>
+              <el-table-column prop="colType" label="类型" width="">
+              </el-table-column>
+              <el-table-column prop="" label="字典" width=""> </el-table-column>
+              <el-table-column label="操作" width="">
+                <template slot-scope="scope">
+                  <div class="control">
+                    <i class="el-icon-edit-outline"></i>
+                    <i class="el-icon-delete"></i>
+
+                    <el-switch
+                      active-color="#3377FF"
+                      inactive-text="停用"
+                      active-text="启用"
+                      v-model="scope.row.status"
+                      @change="control(scope.row)"
+                      class="switchStyle"
+                    ></el-switch>
+                  </div>
+
+                  <!-- <el-button
+                    v-if="scope.row.colType === 'chain'"
+                    type="blue"
+                    @click="goToLinkage(scope.row)"
+                  >
+                    联动</el-button
+                  > -->
+                </template>
+              </el-table-column>
+            </el-table></el-col
+          >
+        </el-row>
+      </template>
       <template v-if="changeBoxVal === 2">
         <div class="group-list" v-for="item in groupList" :key="item.id">
           <div class="group-list-tit">
@@ -277,73 +345,10 @@
           </div>
         </div>
       </template>
-      <template v-if="changeBoxVal === 1">
-        <el-table
-          :data="tableData"
-          border
-          style="width: 100%; margin-top:32px"
-          type="expand"
-          :header-cell-style="{
-            height: 60 + 'px',
-            background: '#F7F7F7',
-            'font-size': 18 + 'px',
-            color: '#384B59',
-            'font-weight': 500,
-          }"
-          :row-style="{ height: 60 + 'px', 'font-size': 14 + 'px' }"
-        >
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="内部名称">
-                  <span>{{ props.row.interiorName }}</span>
-                </el-form-item>
-                <el-form-item label="显示名称">
-                  <span>{{ props.row.defaultDisplay }}</span>
-                </el-form-item>
-                <el-form-item label="类型">
-                  <span>{{ props.row.colType }}</span>
-                </el-form-item>
-
-                <el-form-item label="isNewRecord">
-                  <span>{{ props.row.isNewRecord }}</span>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-
-          <el-table-column prop="interiorName" label="内部名称" width="300">
-          </el-table-column>
-          <el-table-column prop="defaultDisplay" label="显示名称" width="300">
-          </el-table-column>
-          <el-table-column prop="colType" label="类型" width="200">
-          </el-table-column>
-          <el-table-column label="操作" width="200">
-            <template slot-scope="scope">
-              <el-button
-                type="blue"
-                @click="fieldReuse(scope.row)"
-                v-if="scope.row.status === '2'"
-              >
-                启用</el-button
-              >
-              <el-button
-                type="redx"
-                @click="fieldStop(scope.row)"
-                v-if="scope.row.status === '0'"
-              >
-                停用</el-button
-              >
-              <el-button
-                v-if="scope.row.colType === 'chain'"
-                type="blue"
-                @click="goToLinkage(scope.row)"
-              >
-                联动</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
+      <template v-if="changeBoxVal === 3">
+        <div class="linkage-box">
+          123
+        </div>
       </template>
     </div>
     <el-dialog
@@ -540,6 +545,11 @@
           <el-col :span="12">
             <el-form-item label="公式">
               <el-input v-model="addFieldParams.formula"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="默认值">
+              <el-input v-model="addFieldParams.defaultVal"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -946,6 +956,15 @@ export default {
         }
       })
     },
+    // 字段启用停用控制
+    control(e) {
+      if (e.status) {
+        this.fieldReuse(e)
+      } else {
+        this.fieldStop(e)
+      }
+    },
+
     // 启用
     fieldReuse(item) {
       ApiFieldReuse({
@@ -1040,6 +1059,15 @@ export default {
         nodeCode: this.form.nodeCode,
         status: this.status,
       }).then((res) => {
+        res.forEach((item) => {
+          if (item.status === '0') {
+            item.status = true
+          }
+          if (item.status === '2') {
+            item.status = false
+          }
+        })
+        console.log(res)
         this.tableData = res
         this.getGroupListFun()
       })
@@ -1163,7 +1191,7 @@ export default {
   overflow: hidden;
 }
 .el-input {
-  height: 32px;
+  height: 28px;
   input {
     height: 100%;
   }
@@ -1195,6 +1223,7 @@ export default {
   // justify-content: start;
   justify-content: left;
   align-items: center;
+  margin: 16px 0;
   span {
     display: block;
     // margin-right: 10px;
@@ -1237,40 +1266,38 @@ export default {
 }
 
 .change-group-sel {
-  position: absolute;
   height: 32px;
-  box-sizing: border-box;
-  z-index: 5;
+  background: rgba(51, 119, 255, 0.1);
+  margin-top: -20px;
+  margin-left: -20px;
+  margin-right: -20px;
+  border-radius: 8px 8px 0px 0px;
   .change-group-sel-item {
     height: 100%;
     float: left;
     width: 88px;
-    // background: #f7f7f7;
     color: #3377ff;
     line-height: 32px;
     text-align: center;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 16px;
+    // font-weight: bold;
+    background: #fff;
     cursor: pointer;
 
     i {
       margin-left: 5px;
-      font-size: 12px;
+      font-size: 16px;
     }
   }
   .change-group-sel-act {
     background: #f7f7f7;
     border-top: 1px solid #3377ff;
-    border-bottom: 2px solid #f7f7f7;
+    box-sizing: border-box;
   }
 }
 
 .create-group {
   margin-top: 10px;
-}
-
-.group-list:nth-child(2) {
-  margin-top: 32px;
 }
 
 .group-list {
@@ -1357,5 +1384,81 @@ export default {
     display: block;
     height: 200px;
   }
+}
+
+.linkage-box {
+  margin-top: 32px;
+}
+.control {
+  font-size: 16px;
+  i {
+    color: #1a1a1a;
+    margin-left: 12px;
+    cursor: pointer;
+  }
+  i:nth-child(2) {
+    color: #f7434d;
+  }
+  .el-switch {
+    // width: 56px;
+    // height: 16px;
+    margin-left: 12px;
+    span {
+      width: 56px !important;
+      //   height: 100% !important;
+      color: #fff;
+    }
+    // .el-switch__core:after {
+    //   width: 12px;
+    //   height: 12px;
+    // }
+  }
+}
+
+.switchStyle {
+  /deep/ .el-switch__label {
+    position: absolute;
+    display: none;
+    font-weight: normal;
+  }
+  /deep/ .el-switch__label * {
+    font-size: 8px;
+  }
+  /deep/ .el-switch__label--left {
+    z-index: 9;
+    left: 22px;
+    color: #fff;
+  }
+  /deep/ .el-switch__label--right {
+    z-index: 9;
+    color: #fff;
+  }
+  /deep/ .el-switch__label.is-active {
+    display: block;
+    height: 30px;
+    line-height: 30px;
+  }
+}
+/deep/ .switchStyle.el-switch .el-switch__core,
+.el-switch .el-switch__label {
+  width: 60px !important;
+}
+.el-switch,
+.el-switch__core {
+  height: 30px;
+  line-height: 30px;
+}
+.el-switch__core {
+  border-radius: 15px;
+  &:after {
+    width: 20px;
+    height: 20px;
+    top: 4px;
+    left: 3px;
+    z-index: 10;
+  }
+}
+.el-switch.is-checked .el-switch__core::after {
+  margin-left: -23px;
 }
 </style>

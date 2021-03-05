@@ -64,16 +64,16 @@
           </el-table-column>
           <el-table-column label="图标">
             <template slot-scope="scope">
-              {{ scope.row.dictVal }}
+              <!-- {{ scope.row.dictVal }} -->
               <img
                 :src="require(`@/assets/img/carewash/${scope.row.dictVal}`)"
               />
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="interiorName"
             label="内部名称"
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column
             prop="defaultDisplay"
             label="显示名称"
@@ -402,15 +402,15 @@ export default {
     CreateDictTermPar() {
       this.addTermParams.dictCode = this.domInfo.dictCode
       CreateDictTerm(this.addTermParams).then((res) => {
-        if (res) {
+        if (res.result) {
           this.$message({
             type: 'success',
-            message: '创建成功!',
+            message: res.message,
           })
           this.addChildTermModel = false
           this.GetDictQueryPar()
         } else {
-          this.$message.error('创建失败!')
+          this.$message.error(res.message)
         }
       })
     },
@@ -444,14 +444,14 @@ export default {
       })
         .then(() => {
           DeleteDict({ dictCode: this.domInfo.dictCode }).then((res) => {
-            if (res) {
+            if (res.result) {
               this.$message({
                 type: 'success',
-                message: '删除成功!',
+                message: res.message,
               })
               Bus.$emit('upDict', this.domInfo.parentCode)
             } else {
-              this.$message.error('删除失败!')
+              this.$message.error(res.message)
             }
           })
         })
@@ -469,15 +469,15 @@ export default {
       this.addDictInfo.parentCode = this.domInfo.dictCode
 
       CreateDict(this.addDictInfo).then((res) => {
-        if (res) {
+        if (res.result) {
           this.$message({
-            message: '添加成功！',
             type: 'success',
+            message: res.message,
           })
           this.addChild = false
           Bus.$emit('upDict', this.domInfo.id)
         } else {
-          this.$message.error('添加失败！')
+          this.$message.error(res.message)
         }
       })
     },

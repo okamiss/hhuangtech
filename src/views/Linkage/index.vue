@@ -128,7 +128,6 @@
 </template>
 
 <script>
-import { parse } from 'qs'
 import {
   getObjLink,
   getDictUsed,

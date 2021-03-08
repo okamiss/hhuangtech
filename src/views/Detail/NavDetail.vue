@@ -96,75 +96,6 @@
       </el-row>
     </div>
 
-    <div class="card-box" v-show="changeBoxVal === 2" ref="secTogg">
-      <el-row>
-        <el-col :span="22">
-          <el-button type="blue">创建组</el-button>
-          <div class="create-group">
-            <el-form
-              ref="form"
-              :model="groupParams"
-              label-width="80px"
-              label-position="left"
-            >
-              <el-row :gutter="20">
-                <el-col :span="8">
-                  <el-form-item label="内部名称">
-                    <el-input></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="显示名称">
-                    <el-input v-model="groupParams.defaultDispla"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row :gutter="20">
-                <el-col :span="8">
-                  <el-form-item label="组列数">
-                    <el-input
-                      v-model="groupParams.maxRows"
-                    ></el-input> </el-form-item></el-col
-              ></el-row>
-              <el-row :gutter="20">
-                <el-col :span="16">
-                  <el-form-item label="说明">
-                    <el-input
-                      type="textarea"
-                    ></el-input> </el-form-item></el-col
-              ></el-row>
-              <el-row :gutter="20">
-                <el-col :span="16">
-                  <el-form-item>
-                    <el-button type="blue" @click="saveCreateGroup"
-                      >确定</el-button
-                    >
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-          </div>
-          <div class="clear"></div>
-        </el-col>
-        <el-col :span="2">
-          <el-button
-            v-if="showTwo"
-            type="radius"
-            class="rotate90"
-            icon="el-icon-d-arrow-left"
-            @click="secTogg"
-          ></el-button>
-          <el-button
-            v-else
-            type="radius"
-            class="rotate90"
-            icon="el-icon-d-arrow-right"
-            @click="secTogg"
-          ></el-button>
-        </el-col>
-      </el-row>
-    </div>
-
     <div class="card-box">
       <div class="change-group-sel">
         <div
@@ -241,6 +172,7 @@
               border
               style="width: 100%;"
               type="expand"
+              class="setTabCss"
             >
               <el-table-column type="expand">
                 <template slot-scope="props">
@@ -272,7 +204,8 @@
               </el-table-column>
               <el-table-column prop="colType" label="类型" width="">
               </el-table-column>
-              <el-table-column prop="" label="字典" width=""> </el-table-column>
+              <el-table-column prop="objectPath" label="字典" width="">
+              </el-table-column>
               <el-table-column label="操作" width="">
                 <template slot-scope="scope">
                   <div class="control">
@@ -303,11 +236,61 @@
         </el-row>
       </template>
       <template v-if="changeBoxVal === 2">
+        <div class="create-group">
+          <el-form
+            ref="form"
+            :model="groupParams"
+            label-width="80px"
+            label-position="left"
+          >
+            <el-row :gutter="20">
+              <el-col :span="5">
+                <el-form-item label="内部名称">
+                  <el-input
+                    v-model="groupParams.interiorName"
+                    placeholder="请输入"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="显示名称">
+                  <el-input
+                    v-model="groupParams.defaultDisplay"
+                    placeholder="请输入"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="4">
+                <el-form-item label="组列数" label-width="65px">
+                  <el-input
+                    placeholder="请输入"
+                    v-model="groupParams.maxRows"
+                  ></el-input> </el-form-item
+              ></el-col>
+              <el-col :span="5">
+                <el-form-item label="说明" label-width="50px">
+                  <el-input placeholder="请输入"></el-input> </el-form-item
+              ></el-col>
+              <el-col :span="3">
+                <el-form-item label-width="0">
+                  <el-button type="blue" @click="saveCreateGroup"
+                    >保存</el-button
+                  >
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </div>
+        <div class="clear"></div>
+
         <div class="group-list" v-for="item in groupList" :key="item.id">
           <div class="group-list-tit">
             <div class="group-list-tit-attr">可用属性</div>
             <div class="group-list-tit-group">
-              {{ item.defaultDisplay }} <i class="el-icon-edit-outline"></i>
+              {{ item.defaultDisplay }}
+              <img src="@/assets/img/inter_icon2.png" alt="" />
+              <i class="el-icon-edit-outline"></i>
               <i class="el-icon-delete" @click="delGroup(item.groupCode)"></i>
             </div>
           </div>
@@ -1171,16 +1154,6 @@ export default {
         this.$refs.firTogg.style.height = 'auto'
       }
     },
-    secTogg() {
-      this.showTwo = !this.showTwo
-      //   var heightStyle = this.$refs.firTogg.offsetHeight;
-      if (!this.showTwo) {
-        this.$refs.secTogg.style.height = '110px'
-        this.$refs.secTogg.style.overflow = 'hidden'
-      } else {
-        this.$refs.secTogg.style.height = 'auto'
-      }
-    },
   },
 }
 </script>
@@ -1297,14 +1270,25 @@ export default {
 }
 
 .create-group {
-  margin-top: 10px;
+  margin-top: 16px;
+
+  .el-form-item {
+    margin-bottom: 16px !important;
+    .el-form-item__label {
+      font-size: 13px !important;
+      line-height: 28px !important;
+    }
+    .el-form-item__content {
+      line-height: 28px;
+    }
+  }
 }
 
 .group-list {
   margin-bottom: 40px;
   .group-list-tit {
     width: 100%;
-    height: 40px;
+    height: 30px;
     background: #f7f7f7;
     display: flex;
     border-top: 1px solid #3377ff;
@@ -1316,7 +1300,7 @@ export default {
     border-right: 1px solid #e8e8e8;
     font-size: 16px;
     font-weight: 500;
-    line-height: 40px;
+    line-height: 30px;
     text-indent: 24px;
   }
   .group-list-tit-group {
@@ -1324,8 +1308,12 @@ export default {
     height: 100%;
     font-size: 16px;
     font-weight: 500;
-    line-height: 40px;
     text-indent: 24px;
+    display: flex;
+    align-items: center;
+    img {
+      margin-left: 12px;
+    }
     i {
       text-indent: 12px;
       cursor: pointer;
@@ -1348,8 +1336,8 @@ export default {
 
     .group-list-data-item {
       width: 100%;
-      height: 40px;
-      line-height: 40px;
+      height: 30px;
+      line-height: 30px;
       text-indent: 24px;
       box-sizing: border-box;
       border-bottom: 1px solid #e8e8e8;
@@ -1460,5 +1448,19 @@ export default {
 }
 .el-switch.is-checked .el-switch__core::after {
   margin-left: -23px;
+}
+
+.setTabCss {
+  .el-form-item__label,
+  .el-form-item__content {
+    line-height: 30px;
+    font-size: 14px !important;
+  }
+  .el-form-item {
+    margin-bottom: 0 !important;
+  }
+  .el-table__expanded-cell[class*='cell'] {
+    padding: 10px 50px;
+  }
 }
 </style>

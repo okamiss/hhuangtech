@@ -62,14 +62,7 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column label="图标">
-            <template slot-scope="scope">
-              <!-- {{ scope.row.dictVal }} -->
-              <img
-                :src="require(`@/assets/img/carewash/${scope.row.dictVal}`)"
-              />
-            </template>
-          </el-table-column>
+
           <!-- <el-table-column
             prop="interiorName"
             label="内部名称"
@@ -136,13 +129,7 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column label="图标">
-            <!-- <template slot-scope="scope">
-              <img
-                :src="require(`@/assets/img/carewash/${scope.row.dictVal}`)"
-              />
-            </template> -->
-          </el-table-column>
+
           <el-table-column
             prop="interiorName"
             label="内部名称"

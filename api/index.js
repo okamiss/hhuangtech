@@ -94,7 +94,7 @@ export const getGroupInfo = (params) =>
   get('/plm/node/group/extcol/info', params) // 通过组代码查询组信息(包含组定义信息,节点信息,扩展列信息)
 
 export const removeGroup = (params) =>
-  post('/plm/node/group/define/remove', params) // 通过组代码查询组信息(包含组定义信息,节点信息,扩展列信息)
+  post('/plm/node/group/define/remove', params) // 删除组
 
 export const editGroup = (params) =>
-  post('/plm/node/group/define/modify', params) // 通过组代码查询组信息(包含组定义信息,节点信息,扩展列信息)
+  post('/plm/node/group/define/modify', params) // 修改组

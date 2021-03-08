@@ -285,8 +285,8 @@ export default {
 }
 .el-menu-item,
 .el-submenu__title {
-  height: 48px !important;
-  line-height: 48px !important;
+  height: 38px !important;
+  line-height: 38px !important;
 }
 
 .menu-search {

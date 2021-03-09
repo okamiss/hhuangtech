@@ -6,14 +6,14 @@ import cookies from 'vue-cookies'
 // 直接获取登录sid
 axios
   .get(
-    'http://192.168.31.205:8980/hhuangtech/plm/login?__login=true&__ajax=json&username=c3lzdGVt&password=aEhUZWNoMTIz.'
+    'http://192.168.31.212:8902/hhuangtech/plm/login?__login=true&__ajax=json&username=c3lzdGVt&password=aEhUZWNoMTIz.'
   )
   .then((res) => {
     cookies.set('sid', res.data.sessionid)
   })
 
 axios.defaults.timeout = 10000
-axios.defaults.baseURL = 'http://192.168.31.205:8980/hhuangtech'
+axios.defaults.baseURL = 'http://192.168.31.212:8902/hhuangtech'
 
 //http request 拦截器
 axios.interceptors.request.use(
@@ -39,6 +39,7 @@ axios.interceptors.request.use(
     // if (config.method === 'post') {
     //   config.headers = {
     //     'Content-Type': 'multipart/form-data',
+    //     'Content-Type': 'text/plain',
     //   }
     // }
 

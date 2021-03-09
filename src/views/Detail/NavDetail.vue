@@ -165,75 +165,94 @@
           <el-button type="blue" @click="changeBox(3)"> 管理联动</el-button>
         </div>
 
-        <el-row>
-          <el-col :span="23">
-            <el-table
-              :data="tableData"
-              border
-              style="width: 100%;"
-              type="expand"
-              class="setTabCss"
-            >
-              <el-table-column type="expand">
-                <template slot-scope="props">
-                  <el-form
-                    label-position="left"
-                    inline
-                    class="demo-table-expand"
-                  >
-                    <el-form-item label="内部名称">
-                      <span>{{ props.row.interiorName }}</span>
-                    </el-form-item>
-                    <el-form-item label="显示名称">
-                      <span>{{ props.row.defaultDisplay }}</span>
-                    </el-form-item>
-                    <el-form-item label="类型">
-                      <span>{{ props.row.colType }}</span>
-                    </el-form-item>
+        <div class="set-tab-style">
+          <el-row>
+            <el-col :span="23">
+              <el-table
+                :data="tableData"
+                border
+                style="width: 100%;"
+                type="expand"
+                class="setTabCss"
+              >
+                <el-table-column type="expand">
+                  <template slot-scope="props">
+                    <el-form
+                      label-position="left"
+                      inline
+                      class="demo-table-expand"
+                    >
+                      <el-form-item label="内部名称">
+                        <span>{{ props.row.interiorName }}</span>
+                      </el-form-item>
+                      <el-form-item label="显示名称">
+                        <span>{{ props.row.defaultDisplay }}</span>
+                      </el-form-item>
+                      <el-form-item label="类型">
+                        <span>{{ props.row.colType }}</span>
+                      </el-form-item>
 
-                    <el-form-item label="isNewRecord">
-                      <span>{{ props.row.isNewRecord }}</span>
-                    </el-form-item>
-                  </el-form>
-                </template>
-              </el-table-column>
+                      <el-form-item label="isNewRecord">
+                        <span>{{ props.row.isNewRecord }}</span>
+                      </el-form-item>
+                    </el-form>
+                  </template>
+                </el-table-column>
 
-              <el-table-column prop="interiorName" label="内部名称" width="">
-              </el-table-column>
-              <el-table-column prop="defaultDisplay" label="显示名称" width="">
-              </el-table-column>
-              <el-table-column prop="colType" label="类型" width="">
-              </el-table-column>
-              <el-table-column prop="objectPath" label="字典" width="">
-              </el-table-column>
-              <el-table-column label="操作" width="">
-                <template slot-scope="scope">
-                  <div class="control">
-                    <i class="el-icon-edit-outline"></i>
-                    <i class="el-icon-delete"></i>
+                <el-table-column prop="interiorName" label="内部名称" width="">
+                </el-table-column>
+                <el-table-column
+                  prop="defaultDisplay"
+                  label="显示名称"
+                  width=""
+                >
+                </el-table-column>
+                <el-table-column label="类型" width="">
+                  <template slot-scope="scope">
+                    {{ scope.row.colTypeLang.local }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="objectPath" label="字典" width="">
+                </el-table-column>
+                <el-table-column label="可在创建时编辑" width="">
+                  <template slot-scope="scope">
+                    {{ scope.row.createEditable ? '是' : '否' }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="可在更新时编辑" width="">
+                  <template slot-scope="scope">
+                    {{ scope.row.updateEditable ? '是' : '否' }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="">
+                  <template slot-scope="scope">
+                    <div class="control">
+                      <i class="el-icon-edit-outline"></i>
+                      <i class="el-icon-delete"></i>
 
-                    <el-switch
-                      active-color="#3377FF"
-                      inactive-text="停用"
-                      active-text="启用"
-                      v-model="scope.row.status"
-                      @change="control(scope.row)"
-                      class="switchStyle"
-                    ></el-switch>
-                  </div>
+                      <el-switch
+                        active-color="#3377FF"
+                        inactive-text="停用"
+                        active-text="启用"
+                        v-model="scope.row.status"
+                        @change="control(scope.row)"
+                        class="switchStyle"
+                      ></el-switch>
+                    </div>
 
-                  <!-- <el-button
+                    <!-- <el-button
                     v-if="scope.row.colType === 'chain'"
                     type="blue"
                     @click="goToLinkage(scope.row)"
                   >
                     联动</el-button
                   > -->
-                </template>
-              </el-table-column>
-            </el-table></el-col
-          >
-        </el-row>
+                  </template>
+                </el-table-column>
+              </el-table></el-col
+            >
+          </el-row>
+        </div>
       </template>
       <template v-if="changeBoxVal === 2">
         <div class="create-group">
@@ -533,6 +552,13 @@
           <el-col :span="12">
             <el-form-item label="默认值">
               <el-input v-model="addFieldParams.defaultVal"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="40">
+          <el-col :span="12" v-if="addFieldParams.colType === 'sequence'">
+            <el-form-item label="起始值">
+              <el-input></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -1158,10 +1184,27 @@ export default {
 }
 </script>
 
-<style lang="less" coped>
+<style lang="less" scoped>
 .def-height {
   height: 110px;
   overflow: hidden;
+  /deep/ .el-form-item {
+    height: 32px;
+    line-height: 32px;
+    .el-form-item__label {
+      height: 32px;
+      line-height: 32px;
+      font-size: 14px;
+    }
+    .el-form-item__content {
+      height: 32px;
+      line-height: 32px;
+      .el-input__inner {
+        height: 32px;
+        line-height: 32px;
+      }
+    }
+  }
 }
 .el-input {
   height: 28px;
@@ -1462,5 +1505,9 @@ export default {
   .el-table__expanded-cell[class*='cell'] {
     padding: 10px 50px;
   }
+}
+
+.set-tab-style {
+  min-height: 500px;
 }
 </style>

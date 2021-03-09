@@ -19,14 +19,8 @@
         <el-table
           :data="tableData"
           style="width: 100%"
-          :header-cell-style="{
-            height: 60 + 'px',
-            background: '#F7F7F7',
-            'font-size': 18 + 'px',
-            color: '#384B59',
-            'font-weight': 500,
-          }"
-          :row-style="{ height: 60 + 'px', 'font-size': 14 + 'px' }"
+          border
+          class="setTabCss"
         >
           <el-table-column type="expand">
             <template slot-scope="props">
@@ -67,33 +61,44 @@
             prop="interiorName"
             label="内部名称"
           ></el-table-column> -->
-          <el-table-column
-            prop="defaultDisplay"
-            label="显示名称"
-          ></el-table-column>
+          <el-table-column prop="defaultDisplay">
+            <template slot="header" slot-scope="scope">
+              <div class="diy-tab-head">
+                <div class="diy-tab-name">显示名称</div>
+                <div class="diy-tab-inp">
+                  <el-input
+                    placeholder="搜索显示名称"
+                    v-model="defVal"
+                    class="input-with-select"
+                  >
+                    <el-button slot="append" icon="el-icon-search"></el-button>
+                  </el-input>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
 
-          <el-table-column label="操作" width="265">
+          <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="blue">编辑</el-button>
-              <el-button type="blue" @click="handleEdit(scope.row)"
-                >创建字典项关联</el-button
-              >
+              <div class="control">
+                <i class="el-icon-edit-outline"></i>
+                <i
+                  class="el-icon-collection"
+                  @click="handleEdit(scope.row)"
+                ></i>
+              </div>
+              <!-- <el-button type="blue">编辑</el-button> -->
+              <!-- <el-button type="blue">创建字典项关联</el-button> -->
             </template>
           </el-table-column>
         </el-table>
       </div>
       <div class="dict-box-item">
         <el-table
+          class="setTabCss"
           :data="tableDataUsed"
           style="width: 100%"
-          :header-cell-style="{
-            height: 60 + 'px',
-            background: '#F7F7F7',
-            'font-size': 18 + 'px',
-            color: '#384B59',
-            'font-weight': 500,
-          }"
-          :row-style="{ height: 60 + 'px', 'font-size': 14 + 'px' }"
+          border
         >
           <el-table-column type="expand">
             <template slot-scope="props">
@@ -130,21 +135,35 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            prop="interiorName"
-            label="内部名称"
-          ></el-table-column>
-          <el-table-column
-            prop="defaultDisplay"
-            label="显示名称"
-          ></el-table-column>
+          <el-table-column prop="interiorName">
+            <template slot="header" slot-scope="scope">
+              <div class="diy-tab-head">
+                <div class="diy-tab-name">显示名称</div>
+                <div class="diy-tab-inp">
+                  <el-input
+                    placeholder="搜索显示名称"
+                    v-model="defVal"
+                    class="input-with-select"
+                  >
+                    <el-button slot="append" icon="el-icon-search"></el-button>
+                  </el-input>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
 
-          <el-table-column label="操作" width="265">
+          <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="blue">编辑</el-button>
-              <el-button type="redx" @click="handleDelete(scope.row)"
-                >删除字典项关联</el-button
-              >
+              <div class="control">
+                <i class="el-icon-edit-outline"></i>
+                <i
+                  class="el-icon-delete red"
+                  @click="handleDelete(scope.row)"
+                ></i>
+              </div>
+
+              <!-- <el-button type="blue">编辑</el-button>
+              <el-button type="redx">删除字典项关联</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -153,33 +172,60 @@
     <el-dialog
       title="创建字典"
       :visible.sync="addChild"
-      width="60%"
+      width="700px"
       :before-close="addChildClose"
     >
-      <div class="dlg-xian"></div>
-      <div class="treeNames">当前位置：{{ domInfo.treeNames }}</div>
-      <el-form ref="form" :model="addDictInfo" label-width="80px">
-        <el-form-item label="内部名称">
-          <el-input v-model="addDictInfo.interiorName"></el-input>
-        </el-form-item>
-        <el-form-item label="显示名称">
-          <el-input v-model="addDictInfo.defaultDisplay"></el-input>
-        </el-form-item>
+      <!-- <div class="dlg-xian"></div> -->
+      <!-- <div class="treeNames">当前位置：{{ domInfo.treeNames }}</div> -->
+
+      <el-form
+        ref="form"
+        :model="addDictInfo"
+        label-width="70px"
+        label-position="left"
+      >
+        <el-row :gutter="24">
+          <el-col :span="12" class="set-name"
+            ><el-form-item label="内部名称">
+              <el-input
+                v-model="addDictInfo.interiorName"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="12" class="set-name">
+            <el-form-item label="显示名称">
+              <el-input
+                v-model="addDictInfo.defaultDisplay"
+              ></el-input> </el-form-item
+          ></el-col>
+        </el-row>
       </el-form>
       <div class="batTit">
         批量增加字典项
         <i @click="addBatItem" class="el-icon-circle-plus-outline"></i>
       </div>
       <div class="batchAdd" v-for="(item, index) in batchArr" :key="index">
-        <div class="batName">内部名称：</div>
-        <el-input v-model="item.interiorName"></el-input>
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <div class="add-name-style">
+              <div class="batName">内部名称：</div>
+              <el-input v-model="item.interiorName"></el-input>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="add-name-style">
+              <div class="batName">显示名称：</div>
+              <el-input v-model="item.defaultDisplay"></el-input>
 
-        <div class="batName">显示名称：</div>
-        <el-input v-model="item.defaultDisplay"></el-input>
+              <div class="batCz">
+                <img src="@/assets/img/inter_icon2.png" alt="" />
+                <i @click="batchDel(index)" class="el-icon-remove-outline"></i>
+              </div>
+            </div> </el-col
+        ></el-row>
 
-        <div :span="3" class="batCz">
-          <i @click="batchDel(index)" class="el-icon-remove-outline"></i>
-        </div>
+        <!-- <div :span="3" class="batCz">
+         
+        </div> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="bluex" @click="addChild = false">取 消</el-button>
@@ -251,11 +297,12 @@ import {
 export default {
   data() {
     return {
+      defVal: '',
       //   img: require('@/assets/img/carewash'),
       //   img: require('@/assets/img/carewash/'),
       moveFileModel: false,
       form: {},
-      addChild: false,
+      addChild: true,
       addDictInfo: {
         interiorName: null,
         defaultDisplay: null,
@@ -484,24 +531,31 @@ export default {
 .batchAdd {
   width: 100%;
   margin-top: 10px;
-  height: 32px;
+  height: 28px;
   .batName {
     // text-align: left;
-    float: left;
-    line-height: 32px;
+    line-height: 28px;
   }
   .el-input {
-    float: left;
-    width: 210px;
-    margin-right: 23px;
+    // width: 236px;
+    flex: 1;
+    // margin-right: 23px;
   }
   .batCz {
     // text-align: center;
-    line-height: 32px;
+    height: 28px;
+    display: flex;
+    align-items: center;
     font-size: 20px;
-    float: left;
     i {
       cursor: pointer;
+      margin-left: 9px;
+    }
+    img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-left: 9px;
     }
   }
 }
@@ -532,5 +586,85 @@ export default {
       float: right;
     }
   }
+}
+
+.control {
+  font-size: 16px;
+  i {
+    color: #1a1a1a;
+    margin-right: 12px;
+    cursor: pointer;
+  }
+}
+
+.diy-tab-head {
+  display: flex;
+  align-items: center;
+  .diy-tab-name {
+    width: 60px;
+  }
+  .diy-tab-inp {
+    flex: 1;
+    .input-with-select {
+      float: right;
+      width: 154px;
+      height: 20px;
+      margin-right: 49px;
+      border-radius: 50px;
+      overflow: hidden;
+      //   border: 1px solid #707070;
+      box-sizing: border-box;
+      /deep/ .el-input__inner {
+        border-radius: 50px 0 0 50px;
+        width: 120px !important;
+        height: 20px !important;
+        padding: 0 12px !important;
+      }
+      /deep/ .el-input-group__append {
+        border-radius: 0 50px 50px 0;
+        width: 34px;
+        background: #3377ff;
+        padding: 0;
+        .el-button {
+          padding: 12px 27px;
+          i {
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+.setTabCss {
+  /deep/ .el-form-item__label,
+  /deep/ .el-form-item__content {
+    line-height: 30px;
+    font-size: 14px !important;
+  }
+  /deep/ .el-form-item {
+    margin-bottom: 0 !important;
+  }
+  /deep/ .el-table__expanded-cell[class*='cell'] {
+    padding: 10px 50px;
+  }
+
+  /deep/ .el-form-item {
+    width: 50%;
+  }
+}
+
+.set-name {
+  /deep/ .el-form-item__label {
+    font-size: 14px !important;
+  }
+}
+
+.add-name-style {
+  display: flex;
+}
+
+.red {
+  color: #f00 !important;
 }
 </style>

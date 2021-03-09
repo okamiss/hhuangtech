@@ -198,6 +198,7 @@ export default {
     GetDictListData(node) {
       node.forEach((item) => {
         GetDictList({ parentCode: item.dictCode || 0 }).then((res) => {
+          console.log(res)
           if (res.length) {
             item.icon = 'el-icon-collection'
             item.child = item.child || []

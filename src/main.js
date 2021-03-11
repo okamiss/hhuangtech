@@ -21,6 +21,7 @@ Vue.prototype.$cookies = cookies
 //配置cookies生命周期，单位不区分大小写
 
 require('@/assets/css/index.css')
+// require('@/assets/css/index.scss')
 // require('@/utils/index.js')
 
 import Router from 'vue-router'

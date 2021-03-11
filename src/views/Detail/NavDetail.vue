@@ -63,11 +63,7 @@
             <el-row>
               <el-col :span="14">
                 <el-form-item label="说明">
-                  <el-input
-                    type="textarea"
-                    :rows="4"
-                    v-model="form.date1"
-                  ></el-input>
+                  <el-input v-model="form.date1"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -109,24 +105,26 @@
           class="change-group-sel-item "
           :class="{ 'change-group-sel-act': changeBoxVal === 2 }"
           @click="changeBox(2)"
+          v-if="changeBj"
         >
           布局
           <i
             class="el-icon-close"
             v-if="changeBoxVal === 2"
-            @click.stop="changeBox(1)"
+            @click.stop="changeBjx"
           ></i>
         </div>
         <div
           class="change-group-sel-item"
           :class="{ 'change-group-sel-act': changeBoxVal === 3 }"
           @click="changeBox(3)"
+          v-if="changeLd"
         >
           联动
           <i
             class="el-icon-close"
             v-if="changeBoxVal === 3"
-            @click.stop="changeBox(1)"
+            @click.stop="changeLdx"
           ></i>
         </div>
       </div>
@@ -199,32 +197,28 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="interiorName" label="内部名称" width="">
+                <el-table-column prop="interiorName" label="内部名称">
                 </el-table-column>
-                <el-table-column
-                  prop="defaultDisplay"
-                  label="显示名称"
-                  width=""
-                >
+                <el-table-column prop="defaultDisplay" label="显示名称">
                 </el-table-column>
-                <el-table-column label="类型" width="">
+                <el-table-column label="类型">
                   <template slot-scope="scope">
                     {{ scope.row.colTypeLang.local }}
                   </template>
                 </el-table-column>
-                <el-table-column prop="objectPath" label="字典" width="">
+                <el-table-column prop="objectPath" label="字典">
                 </el-table-column>
-                <el-table-column label="可在创建时编辑" width="">
+                <el-table-column label="可在创建时编辑">
                   <template slot-scope="scope">
                     {{ scope.row.createEditable ? '是' : '否' }}
                   </template>
                 </el-table-column>
-                <el-table-column label="可在更新时编辑" width="">
+                <el-table-column label="可在更新时编辑">
                   <template slot-scope="scope">
                     {{ scope.row.updateEditable ? '是' : '否' }}
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="">
+                <el-table-column label="操作">
                   <template slot-scope="scope">
                     <div class="control">
                       <i class="el-icon-edit-outline"></i>
@@ -259,7 +253,7 @@
           <el-form
             ref="form"
             :model="groupParams"
-            label-width="80px"
+            label-width="70px"
             label-position="left"
           >
             <el-row :gutter="20">
@@ -281,14 +275,24 @@
               </el-col>
 
               <el-col :span="4">
-                <el-form-item label="组列数" label-width="65px">
-                  <el-input
+                <el-form-item label="组列数" label-width="55px">
+                  <!-- <el-input
                     placeholder="请输入"
                     v-model="groupParams.maxRows"
-                  ></el-input> </el-form-item
+                  ></el-input> -->
+
+                  <el-select v-model="groupListOptVal" placeholder="请选择">
+                    <el-option
+                      v-for="item in groupListOpt"
+                      :key="item.value"
+                      :label="item.value"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select> </el-form-item
               ></el-col>
               <el-col :span="5">
-                <el-form-item label="说明" label-width="50px">
+                <el-form-item label="说明" label-width="45px">
                   <el-input placeholder="请输入"></el-input> </el-form-item
               ></el-col>
               <el-col :span="3">
@@ -359,8 +363,8 @@
       width="40%"
       :before-close="addChildClose"
     >
-      <div class="dlg-xian"></div>
-      <div class="treeNames">当前位置：{{ domInfo.treeNames }}</div>
+      <!-- <div class="dlg-xian"></div> -->
+      <!-- <div class="treeNames">当前位置：{{ domInfo.treeNames }}</div> -->
       <el-form ref="form" :model="addChildParams" label-width="80px">
         <el-form-item label="内部名称">
           <el-input v-model="addChildParams.interiorName"></el-input>
@@ -380,8 +384,8 @@
       width="1140px"
       :before-close="addFieldClose"
     >
-      <div class="dlg-xian"></div>
-      {{ addFieldParams.colType }}
+      <!-- <div class="dlg-xian"></div> -->
+      <!-- {{ addFieldParams.colType }} -->
       <el-form
         ref="form"
         :model="addFieldParams"
@@ -490,18 +494,18 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="40">
-          <el-col
-            :span="12"
-            v-if="
-              addFieldParams.colType === 'multi_select' ||
-                addFieldParams.colType === 'dropdown' ||
-                addFieldParams.colType === 'chain' ||
-                addFieldParams.colType === 'composite' ||
-                addFieldParams.colType === 'washing_style'
-            "
-          >
-            <el-form-item label="选择字典" label-width="110px">
+        <el-row
+          :gutter="40"
+          v-if="
+            addFieldParams.colType === 'multi_select' ||
+              addFieldParams.colType === 'dropdown' ||
+              addFieldParams.colType === 'chain' ||
+              addFieldParams.colType === 'composite' ||
+              addFieldParams.colType === 'washing_style'
+          "
+        >
+          <el-col :span="12" class="dict-left">
+            <el-form-item label="选择字典">
               <el-cascader
                 :options="options"
                 @change="handleChange"
@@ -515,8 +519,27 @@
                 }"
                 collapse-tags
                 clearable
-              ></el-cascader
-            ></el-form-item>
+              ></el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" class="dict-right">
+            <el-popover
+              placement="bottom-end"
+              title="标题"
+              width="200"
+              trigger="manual"
+              content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+              v-model="visible"
+            >
+              <!-- <el-button slot="reference" @click="visible = !visible">手动激活</el-button> -->
+              <img
+                slot="reference"
+                @click="visible = !visible"
+                src="@/assets/img/look_dict.png"
+                alt=""
+              />
+            </el-popover>
+            <!-- <img src="@/assets/img/look_dict.png" alt="" /> -->
           </el-col>
         </el-row>
         <el-row v-if="addFieldParams.colType !== 'objects_out'" :gutter="40">
@@ -666,13 +689,9 @@
           </el-col>
         </el-row>
         <el-row :gutter="40">
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="说明">
-              <el-input
-                :rows="5"
-                type="textarea"
-                v-model="addFieldParams.description"
-              ></el-input>
+              <el-input v-model="addFieldParams.description"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -715,6 +734,9 @@ export default {
 
   data() {
     return {
+      visible: false,
+      changeBj: false,
+      changeLd: false,
       changeBoxVal: 1,
       interVisible: false,
       defVal: '',
@@ -739,6 +761,7 @@ export default {
       },
       addField: false,
       addFieldParams: {
+        updateEditable: true,
         items: [
           {
             objectCode: null,
@@ -780,6 +803,24 @@ export default {
         nodeCode: '',
         maxRows: '',
       },
+      groupListOptVal: '2',
+      groupListOpt: [
+        {
+          value: '1',
+        },
+        {
+          value: '2',
+        },
+        {
+          value: '3',
+        },
+        {
+          value: '4',
+        },
+        {
+          value: '5',
+        },
+      ],
     }
   },
   watch: {
@@ -810,9 +851,23 @@ export default {
   mounted() {},
   filters: {},
   methods: {
+    changeBjx() {
+      this.changeBoxVal = 1
+      this.changeBj = false
+    },
+    changeLdx() {
+      this.changeBoxVal = 1
+      this.changeLd = false
+    },
     //   切换三大模块
     changeBox(e) {
       this.changeBoxVal = e
+      if (e === 2) {
+        this.changeBj = true
+      }
+      if (e === 3) {
+        this.changeLd = true
+      }
       //   this.$refs.secTogg.style.height = 'auto'
     },
     //   删除组
@@ -847,6 +902,7 @@ export default {
 
     // 创建组
     saveCreateGroup() {
+      this.groupParams.maxRows = this.groupListOptVal
       createGroup(this.groupParams).then((res) => {
         if (res.result) {
           this.$message({
@@ -1076,7 +1132,6 @@ export default {
             item.status = false
           }
         })
-        console.log(res)
         this.tableData = res
         this.getGroupListFun()
       })
@@ -1174,7 +1229,7 @@ export default {
       this.showOne = !this.showOne
       //   var heightStyle = this.$refs.firTogg.offsetHeight;
       if (!this.showOne) {
-        this.$refs.firTogg.style.height = '110px'
+        this.$refs.firTogg.style.height = '98px'
         this.$refs.firTogg.style.overflow = 'hidden'
       } else {
         this.$refs.firTogg.style.height = 'auto'
@@ -1186,7 +1241,7 @@ export default {
 
 <style lang="less" scoped>
 .def-height {
-  height: 110px;
+  height: 98px;
   overflow: hidden;
   /deep/ .el-form-item {
     height: 32px;
@@ -1240,6 +1295,7 @@ export default {
   justify-content: left;
   align-items: center;
   margin: 16px 0;
+  height: 28px;
   span {
     display: block;
     // margin-right: 10px;
@@ -1247,8 +1303,18 @@ export default {
   .el-input-group {
     width: 400px;
     margin-left: 10px;
+    /deep/ .el-input__inner {
+      height: 28px;
+      line-height: 28px;
+    }
+
+    /deep/ .el-input-group__append {
+      background: #3377ff;
+      color: #fff;
+    }
     .el-select {
       width: 110px;
+
       span {
         margin-top: -1px;
       }
@@ -1314,14 +1380,25 @@ export default {
 
 .create-group {
   margin-top: 16px;
+  height: 28px;
+  font-size: 14px;
+  line-height: 28px;
+  /deep/ .el-input__inner {
+    height: 28px;
+    line-height: 28px;
+  }
 
-  .el-form-item {
+  /deep/ .el-form-item__label {
+    font-size: 14px !important;
+  }
+
+  /deep/ .el-form-item {
     margin-bottom: 16px !important;
-    .el-form-item__label {
+    /deep/ .el-form-item__label {
       font-size: 13px !important;
       line-height: 28px !important;
     }
-    .el-form-item__content {
+    /deep/ .el-form-item__content {
       line-height: 28px;
     }
   }
@@ -1509,5 +1586,37 @@ export default {
 
 .set-tab-style {
   min-height: 500px;
+  /deep/ .el-form-item {
+    width: 100%;
+  }
+
+  /deep/ .el-table__expanded-cell[class*='cell'] {
+    padding: 10px 50px !important;
+  }
+
+  /deep/ .el-form-item__label {
+    height: 32px;
+    line-height: 32px;
+    font-size: 14px;
+  }
+  /deep/ .el-form-item__content {
+    height: 32px;
+    line-height: 32px;
+    .el-input__inner {
+      height: 32px;
+      line-height: 32px;
+    }
+  }
+}
+.dict-left {
+  /deep/ .el-cascader {
+    width: 100%;
+  }
+}
+.dict-right {
+  padding-top: 5px;
+  img {
+    cursor: pointer;
+  }
 }
 </style>

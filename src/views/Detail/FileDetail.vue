@@ -80,30 +80,52 @@
       width="60%"
       :before-close="dictChildClose"
     >
-      <div class="dlg-xian"></div>
-      <div class="treeNames">{{ domInfo.treeNames }}</div>
-      <el-form ref="form" :model="addDictInfo" label-width="80px">
-        <el-form-item label="内部名称">
-          <el-input v-model="addDictInfo.interiorName"></el-input>
-        </el-form-item>
-        <el-form-item label="显示名称">
-          <el-input v-model="addDictInfo.defaultDisplay"></el-input>
-        </el-form-item>
+      <!-- <div class="dlg-xian"></div>
+      <div class="treeNames">{{ domInfo.treeNames }}</div> -->
+      <el-form
+        ref="form"
+        :model="addDictInfo"
+        label-width="70px"
+        label-position="left"
+      >
+        <el-row :gutter="24">
+          <el-col :span="12" class="set-name"
+            ><el-form-item label="内部名称">
+              <el-input
+                v-model="addDictInfo.interiorName"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="12" class="set-name">
+            <el-form-item label="显示名称">
+              <el-input
+                v-model="addDictInfo.defaultDisplay"
+              ></el-input> </el-form-item
+          ></el-col>
+        </el-row>
       </el-form>
       <div class="batTit">
         批量增加字典项
         <i @click="addBatItem" class="el-icon-circle-plus-outline"></i>
       </div>
       <div class="batchAdd" v-for="(item, index) in batchArr" :key="index">
-        <div class="batName">内部名称：</div>
-        <el-input v-model="item.interiorName"></el-input>
+        <el-row :gutter="24">
+          <el-col :span="12">
+            <div class="add-name-style">
+              <div class="batName">内部名称：</div>
+              <el-input v-model="item.interiorName"></el-input>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="add-name-style">
+              <div class="batName">显示名称：</div>
+              <el-input v-model="item.defaultDisplay"></el-input>
 
-        <div class="batName">显示名称：</div>
-        <el-input v-model="item.defaultDisplay"></el-input>
-
-        <div :span="3" class="batCz">
-          <i @click="batchDel(index)" class="el-icon-remove-outline"></i>
-        </div>
+              <div class="batCz">
+                <img src="@/assets/img/inter_icon.png" alt="" />
+                <i @click="batchDel(index)" class="el-icon-remove-outline"></i>
+              </div>
+            </div> </el-col
+        ></el-row>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDictModel = false">取 消</el-button>
@@ -303,32 +325,61 @@ export default {
 .batchAdd {
   width: 100%;
   margin-top: 10px;
-  height: 32px;
+  height: 28px;
   .batName {
     // text-align: left;
-    float: left;
-    line-height: 32px;
+    line-height: 28px;
   }
   .el-input {
-    float: left;
-    width: 210px;
-    margin-right: 23px;
+    // width: 236px;
+    flex: 1;
+    // margin-right: 23px;
   }
   .batCz {
     // text-align: center;
-    line-height: 32px;
+    height: 28px;
+    display: flex;
+    align-items: center;
     font-size: 20px;
-    float: left;
     i {
       cursor: pointer;
+      margin-left: 9px;
+    }
+    img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-left: 9px;
     }
   }
 }
 .batTit {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 10px;
+  margin-top: 24px;
   i {
     cursor: pointer;
+  }
+}
+
+.add-name-style {
+  display: flex;
+}
+
+.set-name {
+  height: 28px;
+  line-height: 28px;
+  /deep/ .el-form-item__label {
+    font-size: 14px !important;
+    line-height: 28px;
+    height: 28px;
+  }
+  /deep/ .el-input__inner {
+    height: 28px;
+    line-height: 28px;
+  }
+  /deep/ .el-form-item__content {
+    line-height: 28px;
   }
 }
 </style>

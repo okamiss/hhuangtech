@@ -217,6 +217,9 @@ a {
 .el-dialog__footer {
   /* display: flex;
   justify-content: center; */
+  border-top: 1px solid #d5d5d5;
+  padding: 22px 0 20px;
+  margin: 0 20px;
 }
 
 .el-form-item__label {

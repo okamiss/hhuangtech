@@ -217,7 +217,7 @@
               <el-input v-model="item.defaultDisplay"></el-input>
 
               <div class="batCz">
-                <img src="@/assets/img/inter_icon2.png" alt="" />
+                <img src="@/assets/img/inter_icon.png" alt="" />
                 <i @click="batchDel(index)" class="el-icon-remove-outline"></i>
               </div>
             </div> </el-col
@@ -302,7 +302,7 @@ export default {
       //   img: require('@/assets/img/carewash/'),
       moveFileModel: false,
       form: {},
-      addChild: true,
+      addChild: false,
       addDictInfo: {
         interiorName: null,
         defaultDisplay: null,
@@ -562,6 +562,7 @@ export default {
 .batTit {
   font-size: 16px;
   margin-bottom: 10px;
+  margin-top: 24px;
   i {
     cursor: pointer;
   }
@@ -655,8 +656,19 @@ export default {
 }
 
 .set-name {
+  height: 28px;
+  line-height: 28px;
   /deep/ .el-form-item__label {
     font-size: 14px !important;
+    line-height: 28px;
+    height: 28px;
+  }
+  /deep/ .el-input__inner {
+    height: 28px;
+    line-height: 28px;
+  }
+  /deep/ .el-form-item__content {
+    line-height: 28px;
   }
 }
 

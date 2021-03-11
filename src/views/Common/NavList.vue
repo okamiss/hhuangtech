@@ -88,7 +88,15 @@ export default {
       list: [{ nodeCode: 0 }],
       treeDict: [],
       dict: [{ nodeCode: 0 }],
-      treeFile: [],
+      treeFile: [
+        {
+          defaultDisplay: '根',
+          interiorName: 'root',
+          directoryCode: '0',
+          child: [],
+          id: 'a6654a6s5d4f',
+        },
+      ],
       file: [{ nodeCode: 0 }],
       test: {},
       navActiveId: null,
@@ -164,7 +172,6 @@ export default {
     },
     // 获取字典item
     getDictItem(item) {
-      console.log(item)
       const params = {
         dictCode: item.dictCode,
         id: item.id,
@@ -198,7 +205,6 @@ export default {
     GetDictListData(node) {
       node.forEach((item) => {
         GetDictList({ parentCode: item.dictCode || 0 }).then((res) => {
-          console.log(res)
           if (res.length) {
             item.icon = 'el-icon-collection'
             item.child = item.child || []
@@ -253,7 +259,8 @@ export default {
           }
         })
       })
-      this.treeFile = this.file[0].child
+      this.treeFile[0].child = this.file[0].child
+      console.log(this.treeFile)
       let getChangeVal = localStorage.getItem('changeVal')
       if (getChangeVal) {
         this.value = getChangeVal
@@ -343,6 +350,13 @@ export default {
   .menu-change-item:first-child {
     border-right: 1px solid #28344c;
     box-sizing: border-box;
+  }
+}
+
+#app {
+  /deep/ .el-input__inner {
+    height: 28px;
+    line-height: 28px;
   }
 }
 </style>

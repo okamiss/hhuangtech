@@ -358,5 +358,11 @@ export default {
     height: 28px;
     line-height: 28px;
   }
+  /deep/ .el-date-editor .el-range__icon {
+    line-height: 22px;
+  }
+  /deep/ .el-date-editor .el-range-separator {
+    line-height: 22px;
+  }
 }
 </style>

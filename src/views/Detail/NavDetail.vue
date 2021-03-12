@@ -1066,6 +1066,10 @@ export default {
     },
     // 增加字段
     subAddCode() {
+      this.addFieldParams.updateEditable
+        ? (this.addFieldParams.updateEditable = '1')
+        : (this.addFieldParams.updateEditable = '0')
+
       if (
         /(multi_select|dropdown|chain|composite|washing_style)/i.test(
           this.addFieldParams.colType
@@ -1099,6 +1103,7 @@ export default {
           })
           this.addField = false
           this.addFieldParams = {
+            updateEditable: true,
             items: [
               {
                 objectCode: null,
